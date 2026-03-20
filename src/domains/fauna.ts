@@ -75,6 +75,27 @@ export const faunaConfig: DomainConfig = {
       helpText: 'Whether this species can be tamed or domesticated by sentient beings.',
     },
     {
+      name: 'migration_pattern',
+      label: 'Migration Pattern',
+      type: 'textarea',
+      placeholder: 'Describe seasonal movements, routes, triggers...',
+      helpText: 'Seasonal or cyclical movement patterns — routes, timing, and what triggers migration.',
+    },
+    {
+      name: 'habitat_niche',
+      label: 'Habitat Niche',
+      type: 'text',
+      placeholder: 'e.g. forest canopy, deep ocean floor, cave systems',
+      helpText: 'The specific microhabitat this species occupies within its biome.',
+    },
+    {
+      name: 'communication',
+      label: 'Communication',
+      type: 'textarea',
+      placeholder: 'Describe calls, songs, pheromones, displays...',
+      helpText: 'How this species communicates — vocalizations, chemical signals, visual displays, etc.',
+    },
+    {
       name: 'biome_ids',
       label: 'Native Biomes',
       type: 'json',

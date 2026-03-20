@@ -15,7 +15,8 @@
     {% if rel.description %}<p class="rel-desc text-muted">{{ rel.description }}</p>{% endif %}
     <form method="POST" action="/worlds/{{ world.id }}/relationships/{{ rel.id }}/delete"
       hx-post="/worlds/{{ world.id }}/relationships/{{ rel.id }}/delete"
-      hx-target="closest .relationship-item" hx-swap="outerHTML">
+      hx-target="closest .relationship-item" hx-swap="outerHTML"
+      hx-confirm="Remove this relationship?">
       <button type="submit" class="btn-icon btn-delete" title="Remove">&times;</button>
     </form>
   </div>

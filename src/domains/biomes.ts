@@ -53,6 +53,13 @@ export const biomesConfig: DomainConfig = {
       placeholder: 'ID of the associated climate zone',
       helpText: 'The climate zone that governs this biome\'s weather patterns.',
     },
+    {
+      name: 'carrying_capacity',
+      label: 'Carrying Capacity',
+      type: 'text',
+      placeholder: 'e.g. high, moderate, low, overstressed',
+      helpText: 'The maximum population and activity level this biome can sustainably support.',
+    },
   ],
   elementTypes: ['forest', 'desert', 'tundra', 'grassland', 'wetland', 'ocean_zone', 'cave_system', 'sky_realm', 'volcanic', 'custom'],
   prompts: [

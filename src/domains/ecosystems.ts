@@ -48,11 +48,11 @@ export const ecosystemsConfig: DomainConfig = {
       helpText: 'The species whose removal would cause the ecosystem to collapse or fundamentally change.',
     },
     {
-      name: 'biome_id',
-      label: 'Biome',
-      type: 'text',
-      placeholder: 'ID of the parent biome',
-      helpText: 'The biome this ecosystem exists within.',
+      name: 'biome_ids',
+      label: 'Biomes',
+      type: 'json',
+      placeholder: '["forest_biome_1", "wetland_biome_2"]',
+      helpText: 'The biomes this ecosystem spans or exists within.',
     },
     {
       name: 'threats',

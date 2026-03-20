@@ -19,6 +19,13 @@ export const sentientSpeciesConfig: DomainConfig = {
       helpText: 'The fundamental biological or material basis of this species.',
     },
     {
+      name: 'physical_description',
+      label: 'Physical Description',
+      type: 'textarea',
+      placeholder: 'Describe body shape, skin/scales/feathers, coloring, distinguishing features...',
+      helpText: 'The general physical appearance and distinguishing traits of this species.',
+    },
+    {
       name: 'avg_height',
       label: 'Average Height',
       type: 'text',

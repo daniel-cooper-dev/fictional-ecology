@@ -15,7 +15,7 @@ export const cosmologyConfig: DomainConfig = {
       label: 'Body Type',
       type: 'select',
       required: true,
-      options: ['star', 'planet', 'moon', 'asteroid', 'ring', 'comet'],
+      options: ['star', 'planet', 'moon', 'asteroid', 'ring', 'comet', 'nebula'],
       helpText: 'The classification of this celestial body.',
     },
     {

@@ -2,147 +2,255 @@
 
 {% block title %}Create Your World - Fictional Ecology{% endblock %}
 
+{% set stepLabels = ['Name', 'Describe', 'Magic', 'Level', 'Domain', 'Review'] %}
+
 {% block content %}
 <div class="onboarding-container" x-data="{ step: 1, worldName: '', tagline: '', description: '', magicEnabled: true, magicLevel: 'high', startDomain: 'cosmology' }">
   <div class="onboarding-header">
     <h1>Create Your World</h1>
-    <div class="step-indicator">
-      <template x-for="s in 6" :key="s">
-        <div class="step-dot" :class="{ active: step === s, done: step > s }"></div>
-      </template>
+    <p class="onboarding-subtitle">Build something extraordinary, one step at a time.</p>
+    <div class="step-track">
+      {% for label in stepLabels %}
+      <div class="step-node" :class="{ active: step === {{ loop.index }}, done: step > {{ loop.index }} }">
+        <div class="step-dot">
+          <template x-if="step > {{ loop.index }}">
+            <span class="step-check">&#10003;</span>
+          </template>
+          <template x-if="step <= {{ loop.index }}">
+            <span class="step-num">{{ loop.index }}</span>
+          </template>
+        </div>
+        <span class="step-label">{{ label }}</span>
+      </div>
+      {% if not loop.last %}
+      <div class="step-line" :class="{ filled: step > {{ loop.index }} }"></div>
+      {% endif %}
+      {% endfor %}
     </div>
   </div>
 
   {# Step 1: Name #}
   <div class="onboarding-step" x-show="step === 1" x-transition>
-    <h2>What is your world called?</h2>
-    <p class="text-muted">Every world begins with a name. Don't worry, you can change it later.</p>
-    <div class="form-group" style="max-width:500px">
-      <input type="text" x-model="worldName" class="form-control form-control-lg" placeholder="e.g. Aethermere, Duskhollow..."
-        autofocus @keydown.enter="if(worldName.trim()) step = 2">
-      <p class="help-text" x-show="!worldName.trim() && worldName.length > 0" x-transition>Please enter a world name</p>
+    <div class="step-card">
+      <h2>What is your world called?</h2>
+      <p class="step-hint">Every world begins with a name. Don't worry, you can change it later.</p>
+      <div class="form-group" style="max-width:500px">
+        <input type="text" x-model="worldName" class="form-control form-control-lg" placeholder="e.g. Aethermere, Duskhollow..."
+          autofocus @keydown.enter="if(worldName.trim()) step = 2">
+        <p class="help-text" x-show="!worldName.trim() && worldName.length > 0" x-transition>Please enter a world name</p>
+      </div>
+      <div class="step-actions">
+        <button class="btn btn-primary btn-lg" @click="step = 2" :disabled="!worldName.trim()">
+          Continue
+          <span class="btn-arrow">&rarr;</span>
+        </button>
+      </div>
     </div>
-    <button class="btn btn-primary btn-lg" @click="step = 2" :disabled="!worldName.trim()">Next</button>
   </div>
 
   {# Step 2: Tagline & Description #}
   <div class="onboarding-step" x-show="step === 2" x-transition>
-    <h2>Describe your world</h2>
-    <p class="text-muted">A short tagline and description help set the tone.</p>
-    <div class="form-group" style="max-width:500px">
-      <label>Tagline</label>
-      <input type="text" x-model="tagline" class="form-control" placeholder="e.g. A shattered realm held together by ancient magic">
-    </div>
-    <div class="form-group" style="max-width:500px">
-      <label>Description</label>
-      <textarea x-model="description" rows="4" class="form-control" placeholder="What makes this world unique? What are the big themes?"></textarea>
-    </div>
-    <div style="display:flex; gap:8px">
-      <button class="btn btn-ghost btn-lg" @click="step = 1">Back</button>
-      <button class="btn btn-primary btn-lg" @click="step = 3">Next</button>
+    <div class="step-card">
+      <h2>Describe your world</h2>
+      <p class="step-hint">A short tagline and description help set the tone.</p>
+      <div class="form-group" style="max-width:500px">
+        <label>Tagline</label>
+        <input type="text" x-model="tagline" class="form-control" placeholder="e.g. A shattered realm held together by ancient magic">
+      </div>
+      <div class="form-group" style="max-width:500px">
+        <label>Description</label>
+        <textarea x-model="description" rows="4" class="form-control" placeholder="What makes this world unique? What are the big themes?"></textarea>
+      </div>
+      <div class="step-actions">
+        <button class="btn btn-ghost btn-lg" @click="step = 1">
+          <span class="btn-arrow">&larr;</span>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" @click="step = 3">
+          Continue
+          <span class="btn-arrow">&rarr;</span>
+        </button>
+      </div>
     </div>
   </div>
 
   {# Step 3: Magic #}
   <div class="onboarding-step" x-show="step === 3" x-transition>
-    <h2>Does your world have magic?</h2>
-    <p class="text-muted">Magic permeates every aspect of your world — or maybe it doesn't. Your choice.</p>
-    <div class="onboarding-options">
-      <div class="onboarding-option" :class="{ selected: magicEnabled }" @click="magicEnabled = true">
-        <div class="opt-icon">&#9733;</div>
-        <h3>Magic Enabled</h3>
-        <p>Magic systems, magical creatures, magitech, enchanted environments, and more.</p>
+    <div class="step-card">
+      <h2>Does your world have magic?</h2>
+      <p class="step-hint">Magic permeates every aspect of your world — or maybe it doesn't. Your choice.</p>
+      <div class="onboarding-options">
+        <div class="onboarding-option" :class="{ selected: magicEnabled }" @click="magicEnabled = true">
+          <div class="opt-icon">&#9733;</div>
+          <h3>Magic Enabled</h3>
+          <p>Magic systems, magical creatures, magitech, enchanted environments, and more.</p>
+        </div>
+        <div class="onboarding-option" :class="{ selected: !magicEnabled }" @click="magicEnabled = false">
+          <div class="opt-icon">&#9881;</div>
+          <h3>No Magic</h3>
+          <p>A world grounded in natural laws — science fiction, alternate history, realistic fiction.</p>
+        </div>
       </div>
-      <div class="onboarding-option" :class="{ selected: !magicEnabled }" @click="magicEnabled = false">
-        <div class="opt-icon">&#9881;</div>
-        <h3>No Magic</h3>
-        <p>A world grounded in natural laws — science fiction, alternate history, realistic fiction.</p>
+      <div class="step-actions">
+        <button class="btn btn-ghost btn-lg" @click="step = 2">
+          <span class="btn-arrow">&larr;</span>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" @click="step = magicEnabled ? 4 : 5">
+          Continue
+          <span class="btn-arrow">&rarr;</span>
+        </button>
       </div>
-    </div>
-    <div style="display:flex; gap:8px; margin-top:24px">
-      <button class="btn btn-ghost btn-lg" @click="step = 2">Back</button>
-      <button class="btn btn-primary btn-lg" @click="step = magicEnabled ? 4 : 5">Next</button>
     </div>
   </div>
 
   {# Step 4: Magic Level (only if magic enabled) #}
   <div class="onboarding-step" x-show="step === 4" x-transition>
-    <h2>How prevalent is magic?</h2>
-    <p class="text-muted">This helps guide your world-building prompts and suggestions.</p>
-    <div class="onboarding-options onboarding-options-sm">
-      <div class="onboarding-option" :class="{ selected: magicLevel === 'low' }" @click="magicLevel = 'low'">
-        <h3>Low Magic</h3>
-        <p>Magic is rare, mysterious, and feared or revered.</p>
+    <div class="step-card">
+      <h2>How prevalent is magic?</h2>
+      <p class="step-hint">This helps guide your world-building prompts and suggestions.</p>
+      <div class="onboarding-options onboarding-options-sm">
+        <div class="onboarding-option" :class="{ selected: magicLevel === 'low' }" @click="magicLevel = 'low'">
+          <h3>Low Magic</h3>
+          <p>Magic is rare, mysterious, and feared or revered.</p>
+        </div>
+        <div class="onboarding-option" :class="{ selected: magicLevel === 'medium' }" @click="magicLevel = 'medium'">
+          <h3>Medium Magic</h3>
+          <p>Magic exists but isn't universal. Some people and places are more magical than others.</p>
+        </div>
+        <div class="onboarding-option" :class="{ selected: magicLevel === 'high' }" @click="magicLevel = 'high'">
+          <h3>High Magic</h3>
+          <p>Magic is woven into the fabric of reality. It shapes geology, biology, society, and technology.</p>
+        </div>
       </div>
-      <div class="onboarding-option" :class="{ selected: magicLevel === 'medium' }" @click="magicLevel = 'medium'">
-        <h3>Medium Magic</h3>
-        <p>Magic exists but isn't universal. Some people and places are more magical than others.</p>
+      <div class="step-actions">
+        <button class="btn btn-ghost btn-lg" @click="step = 3">
+          <span class="btn-arrow">&larr;</span>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" @click="step = 5">
+          Continue
+          <span class="btn-arrow">&rarr;</span>
+        </button>
       </div>
-      <div class="onboarding-option" :class="{ selected: magicLevel === 'high' }" @click="magicLevel = 'high'">
-        <h3>High Magic</h3>
-        <p>Magic is woven into the fabric of reality. It shapes geology, biology, society, and technology.</p>
-      </div>
-    </div>
-    <div style="display:flex; gap:8px; margin-top:24px">
-      <button class="btn btn-ghost btn-lg" @click="step = 3">Back</button>
-      <button class="btn btn-primary btn-lg" @click="step = 5">Next</button>
     </div>
   </div>
 
   {# Step 5: Starting Domain #}
   <div class="onboarding-step" x-show="step === 5" x-transition>
-    <h2>Where do you want to start?</h2>
-    <p class="text-muted">Pick a domain to begin building. You can explore any domain at any time.</p>
-    <div class="onboarding-domains">
-      {% for d in allDomains %}
-      {% if d.category != 'magic' %}
-      <div class="onboarding-domain" :class="{ selected: startDomain === '{{ d.id }}' }" @click="startDomain = '{{ d.id }}'">
-        <span class="domain-icon">{{ d.icon }}</span>
-        <span>{{ d.name }}</span>
+    <div class="step-card step-card-wide">
+      <h2>Where do you want to start?</h2>
+      <p class="step-hint">Pick a domain to begin building. You can explore any domain at any time.</p>
+
+      <div class="domain-category-group">
+        <div class="category-tag category-natural">
+          <span class="category-tag-dot" style="background:#2ecc71"></span>
+          Natural World
+        </div>
+        <div class="onboarding-domains">
+          {% for d in domainCategories.natural %}
+          <div class="onboarding-domain"
+               :class="{ selected: startDomain === '{{ d.id }}' }"
+               @click="startDomain = '{{ d.id }}'"
+               style="--domain-color: {{ d.color }}">
+            <span class="domain-icon"><i data-lucide="{{ d.icon }}"></i></span>
+            <span class="domain-label">{{ d.name }}</span>
+          </div>
+          {% endfor %}
+        </div>
       </div>
-      {% endif %}
-      {% endfor %}
-    </div>
-    <div style="display:flex; gap:8px; margin-top:24px">
-      <button class="btn btn-ghost btn-lg" @click="step = magicEnabled ? 4 : 3">Back</button>
-      <button class="btn btn-primary btn-lg" @click="step = 6">Next</button>
+
+      <div class="domain-category-group">
+        <div class="category-tag category-sentient">
+          <span class="category-tag-dot" style="background:#9b59b6"></span>
+          Sentient World
+        </div>
+        <div class="onboarding-domains">
+          {% for d in domainCategories.sentient %}
+          <div class="onboarding-domain"
+               :class="{ selected: startDomain === '{{ d.id }}' }"
+               @click="startDomain = '{{ d.id }}'"
+               style="--domain-color: {{ d.color }}">
+            <span class="domain-icon"><i data-lucide="{{ d.icon }}"></i></span>
+            <span class="domain-label">{{ d.name }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="domain-category-group">
+        <div class="category-tag category-meta">
+          <span class="category-tag-dot" style="background:#95a5a6"></span>
+          Meta
+        </div>
+        <div class="onboarding-domains">
+          {% for d in domainCategories.meta %}
+          <div class="onboarding-domain"
+               :class="{ selected: startDomain === '{{ d.id }}' }"
+               @click="startDomain = '{{ d.id }}'"
+               style="--domain-color: {{ d.color }}">
+            <span class="domain-icon"><i data-lucide="{{ d.icon }}"></i></span>
+            <span class="domain-label">{{ d.name }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn btn-ghost btn-lg" @click="step = magicEnabled ? 4 : 3">
+          <span class="btn-arrow">&larr;</span>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" @click="step = 6">
+          Continue
+          <span class="btn-arrow">&rarr;</span>
+        </button>
+      </div>
     </div>
   </div>
 
   {# Step 6: Review & Create #}
   <div class="onboarding-step" x-show="step === 6" x-transition>
-    <h2>Ready to build?</h2>
-    <div class="card" style="max-width:500px">
-      <div class="detail-fields">
-        <div class="detail-field">
-          <dt>World Name</dt>
-          <dd x-text="worldName"></dd>
+    <div class="step-card">
+      <h2>Ready to build?</h2>
+      <p class="step-hint">Here's what we've got. Hit create to start building your world.</p>
+      <div class="review-card">
+        <div class="review-row">
+          <span class="review-label">World Name</span>
+          <span class="review-value" x-text="worldName"></span>
         </div>
-        <div class="detail-field" x-show="tagline">
-          <dt>Tagline</dt>
-          <dd x-text="tagline"></dd>
+        <div class="review-row" x-show="tagline">
+          <span class="review-label">Tagline</span>
+          <span class="review-value" x-text="tagline"></span>
         </div>
-        <div class="detail-field">
-          <dt>Magic</dt>
-          <dd x-text="magicEnabled ? 'Enabled (' + magicLevel + ')' : 'Disabled'"></dd>
+        <div class="review-row">
+          <span class="review-label">Magic</span>
+          <span class="review-value">
+            <span class="review-badge" :class="magicEnabled ? 'review-badge-magic' : 'review-badge-off'" x-text="magicEnabled ? 'Enabled · ' + magicLevel : 'Disabled'"></span>
+          </span>
         </div>
-        <div class="detail-field">
-          <dt>Starting Domain</dt>
-          <dd x-text="startDomain.replace(/_/g, ' ')"></dd>
+        <div class="review-row">
+          <span class="review-label">Starting Domain</span>
+          <span class="review-value review-value-cap" x-text="startDomain.replace(/_/g, ' ')"></span>
         </div>
       </div>
+      <form method="POST" action="/worlds" style="margin-top:0">
+        <input type="hidden" name="name" :value="worldName">
+        <input type="hidden" name="tagline" :value="tagline">
+        <input type="hidden" name="description" :value="description">
+        <input type="hidden" name="magic_enabled" :value="magicEnabled">
+        <input type="hidden" name="start_domain" :value="startDomain">
+        <div class="step-actions">
+          <button type="button" class="btn btn-ghost btn-lg" @click="step = 5">
+            <span class="btn-arrow">&larr;</span>
+            Back
+          </button>
+          <button type="submit" class="btn btn-primary btn-lg btn-create">
+            &#9672; Create World
+          </button>
+        </div>
+      </form>
     </div>
-    <form method="POST" action="/worlds" style="margin-top:16px">
-      <input type="hidden" name="name" :value="worldName">
-      <input type="hidden" name="tagline" :value="tagline">
-      <input type="hidden" name="description" :value="description">
-      <input type="hidden" name="magic_enabled" :value="magicEnabled">
-      <input type="hidden" name="start_domain" :value="startDomain">
-      <div style="display:flex; gap:8px">
-        <button type="button" class="btn btn-ghost btn-lg" @click="step = 5">Back</button>
-        <button type="submit" class="btn btn-primary btn-lg">Create World</button>
-      </div>
-    </form>
   </div>
 </div>
 {% endblock %}

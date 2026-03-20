@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/css/components.css">
   <script src="/js/htmx.min.js" defer></script>
   <script src="/js/alpine.min.js" defer></script>
+  <script src="/js/lucide.min.js"></script>
   {% block head %}{% endblock %}
 </head>
 <body hx-boost="true">
@@ -51,5 +52,9 @@
   </div>
 
   {% block scripts %}{% endblock %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+    document.body.addEventListener('htmx:afterSwap', () => lucide.createIcons());
+  </script>
 </body>
 </html>

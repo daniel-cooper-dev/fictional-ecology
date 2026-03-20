@@ -233,7 +233,12 @@ h3 { font-size: 1.1rem; }
   text-align: center;
   font-size: 0.8rem;
   opacity: 0.7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.sidebar-icon svg { width: 16px; height: 16px; }
 
 /* === Page Header === */
 .page-header {

@@ -46,7 +46,7 @@
     {% if d.category != 'magic' or magicEnabled %}
     <a href="/worlds/{{ world.id }}/{% if d.id == 'magic_systems' %}magic{% else %}{{ d.id }}{% endif %}" class="domain-card" style="--domain-color: {{ d.color }}">
       <div class="domain-card-header">
-        <span class="domain-icon">{{ d.icon }}</span>
+        <span class="domain-icon"><i data-lucide="{{ d.icon }}"></i></span>
         <span class="domain-count">{{ stats[d.id] or 0 }}</span>
       </div>
       <h3>{{ d.name }}</h3>

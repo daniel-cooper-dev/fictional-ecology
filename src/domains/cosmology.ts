@@ -4,7 +4,7 @@ export const cosmologyConfig: DomainConfig = {
   id: 'cosmology',
   name: 'Cosmology',
   namePlural: 'Celestial Bodies',
-  icon: 'stars',
+  icon: 'star',
   color: '#e8c547',
   description: 'Define the stars, planets, moons, and other celestial bodies that make up your world\'s universe. Establish orbital mechanics, creation myths, and the structure of the cosmos.',
   tableName: 'celestial_bodies',

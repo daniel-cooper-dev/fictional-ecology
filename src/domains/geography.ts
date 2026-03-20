@@ -79,6 +79,27 @@ export const geographyConfig: DomainConfig = {
       placeholder: 'ID of the map this place appears on',
       helpText: 'The map on which this location is placed.',
     },
+    {
+      name: 'resources',
+      label: 'Resources',
+      type: 'textarea',
+      placeholder: 'Describe available natural, economic, or magical resources...',
+      helpText: 'Natural, economic, or magical resources available at or near this location.',
+    },
+    {
+      name: 'trade_role',
+      label: 'Trade Role',
+      type: 'select',
+      options: ['isolated', 'minor_stop', 'regional_hub', 'major_crossroads', 'capital_market', 'global_nexus'],
+      helpText: 'This location\'s importance in trade networks.',
+    },
+    {
+      name: 'accessibility',
+      label: 'Accessibility',
+      type: 'select',
+      options: ['inaccessible', 'remote', 'difficult', 'moderate', 'accessible', 'major_thoroughfare'],
+      helpText: 'How easy it is to reach this location by conventional means.',
+    },
   ],
   elementTypes: ['city', 'town', 'village', 'fortress', 'ruin', 'landmark', 'road', 'port', 'temple', 'academy', 'wilderness', 'custom'],
   prompts: [

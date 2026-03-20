@@ -102,6 +102,20 @@ export const magicEconomyConfig: DomainConfig = {
       options: ['negligible', 'minor', 'moderate', 'major', 'critical', 'existential'],
       helpText: 'How important this resource is to geopolitical power and military capability.',
     },
+    {
+      name: 'market_structure',
+      label: 'Market Structure',
+      type: 'select',
+      options: ['monopoly', 'oligopoly', 'guild_controlled', 'free_market', 'state_run', 'barter', 'auction', 'mixed'],
+      helpText: 'How the market for this resource is organized and controlled.',
+    },
+    {
+      name: 'black_market_details',
+      label: 'Black Market Details',
+      type: 'textarea',
+      placeholder: 'Describe illicit trade, smuggling routes, penalties...',
+      helpText: 'How this resource is traded illegally — smuggling networks, penalties for possession, price premiums.',
+    },
   ],
   elementTypes: ['resource', 'trade_good', 'profession', 'regulation', 'black_market'],
   prompts: [

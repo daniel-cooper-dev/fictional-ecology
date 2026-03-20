@@ -16,6 +16,7 @@
       <a href="/worlds/{{ world.id }}/{{ d.id }}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
         <span class="sidebar-icon"><i data-lucide="{{ d.icon }}"></i></span>
         {{ d.name }}
+        {% if domainStats[d.id] %}<span class="sidebar-count">{{ domainStats[d.id] }}</span>{% endif %}
       </a>
       {% endfor %}
     </div>
@@ -26,6 +27,7 @@
       <a href="/worlds/{{ world.id }}/{{ d.id }}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
         <span class="sidebar-icon"><i data-lucide="{{ d.icon }}"></i></span>
         {{ d.name }}
+        {% if domainStats[d.id] %}<span class="sidebar-count">{{ domainStats[d.id] }}</span>{% endif %}
       </a>
       {% endfor %}
     </div>
@@ -37,6 +39,7 @@
       <a href="/worlds/{{ world.id }}/{% if d.id == 'magic_systems' %}magic{% else %}{{ d.id }}{% endif %}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
         <span class="sidebar-icon"><i data-lucide="{{ d.icon }}"></i></span>
         {{ d.name }}
+        {% if domainStats[d.id] %}<span class="sidebar-count">{{ domainStats[d.id] }}</span>{% endif %}
       </a>
       {% endfor %}
     </div>
@@ -48,6 +51,7 @@
       <a href="/worlds/{{ world.id }}/{{ d.id }}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
         <span class="sidebar-icon"><i data-lucide="{{ d.icon }}"></i></span>
         {{ d.name }}
+        {% if domainStats[d.id] %}<span class="sidebar-count">{{ domainStats[d.id] }}</span>{% endif %}
       </a>
       {% endfor %}
     </div>

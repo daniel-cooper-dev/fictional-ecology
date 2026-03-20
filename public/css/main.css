@@ -240,6 +240,22 @@ h3 { font-size: 1.1rem; }
 
 .sidebar-icon svg { width: 16px; height: 16px; }
 
+.sidebar-count {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.sidebar-link.active .sidebar-count {
+  background: var(--accent)30;
+  color: var(--accent);
+}
+
 /* === Page Header === */
 .page-header {
   display: flex;

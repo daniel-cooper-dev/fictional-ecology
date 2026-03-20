@@ -19,5 +19,6 @@ export function worldContext(req: Request, res: Response, next: NextFunction): v
   res.locals.domains = ALL_DOMAINS;
   res.locals.domainCategories = DOMAIN_CATEGORIES;
   res.locals.magicEnabled = !!world.magic_enabled;
+  res.locals.domainStats = worldService.getStats(worldId);
   next();
 }

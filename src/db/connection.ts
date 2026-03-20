@@ -6,7 +6,16 @@ import { runMigrations } from './migrate.js';
 
 const dbInstances = new Map<string, Database.Database>();
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function assertValidWorldId(worldId: string): void {
+  if (!UUID_RE.test(worldId)) {
+    throw new Error(`Invalid world ID: ${worldId}`);
+  }
+}
+
 export function getWorldDbPath(worldId: string): string {
+  assertValidWorldId(worldId);
   const worldDir = path.join(config.dataDir, worldId);
   if (!fs.existsSync(worldDir)) {
     fs.mkdirSync(worldDir, { recursive: true });

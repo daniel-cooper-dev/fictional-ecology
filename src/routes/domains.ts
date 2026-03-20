@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { DomainService } from '../services/DomainService.js';
+import { RelationshipService } from '../services/RelationshipService.js';
 import { TagService } from '../services/TagService.js';
 import { getDomainConfig } from '../domains/index.js';
 
@@ -35,7 +36,7 @@ router.get('/:worldId/:domainId', (req, res) => {
 // New element form
 router.get('/:worldId/:domainId/new', (req, res) => {
   const config = getDomainConfig(req.params.domainId);
-  if (!config) { res.status(404).send('Domain not found'); return; }
+  if (!config) { res.status(404).render('pages/error.njk', { status: 404, message: 'Domain not found' }); return; }
 
   res.render('pages/element-form.njk', {
     domainConfig: config,
@@ -47,7 +48,7 @@ router.get('/:worldId/:domainId/new', (req, res) => {
 // Create element
 router.post('/:worldId/:domainId', (req, res) => {
   const config = getDomainConfig(req.params.domainId);
-  if (!config) { res.status(404).send('Domain not found'); return; }
+  if (!config) { res.status(404).render('pages/error.njk', { status: 404, message: 'Domain not found' }); return; }
 
   const service = new DomainService(config);
   const { name, element_type, summary, detailed_notes, ...rest } = req.body;
@@ -94,7 +95,7 @@ router.post('/:worldId/:domainId', (req, res) => {
 // View element
 router.get('/:worldId/:domainId/:elementId', (req, res) => {
   const config = getDomainConfig(req.params.domainId);
-  if (!config) { res.status(404).send('Domain not found'); return; }
+  if (!config) { res.status(404).render('pages/error.njk', { status: 404, message: 'Domain not found' }); return; }
 
   const service = new DomainService(config);
   const element = service.get(req.params.worldId, req.params.elementId);
@@ -104,7 +105,6 @@ router.get('/:worldId/:domainId/:elementId', (req, res) => {
   }
 
   // Load relationships
-  const { RelationshipService } = require('../services/RelationshipService.js');
   const relService = new RelationshipService();
   const relationships = relService.listForElement(req.params.worldId, req.params.elementId);
 
@@ -123,11 +123,11 @@ router.get('/:worldId/:domainId/:elementId', (req, res) => {
 // Edit element form
 router.get('/:worldId/:domainId/:elementId/edit', (req, res) => {
   const config = getDomainConfig(req.params.domainId);
-  if (!config) { res.status(404).send('Domain not found'); return; }
+  if (!config) { res.status(404).render('pages/error.njk', { status: 404, message: 'Domain not found' }); return; }
 
   const service = new DomainService(config);
   const element = service.get(req.params.worldId, req.params.elementId);
-  if (!element) { res.status(404).send('Element not found'); return; }
+  if (!element) { res.status(404).render('pages/error.njk', { status: 404, message: 'Element not found' }); return; }
 
   res.render('pages/element-form.njk', {
     domainConfig: config,
@@ -139,7 +139,7 @@ router.get('/:worldId/:domainId/:elementId/edit', (req, res) => {
 // Update element
 router.post('/:worldId/:domainId/:elementId', (req, res) => {
   const config = getDomainConfig(req.params.domainId);
-  if (!config) { res.status(404).send('Domain not found'); return; }
+  if (!config) { res.status(404).render('pages/error.njk', { status: 404, message: 'Domain not found' }); return; }
 
   const service = new DomainService(config);
   const { name, element_type, summary, detailed_notes, ...rest } = req.body;
@@ -172,7 +172,7 @@ router.post('/:worldId/:domainId/:elementId', (req, res) => {
 // Delete element
 router.post('/:worldId/:domainId/:elementId/delete', (req, res) => {
   const config = getDomainConfig(req.params.domainId);
-  if (!config) { res.status(404).send('Domain not found'); return; }
+  if (!config) { res.status(404).render('pages/error.njk', { status: 404, message: 'Domain not found' }); return; }
 
   const service = new DomainService(config);
   service.delete(req.params.worldId, req.params.elementId);

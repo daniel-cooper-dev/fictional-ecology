@@ -28,11 +28,16 @@ export function runMigrations(db: Database.Database): void {
 
     const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');
 
-    db.transaction(() => {
-      db.exec(sql);
-      db.prepare('INSERT INTO _migrations (name) VALUES (?)').run(file);
-    })();
-
-    console.log(`  Migration applied: ${file}`);
+    try {
+      db.transaction(() => {
+        db.exec(sql);
+        db.prepare('INSERT INTO _migrations (name) VALUES (?)').run(file);
+      })();
+      console.log(`  Migration applied: ${file}`);
+    } catch (err) {
+      console.error(`  Migration FAILED: ${file}`);
+      console.error(`  Error: ${(err as Error).message}`);
+      throw new Error(`Migration ${file} failed: ${(err as Error).message}`);
+    }
   }
 }

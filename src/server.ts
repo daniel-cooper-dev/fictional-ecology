@@ -15,7 +15,7 @@ import timelineRouter from './routes/timeline.js';
 import mapsRouter from './routes/maps.js';
 import validationRouter from './routes/validation.js';
 import { ALL_DOMAINS, DOMAIN_CATEGORIES } from './domains/index.js';
-import { getMasterDb } from './db/connection.js';
+import { getMasterDb, closeAllDbs, closeMasterDb } from './db/connection.js';
 
 const app = express();
 
@@ -68,6 +68,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(config.publicDir));
 
+// CSRF protection: reject cross-origin mutations
+app.use((req, res, next) => {
+  if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
+    return next();
+  }
+  const origin = req.get('origin');
+  if (origin) {
+    const allowed = `http://${config.host}:${config.port}`;
+    const allowedLocalhost = `http://localhost:${config.port}`;
+    if (origin !== allowed && origin !== allowedLocalhost) {
+      res.status(403).send('Forbidden: cross-origin request');
+      return;
+    }
+  }
+  next();
+});
+
 // Initialize master database
 getMasterDb();
 
@@ -91,7 +108,21 @@ app.use('/worlds', domainsRouter);
 // Error handling
 app.use(errorHandler);
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
   console.log(`\n  Fictional Ecology World-Builder`);
   console.log(`  Running at http://${config.host}:${config.port}\n`);
 });
+
+function shutdown() {
+  console.log('\nShutting down...');
+  server.close(() => {
+    closeAllDbs();
+    closeMasterDb();
+    process.exit(0);
+  });
+  // Force exit after 5s if server.close hangs
+  setTimeout(() => process.exit(1), 5000);
+}
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);

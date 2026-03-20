@@ -5,7 +5,7 @@ const router = Router();
 const searchService = new SearchService();
 
 router.get('/:worldId/search', (req, res) => {
-  const query = (req.query.q as string) || '';
+  const query = ((req.query.q as string) || '').slice(0, 500);
   const domain = req.query.domain as string | undefined;
   let results: any[] = [];
 

@@ -24,7 +24,7 @@
   <div class="header-actions">
     <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ element.id }}/edit" class="btn btn-primary">Edit</a>
     <form method="POST" action="/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ element.id }}/delete"
-      onsubmit="return confirm('Delete {{ element.name }}?')" style="display:inline">
+      onsubmit="return confirm('Delete ' + this.dataset.name + '?')" data-name="{{ element.name }}" style="display:inline">
       <button type="submit" class="btn btn-danger btn-sm">Delete</button>
     </form>
   </div>

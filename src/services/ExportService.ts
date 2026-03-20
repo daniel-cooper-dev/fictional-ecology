@@ -56,7 +56,7 @@ export class ExportService {
         name: el.name,
         summary: el.summary,
         detailed_notes: el.detailed_notes,
-        custom_fields: el.custom_fields,
+        properties: el.properties,
         extension,
         magic_aspects: magicAspects,
       });

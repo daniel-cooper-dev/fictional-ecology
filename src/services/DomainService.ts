@@ -22,7 +22,9 @@ export class DomainService {
 
   list(worldId: string, params: PaginationParams & { type?: string } = { page: 1, limit: 50 }): PaginatedResult<WorldElement> {
     const db = getWorldDb(worldId);
-    const { page, limit, sort_by = 'updated_at', sort_dir = 'desc', type } = params;
+    const { sort_by = 'updated_at', sort_dir = 'desc', type } = params;
+    const page = Math.max(1, Math.floor(params.page) || 1);
+    const limit = Math.min(200, Math.max(1, Math.floor(params.limit) || 50));
     const offset = (page - 1) * limit;
 
     const allowedSorts = ['name', 'element_type', 'created_at', 'updated_at'];
@@ -64,8 +66,10 @@ export class DomainService {
       if (ext) {
         result.extension = ext;
       }
-    } catch {
-      // Extension table may not exist for this domain
+    } catch (err) {
+      if (!(err instanceof Error && err.message.includes('no such table'))) {
+        console.error(`DomainService.get extension error (${this.config.tableName}):`, (err as Error).message);
+      }
     }
 
     // Load magic permeation data
@@ -75,8 +79,10 @@ export class DomainService {
         if (magic) {
           result.magic_aspects = magic;
         }
-      } catch {
-        // Magic table may not exist yet
+      } catch (err) {
+        if (!(err instanceof Error && err.message.includes('no such table'))) {
+          console.error(`DomainService.get magic error (${this.config.magicPermeation.companionTable}):`, (err as Error).message);
+        }
       }
     }
 
@@ -147,7 +153,9 @@ export class DomainService {
     if (data.detailed_notes !== undefined) { updates.push('detailed_notes = ?'); values.push(data.detailed_notes); }
     if (data.properties !== undefined) { updates.push('properties = ?'); values.push(JSON.stringify(data.properties)); }
 
-    if (updates.length > 0) {
+    const hasExtensionOrMagic = data.extension || (data.magic_aspects && this.config.magicPermeation);
+
+    if (updates.length > 0 || hasExtensionOrMagic) {
       updates.push("updated_at = datetime('now')");
       values.push(elementId);
       db.prepare(`UPDATE world_elements SET ${updates.join(', ')} WHERE id = ?`).run(...values);
@@ -175,13 +183,31 @@ export class DomainService {
       // Delete FTS entry
       try {
         db.prepare("DELETE FROM world_elements_fts WHERE element_id = ?").run(elementId);
-      } catch { /* FTS table may not exist */ }
+      } catch (err) {
+        if (!(err instanceof Error && err.message.includes('no such table'))) {
+          console.error('DomainService.delete FTS error:', (err as Error).message);
+        }
+      }
 
       // Delete magic aspects if applicable
       if (this.config.magicPermeation) {
         try {
           db.prepare(`DELETE FROM ${this.config.magicPermeation.companionTable} WHERE parent_id = ?`).run(elementId);
-        } catch { /* table may not exist */ }
+        } catch (err) {
+          if (!(err instanceof Error && err.message.includes('no such table'))) {
+            console.error('DomainService.delete magic error:', (err as Error).message);
+          }
+        }
+      }
+
+      // Delete tags and relationships for this element
+      try {
+        db.prepare('DELETE FROM element_tags WHERE element_id = ?').run(elementId);
+        db.prepare('DELETE FROM relationships WHERE world_id = ? AND (source_id = ? OR target_id = ?)').run(worldId, elementId, elementId);
+      } catch (err) {
+        if (!(err instanceof Error && err.message.includes('no such table'))) {
+          console.error('DomainService.delete cleanup error:', (err as Error).message);
+        }
       }
 
       // Delete main element (cascades to extension table via FK)
@@ -200,7 +226,12 @@ export class DomainService {
 
     const existing = (() => {
       try { return db.prepare(`SELECT element_id FROM ${tableName} WHERE element_id = ?`).get(elementId); }
-      catch { return null; }
+      catch (err) {
+        if (!(err instanceof Error && err.message.includes('no such table'))) {
+          console.error(`DomainService.upsertExtension error (${tableName}):`, (err as Error).message);
+        }
+        return null;
+      }
     })();
 
     if (existing) {
@@ -223,7 +254,12 @@ export class DomainService {
 
     const existing = (() => {
       try { return db.prepare(`SELECT id FROM ${tableName} WHERE parent_id = ?`).get(elementId); }
-      catch { return null; }
+      catch (err) {
+        if (!(err instanceof Error && err.message.includes('no such table'))) {
+          console.error(`DomainService.upsertMagicAspects error (${tableName}):`, (err as Error).message);
+        }
+        return null;
+      }
     })();
 
     if (existing) {
@@ -246,8 +282,10 @@ export class DomainService {
         INSERT INTO world_elements_fts (element_id, world_id, domain, name, summary, detailed_notes)
         VALUES (?, ?, ?, ?, ?, ?)
       `).run(elementId, worldId, this.config.id, name, summary, notes);
-    } catch {
-      // FTS table may not be available
+    } catch (err) {
+      if (!(err instanceof Error && err.message.includes('no such table'))) {
+        console.error('DomainService.updateFtsIndex error:', (err as Error).message);
+      }
     }
   }
 }

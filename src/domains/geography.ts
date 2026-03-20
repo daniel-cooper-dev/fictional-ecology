@@ -33,6 +33,27 @@ export const geographyConfig: DomainConfig = {
       helpText: 'The historical era in which this place was founded or first settled.',
     },
     {
+      name: 'climate_zone_id',
+      label: 'Climate Zone',
+      type: 'text',
+      placeholder: 'ID of the climate zone this place is in',
+      helpText: 'The climate zone governing this location\'s weather and seasons.',
+    },
+    {
+      name: 'biome_id',
+      label: 'Biome',
+      type: 'text',
+      placeholder: 'ID of the biome this place is in',
+      helpText: 'The biome or ecological region this location sits within.',
+    },
+    {
+      name: 'terrain_description',
+      label: 'Terrain Description',
+      type: 'textarea',
+      placeholder: 'Describe the physical landscape — hills, rivers, soil, vegetation...',
+      helpText: 'The physical terrain and natural features of this location and its surroundings.',
+    },
+    {
       name: 'controlling_civilization_id',
       label: 'Controlling Civilization',
       type: 'text',

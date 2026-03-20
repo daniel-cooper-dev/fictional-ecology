@@ -62,6 +62,13 @@ export const faunaConfig: DomainConfig = {
       helpText: 'How individuals of this species organize socially.',
     },
     {
+      name: 'rarity',
+      label: 'Rarity',
+      type: 'select',
+      options: ['common', 'uncommon', 'rare', 'very_rare', 'unique'],
+      helpText: 'How commonly this species is encountered in its native habitat.',
+    },
+    {
       name: 'domesticable',
       label: 'Domesticable',
       type: 'boolean',

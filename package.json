@@ -1,0 +1,36 @@
+{
+  "name": "fictional-ecology",
+  "version": "1.0.0",
+  "description": "A local web application for designing fictional worlds",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "dev": "tsx watch src/server.ts",
+    "build:client": "esbuild public/js-src/*.ts --bundle --outdir=public/dist --format=esm --minify",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "migrate": "tsx src/db/migrate.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "d3": "^7.9.0",
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "nunjucks": "^3.2.4",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^25.3.5",
+    "@types/uuid": "^10.0.0",
+    "esbuild": "^0.27.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

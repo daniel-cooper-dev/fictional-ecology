@@ -1,0 +1,99 @@
+<div class="form-group">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="source_category">Source Category</label>
+  <select id="source_category" name="source_category" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="ley_line" {% if item and item.source_category == 'ley_line' %}selected{% endif %}>Ley Line</option>
+    <option value="crystal" {% if item and item.source_category == 'crystal' %}selected{% endif %}>Crystal</option>
+    <option value="divine" {% if item and item.source_category == 'divine' %}selected{% endif %}>Divine</option>
+    <option value="innate_biological" {% if item and item.source_category == 'innate_biological' %}selected{% endif %}>Innate Biological</option>
+    <option value="dimensional" {% if item and item.source_category == 'dimensional' %}selected{% endif %}>Dimensional</option>
+    <option value="emotional" {% if item and item.source_category == 'emotional' %}selected{% endif %}>Emotional</option>
+    <option value="elemental" {% if item and item.source_category == 'elemental' %}selected{% endif %}>Elemental</option>
+    <option value="cosmic" {% if item and item.source_category == 'cosmic' %}selected{% endif %}>Cosmic</option>
+    <option value="ancestral" {% if item and item.source_category == 'ancestral' %}selected{% endif %}>Ancestral</option>
+    <option value="symbiotic" {% if item and item.source_category == 'symbiotic' %}selected{% endif %}>Symbiotic</option>
+    <option value="artificial" {% if item and item.source_category == 'artificial' %}selected{% endif %}>Artificial</option>
+    <option value="void" {% if item and item.source_category == 'void' %}selected{% endif %}>Void</option>
+    <option value="temporal" {% if item and item.source_category == 'temporal' %}selected{% endif %}>Temporal</option>
+    <option value="custom" {% if item and item.source_category == 'custom' %}selected{% endif %}>Custom</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="origin_story">Origin Story</label>
+  <textarea id="origin_story" name="origin_story" rows="4" class="form-control">{{ item.origin_story if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="abundance">Abundance</label>
+  <select id="abundance" name="abundance" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="ubiquitous" {% if item and item.abundance == 'ubiquitous' %}selected{% endif %}>Ubiquitous</option>
+    <option value="common" {% if item and item.abundance == 'common' %}selected{% endif %}>Common</option>
+    <option value="uncommon" {% if item and item.abundance == 'uncommon' %}selected{% endif %}>Uncommon</option>
+    <option value="rare" {% if item and item.abundance == 'rare' %}selected{% endif %}>Rare</option>
+    <option value="legendary" {% if item and item.abundance == 'legendary' %}selected{% endif %}>Legendary</option>
+    <option value="unique" {% if item and item.abundance == 'unique' %}selected{% endif %}>Unique</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="accessibility">Accessibility</label>
+  <select id="accessibility" name="accessibility" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="open" {% if item and item.accessibility == 'open' %}selected{% endif %}>Open</option>
+    <option value="restricted" {% if item and item.accessibility == 'restricted' %}selected{% endif %}>Restricted</option>
+    <option value="hereditary" {% if item and item.accessibility == 'hereditary' %}selected{% endif %}>Hereditary</option>
+    <option value="earned" {% if item and item.accessibility == 'earned' %}selected{% endif %}>Earned</option>
+    <option value="gifted" {% if item and item.accessibility == 'gifted' %}selected{% endif %}>Gifted</option>
+    <option value="stolen" {% if item and item.accessibility == 'stolen' %}selected{% endif %}>Stolen</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="stability">Stability</label>
+  <select id="stability" name="stability" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="stable" {% if item and item.stability == 'stable' %}selected{% endif %}>Stable</option>
+    <option value="fluctuating" {% if item and item.stability == 'fluctuating' %}selected{% endif %}>Fluctuating</option>
+    <option value="volatile" {% if item and item.stability == 'volatile' %}selected{% endif %}>Volatile</option>
+    <option value="decaying" {% if item and item.stability == 'decaying' %}selected{% endif %}>Decaying</option>
+    <option value="growing" {% if item and item.stability == 'growing' %}selected{% endif %}>Growing</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="geographic_distribution">Geographic Distribution</label>
+  <textarea id="geographic_distribution" name="geographic_distribution" rows="3" class="form-control">{{ item.geographic_distribution if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="renewability">Renewability</label>
+  <select id="renewability" name="renewability" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="renewable" {% if item and item.renewability == 'renewable' %}selected{% endif %}>Renewable</option>
+    <option value="finite" {% if item and item.renewability == 'finite' %}selected{% endif %}>Finite</option>
+    <option value="cyclical" {% if item and item.renewability == 'cyclical' %}selected{% endif %}>Cyclical</option>
+    <option value="parasitic" {% if item and item.renewability == 'parasitic' %}selected{% endif %}>Parasitic</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="discovery_era">Discovery Era</label>
+  <input type="text" id="discovery_era" name="discovery_era" value="{{ item.discovery_era if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="interaction_rules">Interaction Rules <small>(JSON)</small></label>
+  <textarea id="interaction_rules" name="interaction_rules" rows="4" class="form-control">{{ item.interaction_rules if item else '' }}</textarea>
+</div>

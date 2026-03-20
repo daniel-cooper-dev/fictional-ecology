@@ -1,0 +1,123 @@
+<div class="form-group">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="tier">Tier</label>
+  <input type="number" id="tier" name="tier" value="{{ item.tier if item else '' }}" min="1" max="10" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="classification_type">Classification Type</label>
+  <select id="classification_type" name="classification_type" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="cantrip" {% if item and item.classification_type == 'cantrip' %}selected{% endif %}>Cantrip</option>
+    <option value="ritual" {% if item and item.classification_type == 'ritual' %}selected{% endif %}>Ritual</option>
+    <option value="incantation" {% if item and item.classification_type == 'incantation' %}selected{% endif %}>Incantation</option>
+    <option value="invocation" {% if item and item.classification_type == 'invocation' %}selected{% endif %}>Invocation</option>
+    <option value="enchantment" {% if item and item.classification_type == 'enchantment' %}selected{% endif %}>Enchantment</option>
+    <option value="ward" {% if item and item.classification_type == 'ward' %}selected{% endif %}>Ward</option>
+    <option value="curse" {% if item and item.classification_type == 'curse' %}selected{% endif %}>Curse</option>
+    <option value="blessing" {% if item and item.classification_type == 'blessing' %}selected{% endif %}>Blessing</option>
+    <option value="transmutation" {% if item and item.classification_type == 'transmutation' %}selected{% endif %}>Transmutation</option>
+    <option value="divination" {% if item and item.classification_type == 'divination' %}selected{% endif %}>Divination</option>
+    <option value="summoning" {% if item and item.classification_type == 'summoning' %}selected{% endif %}>Summoning</option>
+    <option value="custom" {% if item and item.classification_type == 'custom' %}selected{% endif %}>Custom</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="casting_method">Casting Method</label>
+  <select id="casting_method" name="casting_method" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="verbal" {% if item and item.casting_method == 'verbal' %}selected{% endif %}>Verbal</option>
+    <option value="somatic" {% if item and item.casting_method == 'somatic' %}selected{% endif %}>Somatic</option>
+    <option value="material" {% if item and item.casting_method == 'material' %}selected{% endif %}>Material</option>
+    <option value="mental" {% if item and item.casting_method == 'mental' %}selected{% endif %}>Mental</option>
+    <option value="written" {% if item and item.casting_method == 'written' %}selected{% endif %}>Written</option>
+    <option value="musical" {% if item and item.casting_method == 'musical' %}selected{% endif %}>Musical</option>
+    <option value="dance" {% if item and item.casting_method == 'dance' %}selected{% endif %}>Dance</option>
+    <option value="blood" {% if item and item.casting_method == 'blood' %}selected{% endif %}>Blood</option>
+    <option value="combined" {% if item and item.casting_method == 'combined' %}selected{% endif %}>Combined</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="duration_type">Duration Type</label>
+  <select id="duration_type" name="duration_type" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="instantaneous" {% if item and item.duration_type == 'instantaneous' %}selected{% endif %}>Instantaneous</option>
+    <option value="concentration" {% if item and item.duration_type == 'concentration' %}selected{% endif %}>Concentration</option>
+    <option value="sustained" {% if item and item.duration_type == 'sustained' %}selected{% endif %}>Sustained</option>
+    <option value="permanent" {% if item and item.duration_type == 'permanent' %}selected{% endif %}>Permanent</option>
+    <option value="triggered" {% if item and item.duration_type == 'triggered' %}selected{% endif %}>Triggered</option>
+    <option value="conditional" {% if item and item.duration_type == 'conditional' %}selected{% endif %}>Conditional</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="range_type">Range Type</label>
+  <select id="range_type" name="range_type" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="self" {% if item and item.range_type == 'self' %}selected{% endif %}>Self</option>
+    <option value="touch" {% if item and item.range_type == 'touch' %}selected{% endif %}>Touch</option>
+    <option value="short" {% if item and item.range_type == 'short' %}selected{% endif %}>Short</option>
+    <option value="medium" {% if item and item.range_type == 'medium' %}selected{% endif %}>Medium</option>
+    <option value="long" {% if item and item.range_type == 'long' %}selected{% endif %}>Long</option>
+    <option value="sight" {% if item and item.range_type == 'sight' %}selected{% endif %}>Sight</option>
+    <option value="unlimited" {% if item and item.range_type == 'unlimited' %}selected{% endif %}>Unlimited</option>
+    <option value="planar" {% if item and item.range_type == 'planar' %}selected{% endif %}>Planar</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="area_type">Area Type</label>
+  <select id="area_type" name="area_type" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="none" {% if item and item.area_type == 'none' %}selected{% endif %}>None</option>
+    <option value="single_target" {% if item and item.area_type == 'single_target' %}selected{% endif %}>Single Target</option>
+    <option value="cone" {% if item and item.area_type == 'cone' %}selected{% endif %}>Cone</option>
+    <option value="sphere" {% if item and item.area_type == 'sphere' %}selected{% endif %}>Sphere</option>
+    <option value="line" {% if item and item.area_type == 'line' %}selected{% endif %}>Line</option>
+    <option value="wall" {% if item and item.area_type == 'wall' %}selected{% endif %}>Wall</option>
+    <option value="dome" {% if item and item.area_type == 'dome' %}selected{% endif %}>Dome</option>
+    <option value="zone" {% if item and item.area_type == 'zone' %}selected{% endif %}>Zone</option>
+    <option value="global" {% if item and item.area_type == 'global' %}selected{% endif %}>Global</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="energy_cost_base">Energy Cost (Base)</label>
+  <input type="number" id="energy_cost_base" name="energy_cost_base" value="{{ item.energy_cost_base if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="casting_time">Casting Time</label>
+  <input type="text" id="casting_time" name="casting_time" value="{{ item.casting_time if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="cooldown">Cooldown</label>
+  <input type="text" id="cooldown" name="cooldown" value="{{ item.cooldown if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="side_effects">Side Effects</label>
+  <textarea id="side_effects" name="side_effects" rows="3" class="form-control">{{ item.side_effects if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="failure_consequences">Failure Consequences</label>
+  <textarea id="failure_consequences" name="failure_consequences" rows="3" class="form-control">{{ item.failure_consequences if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="counter_methods">Counter Methods</label>
+  <textarea id="counter_methods" name="counter_methods" rows="3" class="form-control">{{ item.counter_methods if item else '' }}</textarea>
+</div>

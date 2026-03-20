@@ -1,0 +1,42 @@
+{% extends "layouts/world.njk" %}
+{% set activeDomain = 'magic_systems' %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/magic">Magic Systems</a>
+  <span class="sep">/</span>
+  <span>{{ subTableLabel }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 style="color: #f39c12">{{ subTableLabel }}</h1>
+  <a href="/worlds/{{ world.id }}/magic/{{ subTable }}/new" class="btn btn-primary">+ New</a>
+</div>
+
+{% if items.length == 0 %}
+<div class="empty-state">
+  <h3>No {{ subTableLabel | lower }} defined yet</h3>
+  <p>Start building the magical foundations of your world.</p>
+  <a href="/worlds/{{ world.id }}/magic/{{ subTable }}/new" class="btn btn-primary">Create First Entry</a>
+</div>
+{% else %}
+<div class="element-grid">
+  {% for item in items %}
+  <a href="/worlds/{{ world.id }}/magic/{{ subTable }}/{{ item.id }}" class="element-card" style="--domain-color: #f39c12">
+    <h3>{{ item.name or item.tier_name or 'Untitled' }}</h3>
+    {% if item.description %}<p>{{ item.description | truncate(100) }}</p>{% endif %}
+    {% if item.source_category %}<span class="element-type-badge">{{ item.source_category | replace('_', ' ') }}</span>{% endif %}
+    {% if item.law_category %}<span class="element-type-badge">{{ item.law_category | replace('_', ' ') }}</span>{% endif %}
+    {% if item.taxonomy_type %}<span class="element-type-badge">{{ item.taxonomy_type | replace('_', ' ') }}</span>{% endif %}
+    {% if item.material_type %}<span class="element-type-badge">{{ item.material_type | replace('_', ' ') }}</span>{% endif %}
+    {% if item.phenomenon_type %}<span class="element-type-badge">{{ item.phenomenon_type | replace('_', ' ') }}</span>{% endif %}
+    {% if item.tier_number is defined %}<span class="element-type-badge">Tier {{ item.tier_number }}</span>{% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,65 @@
+<div class="form-group">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="taxonomy_type">Taxonomy Type</label>
+  <select id="taxonomy_type" name="taxonomy_type" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="school" {% if item and item.taxonomy_type == 'school' %}selected{% endif %}>School</option>
+    <option value="discipline" {% if item and item.taxonomy_type == 'discipline' %}selected{% endif %}>Discipline</option>
+    <option value="tradition" {% if item and item.taxonomy_type == 'tradition' %}selected{% endif %}>Tradition</option>
+    <option value="element" {% if item and item.taxonomy_type == 'element' %}selected{% endif %}>Element</option>
+    <option value="philosophy" {% if item and item.taxonomy_type == 'philosophy' %}selected{% endif %}>Philosophy</option>
+    <option value="technique" {% if item and item.taxonomy_type == 'technique' %}selected{% endif %}>Technique</option>
+    <option value="forbidden" {% if item and item.taxonomy_type == 'forbidden' %}selected{% endif %}>Forbidden</option>
+    <option value="lost" {% if item and item.taxonomy_type == 'lost' %}selected{% endif %}>Lost</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="difficulty_level">Difficulty Level</label>
+  <select id="difficulty_level" name="difficulty_level" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="novice" {% if item and item.difficulty_level == 'novice' %}selected{% endif %}>Novice</option>
+    <option value="apprentice" {% if item and item.difficulty_level == 'apprentice' %}selected{% endif %}>Apprentice</option>
+    <option value="journeyman" {% if item and item.difficulty_level == 'journeyman' %}selected{% endif %}>Journeyman</option>
+    <option value="master" {% if item and item.difficulty_level == 'master' %}selected{% endif %}>Master</option>
+    <option value="grandmaster" {% if item and item.difficulty_level == 'grandmaster' %}selected{% endif %}>Grandmaster</option>
+    <option value="mythic" {% if item and item.difficulty_level == 'mythic' %}selected{% endif %}>Mythic</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="perception">Perception</label>
+  <select id="perception" name="perception" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="respected" {% if item and item.perception == 'respected' %}selected{% endif %}>Respected</option>
+    <option value="feared" {% if item and item.perception == 'feared' %}selected{% endif %}>Feared</option>
+    <option value="forbidden" {% if item and item.perception == 'forbidden' %}selected{% endif %}>Forbidden</option>
+    <option value="sacred" {% if item and item.perception == 'sacred' %}selected{% endif %}>Sacred</option>
+    <option value="mundane" {% if item and item.perception == 'mundane' %}selected{% endif %}>Mundane</option>
+    <option value="controversial" {% if item and item.perception == 'controversial' %}selected{% endif %}>Controversial</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="requirements">Requirements <small>(JSON)</small></label>
+  <textarea id="requirements" name="requirements" rows="3" class="form-control">{{ item.requirements if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="incompatibilities">Incompatibilities <small>(JSON)</small></label>
+  <textarea id="incompatibilities" name="incompatibilities" rows="3" class="form-control">{{ item.incompatibilities if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="signature_effects">Signature Effects</label>
+  <textarea id="signature_effects" name="signature_effects" rows="3" class="form-control">{{ item.signature_effects if item else '' }}</textarea>
+</div>

@@ -1,0 +1,137 @@
+{% extends "layouts/world.njk" %}
+
+{% block title %}Timeline - {{ world.name }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/css/visualizations.css">
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <span>Timeline</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Timeline</h1>
+</div>
+
+<div class="detail-grid">
+  <div class="detail-main">
+    <div id="timeline-container" class="timeline-container"
+      data-world-id="{{ world.id }}">
+      <div class="graph-loading">Loading timeline...</div>
+    </div>
+  </div>
+
+  <div class="detail-sidebar">
+    {# Eras list #}
+    <div class="card">
+      <h3>Eras</h3>
+      {% if eras.length > 0 %}
+      <div class="era-list">
+        {% for era in eras %}
+        <div class="era-item" style="border-left: 3px solid {{ era.color }}">
+          <div class="era-name">{{ era.name }}</div>
+          <div class="era-range">{{ era.start_year }} - {{ era.end_year or 'Present' }}</div>
+          {% if era.description %}<div class="era-desc">{{ era.description | truncate(80) }}</div>{% endif %}
+          <form method="POST" action="/worlds/{{ world.id }}/eras/{{ era.id }}/delete" style="display:inline"
+            hx-post="/worlds/{{ world.id }}/eras/{{ era.id }}/delete">
+            <button type="submit" class="btn-icon" title="Delete era" aria-label="Delete era {{ era.name }}">&times;</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted">No eras defined yet.</p>
+      {% endif %}
+
+      <div x-data="{ showForm: false }" style="margin-top:12px">
+        <button class="btn btn-ghost btn-sm" @click="showForm = !showForm">+ Add Era</button>
+        <form x-show="showForm" x-transition method="POST" action="/worlds/{{ world.id }}/eras"
+          hx-post="/worlds/{{ world.id }}/eras" style="margin-top:8px">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" required class="form-control form-control-sm">
+          </div>
+          <div style="display:flex; gap:8px">
+            <div class="form-group" style="flex:1">
+              <label>Start Year</label>
+              <input type="number" name="start_year" value="0" class="form-control form-control-sm">
+            </div>
+            <div class="form-group" style="flex:1">
+              <label>End Year</label>
+              <input type="number" name="end_year" class="form-control form-control-sm" placeholder="Ongoing">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Color</label>
+            <input type="color" name="color" value="#4a9eff" style="width:40px;height:30px;border:none;background:none;cursor:pointer">
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Create Era</button>
+        </form>
+      </div>
+    </div>
+
+    {# Calendars #}
+    <div class="card">
+      <h3>Calendars</h3>
+      {% if calendars.length > 0 %}
+      {% for cal in calendars %}
+      <div class="era-item">
+        <div class="era-name">{{ cal.name }}</div>
+        <div class="era-desc">{{ cal.days_per_year }} days/year, {{ cal.days_per_week }} days/week</div>
+        <form method="POST" action="/worlds/{{ world.id }}/calendars/{{ cal.id }}/delete" style="display:inline"
+          hx-post="/worlds/{{ world.id }}/calendars/{{ cal.id }}/delete">
+          <button type="submit" class="btn-icon" title="Delete calendar" aria-label="Delete calendar {{ cal.name }}">&times;</button>
+        </form>
+      </div>
+      {% endfor %}
+      {% else %}
+      <p class="text-muted">No calendars defined yet.</p>
+      {% endif %}
+
+      <div x-data="{ showForm: false }" style="margin-top:12px">
+        <button class="btn btn-ghost btn-sm" @click="showForm = !showForm">+ Add Calendar</button>
+        <form x-show="showForm" x-transition method="POST" action="/worlds/{{ world.id }}/calendars"
+          hx-post="/worlds/{{ world.id }}/calendars" style="margin-top:8px">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" required class="form-control form-control-sm">
+          </div>
+          <div style="display:flex; gap:8px">
+            <div class="form-group" style="flex:1">
+              <label>Days/Year</label>
+              <input type="number" name="days_per_year" value="365" class="form-control form-control-sm">
+            </div>
+            <div class="form-group" style="flex:1">
+              <label>Days/Week</label>
+              <input type="number" name="days_per_week" value="7" class="form-control form-control-sm">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Month Names (comma-separated)</label>
+            <input type="text" name="months_text" class="form-control form-control-sm" placeholder="January, February...">
+          </div>
+          <div class="form-group">
+            <label>Epoch Name</label>
+            <input type="text" name="epoch_name" class="form-control form-control-sm" placeholder="e.g. After Sundering">
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Create Calendar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/dist/timeline.js" type="module"></script>
+{% endblock %}

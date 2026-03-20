@@ -1,0 +1,43 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}Create World - Fictional Ecology{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Create a New World</h1>
+</div>
+
+<form method="POST" action="/worlds" class="form-card">
+  {% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+  {% endif %}
+
+  <div class="form-group">
+    <label for="name">World Name *</label>
+    <input type="text" id="name" name="name" required placeholder="e.g., Aethermere, Ironholt, The Shattered Realms" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="tagline">Tagline</label>
+    <input type="text" id="tagline" name="tagline" placeholder="A one-sentence summary of what makes this world unique" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" placeholder="Describe the broad strokes of your world..." class="form-control"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label class="checkbox-label">
+      <input type="checkbox" name="magic_enabled" value="true" checked>
+      <span>Enable Magic Systems</span>
+    </label>
+    <p class="help-text">When enabled, every domain gains magical aspects (ley lines in geology, magical creatures in fauna, etc.) and dedicated magic domains become available.</p>
+  </div>
+
+  <div class="form-actions">
+    <a href="/worlds" class="btn btn-ghost">Cancel</a>
+    <button type="submit" class="btn btn-primary">Create World</button>
+  </div>
+</form>
+{% endblock %}

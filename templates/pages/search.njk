@@ -1,0 +1,22 @@
+{% extends "layouts/world.njk" %}
+
+{% block title %}Search - {{ world.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Search</h1>
+</div>
+
+<div class="search-page">
+  <input type="search" name="q" value="{{ query }}" placeholder="Search all elements..."
+    class="form-control form-control-lg"
+    hx-get="/worlds/{{ world.id }}/search"
+    hx-trigger="input changed delay:300ms"
+    hx-target="#search-page-results"
+    autofocus>
+
+  <div id="search-page-results" class="search-page-results">
+    {% include "partials/search-results.njk" %}
+  </div>
+</div>
+{% endblock %}

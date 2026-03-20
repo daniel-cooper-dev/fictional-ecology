@@ -1,0 +1,171 @@
+{% extends "layouts/world.njk" %}
+{% set activeDomain = domainConfig.id %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}">{{ domainConfig.namePlural }}</a>
+  <span class="sep">/</span>
+  <span>{{ "New" if isNew else element.name }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ "Create New " + domainConfig.name if isNew else "Edit " + element.name }}</h1>
+</div>
+
+<form method="POST"
+  action="{% if isNew %}/worlds/{{ world.id }}/{{ domainConfig.id }}{% else %}/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ element.id }}{% endif %}"
+  class="form-card"
+  hx-boost="true">
+
+  {# Core fields #}
+  <fieldset>
+    <legend>Basic Info</legend>
+    <div class="form-group">
+      <label for="name">Name *</label>
+      <input type="text" id="name" name="name" required value="{{ element.name if element else '' }}" class="form-control" placeholder="Enter name...">
+    </div>
+
+    {% if domainConfig.elementTypes.length > 1 %}
+    <div class="form-group">
+      <label for="element_type">Type</label>
+      <select id="element_type" name="element_type" class="form-control">
+        <option value="">-- Select Type --</option>
+        {% for t in domainConfig.elementTypes %}
+        <option value="{{ t }}" {% if element and element.element_type == t %}selected{% endif %}>
+          {{ t | replace('_', ' ') | capitalize }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label for="summary">Summary</label>
+      <input type="text" id="summary" name="summary" value="{{ element.summary if element else '' }}" class="form-control" placeholder="Brief description...">
+    </div>
+
+    <div class="form-group">
+      <label for="detailed_notes">Detailed Notes</label>
+      <textarea id="detailed_notes" name="detailed_notes" rows="6" class="form-control" placeholder="Full description, lore, and details...">{{ element.detailed_notes if element else '' }}</textarea>
+    </div>
+  </fieldset>
+
+  {# Domain-specific extension fields #}
+  {% if domainConfig.fields.length > 0 %}
+  <fieldset>
+    <legend>{{ domainConfig.name }} Details</legend>
+    {% for field in domainConfig.fields %}
+      {% set val = '' %}
+      {% if element and element.extension and element.extension[field.name] is defined %}
+        {% set val = element.extension[field.name] %}
+      {% endif %}
+
+      <div class="form-group">
+        <label for="{{ field.name }}">{{ field.label }}</label>
+        {% if field.helpText %}<p class="help-text">{{ field.helpText }}</p>{% endif %}
+
+        {% if field.type == 'select' and field.options %}
+          <select id="{{ field.name }}" name="{{ field.name }}" class="form-control">
+            <option value="">-- Select --</option>
+            {% for opt in field.options %}
+            <option value="{{ opt }}" {% if val == opt %}selected{% endif %}>{{ opt | replace('_', ' ') | capitalize }}</option>
+            {% endfor %}
+          </select>
+
+        {% elif field.type == 'textarea' %}
+          <textarea id="{{ field.name }}" name="{{ field.name }}" rows="3" class="form-control" placeholder="{{ field.placeholder or '' }}">{{ val }}</textarea>
+
+        {% elif field.type == 'boolean' %}
+          <label class="checkbox-label">
+            <input type="checkbox" id="{{ field.name }}" name="{{ field.name }}" value="1" {% if val %}checked{% endif %}>
+            <span>{{ field.label }}</span>
+          </label>
+
+        {% elif field.type == 'number' %}
+          <input type="number" id="{{ field.name }}" name="{{ field.name }}" value="{{ val }}" class="form-control"
+            {% if field.min is defined %}min="{{ field.min }}"{% endif %}
+            {% if field.max is defined %}max="{{ field.max }}"{% endif %}
+            {% if field.step is defined %}step="{{ field.step }}"{% endif %}>
+
+        {% elif field.type == 'json' %}
+          <textarea id="{{ field.name }}" name="{{ field.name }}" rows="3" class="form-control code-input" placeholder="{{ field.placeholder or '[]' }}">{{ val | json_pretty if val else '' }}</textarea>
+
+        {% elif field.type == 'range' %}
+          <div x-data="{ rangeVal: {{ val or field.min or 1 }} }">
+            <input type="range" name="{{ field.name }}" id="field-{{ field.name }}"
+              min="{{ field.min or 1 }}" max="{{ field.max or 10 }}"
+              x-model="rangeVal"
+              class="form-range">
+            <output x-text="rangeVal"></output>
+          </div>
+
+        {% else %}
+          <input type="text" id="{{ field.name }}" name="{{ field.name }}" value="{{ val }}" class="form-control" placeholder="{{ field.placeholder or '' }}">
+        {% endif %}
+      </div>
+    {% endfor %}
+  </fieldset>
+  {% endif %}
+
+  {# Magic Permeation fields #}
+  {% if magicEnabled and domainConfig.magicPermeation %}
+  <fieldset class="magic-fieldset" x-data="{ expanded: {{ 'true' if element and element.magic_aspects else 'false' }} }">
+    <legend @click="expanded = !expanded" class="clickable">
+      <span class="magic-indicator">&#9733;</span>
+      Magical Aspects
+      <span class="expand-arrow" :class="{ rotated: expanded }">&#9662;</span>
+    </legend>
+    <div x-show="expanded" x-transition>
+      {% if domainConfig.magicPermeation.prompts.length > 0 %}
+      <div class="magic-prompts">
+        {% for p in domainConfig.magicPermeation.prompts %}
+        <p class="prompt-item">{{ p }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% for field in domainConfig.magicPermeation.fields %}
+        {% set val = '' %}
+        {% if element and element.magic_aspects and element.magic_aspects[field.name] is defined %}
+          {% set val = element.magic_aspects[field.name] %}
+        {% endif %}
+
+        <div class="form-group">
+          <label for="magic_{{ field.name }}">{{ field.label }}</label>
+          {% if field.helpText %}<p class="help-text">{{ field.helpText }}</p>{% endif %}
+
+          {% if field.type == 'select' and field.options %}
+            <select id="magic_{{ field.name }}" name="magic_{{ field.name }}" class="form-control">
+              <option value="">-- Select --</option>
+              {% for opt in field.options %}
+              <option value="{{ opt }}" {% if val == opt %}selected{% endif %}>{{ opt | replace('_', ' ') | capitalize }}</option>
+              {% endfor %}
+            </select>
+          {% elif field.type == 'boolean' %}
+            <label class="checkbox-label">
+              <input type="checkbox" id="magic_{{ field.name }}" name="magic_{{ field.name }}" value="1" {% if val %}checked{% endif %}>
+              <span>{{ field.label }}</span>
+            </label>
+          {% elif field.type == 'textarea' %}
+            <textarea id="magic_{{ field.name }}" name="magic_{{ field.name }}" rows="3" class="form-control" placeholder="{{ field.placeholder or '' }}">{{ val }}</textarea>
+          {% elif field.type == 'json' %}
+            <textarea id="magic_{{ field.name }}" name="magic_{{ field.name }}" rows="3" class="form-control code-input" placeholder="{{ field.placeholder or '[]' }}">{{ val | json_pretty if val else '' }}</textarea>
+          {% else %}
+            <input type="text" id="magic_{{ field.name }}" name="magic_{{ field.name }}" value="{{ val }}" class="form-control" placeholder="{{ field.placeholder or '' }}">
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </fieldset>
+  {% endif %}
+
+  <div class="form-actions">
+    <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}" class="btn btn-ghost">Cancel</a>
+    <button type="submit" class="btn btn-primary">{{ "Create" if isNew else "Save Changes" }}</button>
+  </div>
+</form>
+{% endblock %}

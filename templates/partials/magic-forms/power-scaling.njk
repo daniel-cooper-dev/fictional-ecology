@@ -1,0 +1,44 @@
+<div class="form-group">
+  <label for="tier_name">Tier Name</label>
+  <input type="text" id="tier_name" name="tier_name" value="{{ item.tier_name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="tier_number">Tier Number</label>
+  <input type="number" id="tier_number" name="tier_number" value="{{ item.tier_number if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="typical_abilities">Typical Abilities</label>
+  <textarea id="typical_abilities" name="typical_abilities" rows="3" class="form-control">{{ item.typical_abilities if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="energy_capacity_range">Energy Capacity Range</label>
+  <input type="text" id="energy_capacity_range" name="energy_capacity_range" value="{{ item.energy_capacity_range if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="population_percentage">Population Percentage</label>
+  <input type="number" id="population_percentage" name="population_percentage" value="{{ item.population_percentage if item else '' }}" step="0.1" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="requirements_to_reach">Requirements to Reach</label>
+  <textarea id="requirements_to_reach" name="requirements_to_reach" rows="3" class="form-control">{{ item.requirements_to_reach if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="title_granted">Title Granted</label>
+  <input type="text" id="title_granted" name="title_granted" value="{{ item.title_granted if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="limitations">Limitations</label>
+  <textarea id="limitations" name="limitations" rows="3" class="form-control">{{ item.limitations if item else '' }}</textarea>
+</div>

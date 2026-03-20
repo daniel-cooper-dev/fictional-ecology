@@ -1,0 +1,103 @@
+<div class="form-group">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="phenomenon_type">Phenomenon Type</label>
+  <select id="phenomenon_type" name="phenomenon_type" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="mana_storm" {% if item and item.phenomenon_type == 'mana_storm' %}selected{% endif %}>Mana Storm</option>
+    <option value="wild_magic_zone" {% if item and item.phenomenon_type == 'wild_magic_zone' %}selected{% endif %}>Wild Magic Zone</option>
+    <option value="dimensional_rift" {% if item and item.phenomenon_type == 'dimensional_rift' %}selected{% endif %}>Dimensional Rift</option>
+    <option value="mana_dead_zone" {% if item and item.phenomenon_type == 'mana_dead_zone' %}selected{% endif %}>Mana Dead Zone</option>
+    <option value="ley_line_convergence" {% if item and item.phenomenon_type == 'ley_line_convergence' %}selected{% endif %}>Ley Line Convergence</option>
+    <option value="magical_aurora" {% if item and item.phenomenon_type == 'magical_aurora' %}selected{% endif %}>Magical Aurora</option>
+    <option value="temporal_anomaly" {% if item and item.phenomenon_type == 'temporal_anomaly' %}selected{% endif %}>Temporal Anomaly</option>
+    <option value="corruption_zone" {% if item and item.phenomenon_type == 'corruption_zone' %}selected{% endif %}>Corruption Zone</option>
+    <option value="planar_bleed" {% if item and item.phenomenon_type == 'planar_bleed' %}selected{% endif %}>Planar Bleed</option>
+    <option value="arcane_resonance" {% if item and item.phenomenon_type == 'arcane_resonance' %}selected{% endif %}>Arcane Resonance</option>
+    <option value="spontaneous_enchantment" {% if item and item.phenomenon_type == 'spontaneous_enchantment' %}selected{% endif %}>Spontaneous Enchantment</option>
+    <option value="custom" {% if item and item.phenomenon_type == 'custom' %}selected{% endif %}>Custom</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="causes">Causes</label>
+  <textarea id="causes" name="causes" rows="3" class="form-control">{{ item.causes if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="frequency">Frequency</label>
+  <select id="frequency" name="frequency" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="constant" {% if item and item.frequency == 'constant' %}selected{% endif %}>Constant</option>
+    <option value="periodic" {% if item and item.frequency == 'periodic' %}selected{% endif %}>Periodic</option>
+    <option value="seasonal" {% if item and item.frequency == 'seasonal' %}selected{% endif %}>Seasonal</option>
+    <option value="rare" {% if item and item.frequency == 'rare' %}selected{% endif %}>Rare</option>
+    <option value="unique" {% if item and item.frequency == 'unique' %}selected{% endif %}>Unique</option>
+    <option value="triggered" {% if item and item.frequency == 'triggered' %}selected{% endif %}>Triggered</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="duration_typical">Typical Duration</label>
+  <input type="text" id="duration_typical" name="duration_typical" value="{{ item.duration_typical if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="geographic_scope">Geographic Scope</label>
+  <select id="geographic_scope" name="geographic_scope" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="point" {% if item and item.geographic_scope == 'point' %}selected{% endif %}>Point</option>
+    <option value="local" {% if item and item.geographic_scope == 'local' %}selected{% endif %}>Local</option>
+    <option value="regional" {% if item and item.geographic_scope == 'regional' %}selected{% endif %}>Regional</option>
+    <option value="continental" {% if item and item.geographic_scope == 'continental' %}selected{% endif %}>Continental</option>
+    <option value="global" {% if item and item.geographic_scope == 'global' %}selected{% endif %}>Global</option>
+    <option value="planar" {% if item and item.geographic_scope == 'planar' %}selected{% endif %}>Planar</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="effects_on_magic">Effects on Magic</label>
+  <textarea id="effects_on_magic" name="effects_on_magic" rows="3" class="form-control">{{ item.effects_on_magic if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="effects_on_living">Effects on Living</label>
+  <textarea id="effects_on_living" name="effects_on_living" rows="3" class="form-control">{{ item.effects_on_living if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="effects_on_environment">Effects on Environment</label>
+  <textarea id="effects_on_environment" name="effects_on_environment" rows="3" class="form-control">{{ item.effects_on_environment if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="danger_level">Danger Level</label>
+  <select id="danger_level" name="danger_level" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="harmless" {% if item and item.danger_level == 'harmless' %}selected{% endif %}>Harmless</option>
+    <option value="minor" {% if item and item.danger_level == 'minor' %}selected{% endif %}>Minor</option>
+    <option value="moderate" {% if item and item.danger_level == 'moderate' %}selected{% endif %}>Moderate</option>
+    <option value="dangerous" {% if item and item.danger_level == 'dangerous' %}selected{% endif %}>Dangerous</option>
+    <option value="catastrophic" {% if item and item.danger_level == 'catastrophic' %}selected{% endif %}>Catastrophic</option>
+    <option value="apocalyptic" {% if item and item.danger_level == 'apocalyptic' %}selected{% endif %}>Apocalyptic</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="predictability">Predictability</label>
+  <select id="predictability" name="predictability" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="predictable" {% if item and item.predictability == 'predictable' %}selected{% endif %}>Predictable</option>
+    <option value="partially_predictable" {% if item and item.predictability == 'partially_predictable' %}selected{% endif %}>Partially Predictable</option>
+    <option value="random" {% if item and item.predictability == 'random' %}selected{% endif %}>Random</option>
+    <option value="chaotic" {% if item and item.predictability == 'chaotic' %}selected{% endif %}>Chaotic</option>
+  </select>
+</div>

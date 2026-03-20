@@ -1,0 +1,41 @@
+{% extends "layouts/world.njk" %}
+{% set activeDomain = 'magic_systems' %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <span>Magic Systems</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 style="color: #f39c12">Magic Systems</h1>
+</div>
+
+<p class="subtitle">Define the magical foundations of your world: where magic comes from, how it works, what it costs, and who can use it.</p>
+
+<div class="magic-sub-grid">
+  {% for st in subTables %}
+  <a href="/worlds/{{ world.id }}/magic/{{ st.id }}" class="domain-card magic-sub-card">
+    <div class="domain-card-header">
+      <span class="domain-count">{{ st.count }}</span>
+    </div>
+    <h3>{{ st.label }}</h3>
+    <p class="domain-desc">
+      {% if st.id == 'magic_sources' %}Where does magic originate? Ley lines, crystals, divine gifts, innate biology, dimensional bleed, emotions, or elements?
+      {% elif st.id == 'magic_energy_types' %}What forms does magical energy take? Is it measurable? Can it be stored, converted, or depleted?
+      {% elif st.id == 'magic_laws' %}What fundamental rules govern magic? Conservation, entropy, sympathy, contagion, true naming?
+      {% elif st.id == 'magic_taxonomies' %}How is magic categorized? Schools, traditions, elements, philosophies, or cultural practices?
+      {% elif st.id == 'magical_materials' %}What materials interact with magic? Crystals, metals, organic compounds with conductivity, capacity, and resistance ratings.
+      {% elif st.id == 'spell_classifications' %}How are spells organized? By school, power tier, casting method, duration, range, and energy cost.
+      {% elif st.id == 'magic_costs_consequences' %}What does magic cost? Physical toll, mental strain, corruption, environmental damage, karmic debt?
+      {% elif st.id == 'magical_phenomena' %}What magical events occur naturally? Mana storms, wild magic zones, dimensional rifts, dead-magic areas?
+      {% elif st.id == 'power_scaling_framework' %}How powerful can practitioners get? Define tiers from novice to mythic with abilities and rarity.
+      {% endif %}
+    </p>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Fictional Ecology{% endblock %}</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <script src="/js/htmx.min.js" defer></script>
+  <script src="/js/alpine.min.js" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body hx-boost="true">
+  <header class="top-bar">
+    <a href="/worlds" class="logo">
+      <span class="logo-icon" aria-hidden="true">&#9672;</span>
+      <span class="logo-text">Fictional Ecology</span>
+    </a>
+    {% if world %}
+    <div class="search-container" x-data="{ open: false }">
+      <input type="search" name="q" placeholder="Search {{ world.name }}..."
+        hx-get="/worlds/{{ world.id }}/search"
+        hx-trigger="input changed delay:300ms"
+        hx-target="#search-results"
+        hx-indicator="#search-spinner"
+        @focus="open = true"
+        @click.outside="open = false"
+        autocomplete="off">
+      <span id="search-spinner" class="htmx-indicator" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.8rem">...</span>
+      <div id="search-results" class="search-dropdown" x-show="open"></div>
+    </div>
+    {% endif %}
+    <nav class="top-nav">
+      {% if world %}
+      <a href="/worlds/{{ world.id }}" class="nav-link">Dashboard</a>
+      <a href="/worlds/{{ world.id }}/graph" class="nav-link">Graph</a>
+      <a href="/worlds/{{ world.id }}/timeline" class="nav-link">Timeline</a>
+      <a href="/worlds/{{ world.id }}/maps" class="nav-link">Maps</a>
+      <a href="/worlds/{{ world.id }}/validate" class="nav-link">Validate</a>
+      {% endif %}
+      <a href="/worlds" class="nav-link">All Worlds</a>
+    </nav>
+  </header>
+
+  <div class="app-layout">
+    {% block sidebar %}{% endblock %}
+    <main class="main-content">
+      {% block breadcrumbs %}{% endblock %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

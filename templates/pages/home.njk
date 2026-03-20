@@ -1,0 +1,36 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}Worlds - Fictional Ecology{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Your Worlds</h1>
+  <a href="/worlds/new/wizard" class="btn btn-primary">+ Create with Wizard</a>
+  <a href="/worlds/new" class="btn btn-ghost">Quick Create</a>
+</div>
+
+{% if worlds.length == 0 %}
+<div class="empty-state">
+  <div class="empty-icon">&#9672;</div>
+  <h2>No worlds yet</h2>
+  <p>Create your first fictional world to begin designing its ecology, civilizations, magic systems, and more.</p>
+  <a href="/worlds/new/wizard" class="btn btn-primary btn-lg">Create Your First World</a>
+</div>
+{% else %}
+<div class="world-grid">
+  {% for w in worlds %}
+  <a href="/worlds/{{ w.id }}" class="world-card">
+    <h3>{{ w.name }}</h3>
+    {% if w.tagline %}<p class="world-tagline">{{ w.tagline }}</p>{% endif %}
+    {% if w.description %}<p class="world-desc">{{ w.description | truncate(120) }}</p>{% endif %}
+    <div class="world-meta">
+      <span class="badge {% if w.magic_enabled %}badge-magic{% else %}badge-mundane{% endif %}">
+        {{ "Magic Enabled" if w.magic_enabled else "No Magic" }}
+      </span>
+      <span class="text-muted">Updated {{ w.updated_at }}</span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

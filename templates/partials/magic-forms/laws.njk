@@ -1,0 +1,59 @@
+<div class="form-group">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="law_category">Law Category</label>
+  <select id="law_category" name="law_category" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="conservation" {% if item and item.law_category == 'conservation' %}selected{% endif %}>Conservation</option>
+    <option value="entropy" {% if item and item.law_category == 'entropy' %}selected{% endif %}>Entropy</option>
+    <option value="equivalence" {% if item and item.law_category == 'equivalence' %}selected{% endif %}>Equivalence</option>
+    <option value="exclusion" {% if item and item.law_category == 'exclusion' %}selected{% endif %}>Exclusion</option>
+    <option value="interaction" {% if item and item.law_category == 'interaction' %}selected{% endif %}>Interaction</option>
+    <option value="sympathy" {% if item and item.law_category == 'sympathy' %}selected{% endif %}>Sympathy</option>
+    <option value="contagion" {% if item and item.law_category == 'contagion' %}selected{% endif %}>Contagion</option>
+    <option value="similarity" {% if item and item.law_category == 'similarity' %}selected{% endif %}>Similarity</option>
+    <option value="true_naming" {% if item and item.law_category == 'true_naming' %}selected{% endif %}>True Naming</option>
+    <option value="intent" {% if item and item.law_category == 'intent' %}selected{% endif %}>Intent</option>
+    <option value="custom" {% if item and item.law_category == 'custom' %}selected{% endif %}>Custom</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="formal_statement">Formal Statement</label>
+  <textarea id="formal_statement" name="formal_statement" rows="3" class="form-control">{{ item.formal_statement if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="narrative_description">Narrative Description</label>
+  <textarea id="narrative_description" name="narrative_description" rows="4" class="form-control">{{ item.narrative_description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="exceptions">Exceptions</label>
+  <textarea id="exceptions" name="exceptions" rows="3" class="form-control">{{ item.exceptions if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="consequences_of_violation">Consequences of Violation</label>
+  <textarea id="consequences_of_violation" name="consequences_of_violation" rows="3" class="form-control">{{ item.consequences_of_violation if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="relationship_to_physics">Relationship to Physics</label>
+  <select id="relationship_to_physics" name="relationship_to_physics" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="parallel" {% if item and item.relationship_to_physics == 'parallel' %}selected{% endif %}>Parallel</option>
+    <option value="overrides" {% if item and item.relationship_to_physics == 'overrides' %}selected{% endif %}>Overrides</option>
+    <option value="extends" {% if item and item.relationship_to_physics == 'extends' %}selected{% endif %}>Extends</option>
+    <option value="orthogonal" {% if item and item.relationship_to_physics == 'orthogonal' %}selected{% endif %}>Orthogonal</option>
+    <option value="contradicts" {% if item and item.relationship_to_physics == 'contradicts' %}selected{% endif %}>Contradicts</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="sort_order">Sort Order</label>
+  <input type="number" id="sort_order" name="sort_order" value="{{ item.sort_order if item else '' }}" class="form-control">
+</div>

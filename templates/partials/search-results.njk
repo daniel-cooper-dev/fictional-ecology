@@ -1,0 +1,15 @@
+{% if results.length > 0 %}
+<div class="search-results-list">
+  {% for r in results %}
+  <a href="/worlds/{{ worldId }}/{{ r.domain }}/{{ r.element_id }}" class="search-result-item">
+    <span class="search-domain-badge" style="background: {{ r.domain | domain_color }}22; color: {{ r.domain | domain_color }}">
+      {{ r.domain | domain_name }}
+    </span>
+    <strong>{{ r.name }}</strong>
+    {% if r.snippet %}<span class="search-snippet">{{ r.snippet | safe }}</span>{% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% elif query %}
+<div class="search-empty">No results for "{{ query }}"</div>
+{% endif %}

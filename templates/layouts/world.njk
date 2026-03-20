@@ -1,0 +1,56 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}{{ world.name }} - Fictional Ecology{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2 class="world-name" title="{{ world.name }}">{{ world.name }}</h2>
+    {% if world.tagline %}<p class="world-tagline">{{ world.tagline }}</p>{% endif %}
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-label">Natural World</div>
+      {% for d in domainCategories.natural %}
+      <a href="/worlds/{{ world.id }}/{{ d.id }}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
+        <span class="sidebar-icon">{{ d.icon }}</span>
+        {{ d.name }}
+      </a>
+      {% endfor %}
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Sentient World</div>
+      {% for d in domainCategories.sentient %}
+      <a href="/worlds/{{ world.id }}/{{ d.id }}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
+        <span class="sidebar-icon">{{ d.icon }}</span>
+        {{ d.name }}
+      </a>
+      {% endfor %}
+    </div>
+
+    {% if magicEnabled %}
+    <div class="nav-section">
+      <div class="nav-section-label">Magic & Technology</div>
+      {% for d in domainCategories.magic %}
+      <a href="/worlds/{{ world.id }}/{% if d.id == 'magic_systems' %}magic{% else %}{{ d.id }}{% endif %}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
+        <span class="sidebar-icon">{{ d.icon }}</span>
+        {{ d.name }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="nav-section">
+      <div class="nav-section-label">Meta</div>
+      {% for d in domainCategories.meta %}
+      <a href="/worlds/{{ world.id }}/{{ d.id }}" class="sidebar-link {% if activeDomain == d.id %}active{% endif %}" style="--domain-color: {{ d.color }}">
+        <span class="sidebar-icon">{{ d.icon }}</span>
+        {{ d.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </nav>
+</aside>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% for tag in tags %}
+<span class="tag-badge" style="background: {{ tag.color }}22; color: {{ tag.color }}; border: 1px solid {{ tag.color }}44">
+  {{ tag.name }}
+  <form method="POST" action="/worlds/{{ world.id }}/elements/{{ element.id }}/tags/{{ tag.id }}/delete" style="display:inline" hx-post="/worlds/{{ world.id }}/elements/{{ element.id }}/tags/{{ tag.id }}/delete" hx-target="#element-tags" hx-swap="innerHTML">
+    <button type="submit" class="tag-remove" title="Remove tag">&times;</button>
+  </form>
+</span>
+{% endfor %}

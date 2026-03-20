@@ -1,0 +1,64 @@
+<div class="form-group">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="cost_category">Cost Category</label>
+  <select id="cost_category" name="cost_category" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="physical" {% if item and item.cost_category == 'physical' %}selected{% endif %}>Physical</option>
+    <option value="mental" {% if item and item.cost_category == 'mental' %}selected{% endif %}>Mental</option>
+    <option value="spiritual" {% if item and item.cost_category == 'spiritual' %}selected{% endif %}>Spiritual</option>
+    <option value="environmental" {% if item and item.cost_category == 'environmental' %}selected{% endif %}>Environmental</option>
+    <option value="social" {% if item and item.cost_category == 'social' %}selected{% endif %}>Social</option>
+    <option value="temporal" {% if item and item.cost_category == 'temporal' %}selected{% endif %}>Temporal</option>
+    <option value="existential" {% if item and item.cost_category == 'existential' %}selected{% endif %}>Existential</option>
+    <option value="material" {% if item and item.cost_category == 'material' %}selected{% endif %}>Material</option>
+    <option value="karmic" {% if item and item.cost_category == 'karmic' %}selected{% endif %}>Karmic</option>
+    <option value="custom" {% if item and item.cost_category == 'custom' %}selected{% endif %}>Custom</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="severity_scale">Severity Scale <small>(JSON)</small></label>
+  <textarea id="severity_scale" name="severity_scale" rows="3" class="form-control">{{ item.severity_scale if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="trigger_conditions">Trigger Conditions</label>
+  <textarea id="trigger_conditions" name="trigger_conditions" rows="3" class="form-control">{{ item.trigger_conditions if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label class="checkbox-label">
+    <input type="checkbox" id="accumulation" name="accumulation" value="1" {% if item and item.accumulation %}checked{% endif %}>
+    <span>Accumulation</span>
+  </label>
+</div>
+
+<div class="form-group">
+  <label for="reversibility">Reversibility</label>
+  <select id="reversibility" name="reversibility" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="fully_reversible" {% if item and item.reversibility == 'fully_reversible' %}selected{% endif %}>Fully Reversible</option>
+    <option value="partially_reversible" {% if item and item.reversibility == 'partially_reversible' %}selected{% endif %}>Partially Reversible</option>
+    <option value="irreversible" {% if item and item.reversibility == 'irreversible' %}selected{% endif %}>Irreversible</option>
+    <option value="conditionally_reversible" {% if item and item.reversibility == 'conditionally_reversible' %}selected{% endif %}>Conditionally Reversible</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="cure_method">Cure Method</label>
+  <textarea id="cure_method" name="cure_method" rows="3" class="form-control">{{ item.cure_method if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="affected_taxonomies">Affected Taxonomies <small>(JSON)</small></label>
+  <textarea id="affected_taxonomies" name="affected_taxonomies" rows="3" class="form-control">{{ item.affected_taxonomies if item else '' }}</textarea>
+</div>

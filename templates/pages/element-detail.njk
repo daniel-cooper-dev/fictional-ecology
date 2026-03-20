@@ -1,0 +1,185 @@
+{% extends "layouts/world.njk" %}
+{% set activeDomain = domainConfig.id %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}">{{ domainConfig.namePlural }}</a>
+  <span class="sep">/</span>
+  <span>{{ element.name }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 style="color: {{ domainConfig.color }}">{{ element.name }}</h1>
+    {% if element.element_type %}
+    <span class="element-type-badge" style="background: {{ domainConfig.color }}22; color: {{ domainConfig.color }}">
+      {{ element.element_type | replace('_', ' ') | capitalize }}
+    </span>
+    {% endif %}
+  </div>
+  <div class="header-actions">
+    <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ element.id }}/edit" class="btn btn-primary">Edit</a>
+    <form method="POST" action="/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ element.id }}/delete"
+      onsubmit="return confirm('Delete {{ element.name }}?')" style="display:inline">
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+  </div>
+</div>
+
+{% if element.summary %}
+<p class="element-summary">{{ element.summary }}</p>
+{% endif %}
+
+<div class="detail-grid">
+  <div class="detail-main">
+    {# Detailed Notes #}
+    {% if element.detailed_notes %}
+    <div class="card">
+      <h3>Notes</h3>
+      <div class="notes-content">{{ element.detailed_notes }}</div>
+    </div>
+    {% endif %}
+
+    {# Extension fields #}
+    {% if element.extension %}
+    <div class="card">
+      <h3>{{ domainConfig.name }} Details</h3>
+      <div class="detail-fields">
+        {% for field in domainConfig.fields %}
+          {% set val = element.extension[field.name] %}
+          {% if val is defined and val !== '' and val !== null %}
+          <div class="detail-field">
+            <dt>{{ field.label }}</dt>
+            <dd>
+              {% if field.type == 'boolean' %}
+                {{ "Yes" if val else "No" }}
+              {% elif field.type == 'json' %}
+                <pre class="json-display">{{ val | json_pretty }}</pre>
+              {% elif field.type == 'select' %}
+                {{ val | replace('_', ' ') | capitalize }}
+              {% elif field.type == 'range' %}
+                {{ val }} / {{ field.max or 10 }}
+              {% else %}
+                {{ val }}
+              {% endif %}
+            </dd>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {# Magic Aspects #}
+    {% if magicEnabled and element.magic_aspects and domainConfig.magicPermeation %}
+    <div class="card magic-card">
+      <h3><span class="magic-indicator" aria-hidden="true">&#9733;</span> Magical Aspects</h3>
+      <div class="detail-fields">
+        {% for field in domainConfig.magicPermeation.fields %}
+          {% set val = element.magic_aspects[field.name] %}
+          {% if val is defined and val !== '' and val !== null and val !== 'none' %}
+          <div class="detail-field">
+            <dt>{{ field.label }}</dt>
+            <dd>
+              {% if field.type == 'json' %}
+                <pre class="json-display">{{ val | json_pretty }}</pre>
+              {% elif field.type == 'boolean' %}
+                {{ "Yes" if val else "No" }}
+              {% elif field.type == 'select' %}
+                {{ val | replace('_', ' ') | capitalize }}
+              {% else %}
+                {{ val }}
+              {% endif %}
+            </dd>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# Sidebar: Tags & Relationships #}
+  <div class="detail-sidebar">
+    <div class="card">
+      <h3>Tags</h3>
+      <div id="element-tags" class="tag-list">
+        {% for tag in tags %}
+        <span class="tag-badge" style="background: {{ tag.color }}22; color: {{ tag.color }}; border: 1px solid {{ tag.color }}44">
+          {{ tag.name }}
+          <form method="POST" action="/worlds/{{ world.id }}/elements/{{ element.id }}/tags/{{ tag.id }}/delete" style="display:inline" hx-post="/worlds/{{ world.id }}/elements/{{ element.id }}/tags/{{ tag.id }}/delete" hx-target="#element-tags" hx-swap="innerHTML">
+            <button type="submit" class="tag-remove" title="Remove tag" aria-label="Remove tag {{ tag.name }}">&times;</button>
+          </form>
+        </span>
+        {% endfor %}
+      </div>
+      <div class="add-tag-form" x-data="{ newTag: '' }">
+        <form method="POST" action="/worlds/{{ world.id }}/elements/{{ element.id }}/tags"
+          hx-post="/worlds/{{ world.id }}/elements/{{ element.id }}/tags"
+          hx-target="#element-tags" hx-swap="innerHTML">
+          <div style="display:flex; gap:6px; margin-top:8px">
+            <input type="text" name="new_tag_name" placeholder="Add tag..." class="form-control form-control-sm" style="flex:1">
+            <button type="submit" class="btn btn-ghost btn-sm">+</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Relationships</h3>
+      <div id="relationships-list">
+        {% include "partials/relationship-list.njk" %}
+      </div>
+
+      <div class="add-relationship" x-data="{ open: false, searchResults: [], targetId: '' }">
+        <button class="btn btn-ghost btn-sm" @click="open = !open">+ Add Relationship</button>
+        <form x-show="open" x-transition method="POST" action="/worlds/{{ world.id }}/relationships"
+          hx-post="/worlds/{{ world.id }}/relationships"
+          hx-target="#relationships-list"
+          hx-swap="innerHTML">
+          <input type="hidden" name="source_id" value="{{ element.id }}">
+
+          <div class="form-group">
+            <label>Target Element</label>
+            <input type="text" placeholder="Search elements..."
+              @input.debounce.300ms="
+                if ($event.target.value.length > 1) {
+                  fetch('/worlds/{{ world.id }}/api/elements?q=' + encodeURIComponent($event.target.value))
+                    .then(r => r.ok ? r.json() : [])
+                    .then(d => searchResults = d)
+                    .catch(() => searchResults = [])
+                }
+              "
+              class="form-control form-control-sm">
+            <template x-for="r in searchResults" :key="r.id">
+              <div class="search-option" @click="targetId = r.id; searchResults = []; $event.target.closest('.form-group').querySelector('input').value = r.name"
+                x-text="r.name + ' (' + r.domain + ')'"></div>
+            </template>
+            <input type="hidden" name="target_id" :value="targetId">
+          </div>
+
+          <div class="form-group">
+            <label>Type</label>
+            <select name="relationship_type" class="form-control form-control-sm">
+              {% for rt in ['contains','located_in','borders','influences','depends_on','evolved_from','created_by','trades_with','conflicts_with','allied_with','worships','uses','consumes','produces','part_of','variant_of','powers','inhibits','custom'] %}
+              <option value="{{ rt }}">{{ rt | replace('_', ' ') | capitalize }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" name="description" class="form-control form-control-sm" placeholder="Optional...">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-sm">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

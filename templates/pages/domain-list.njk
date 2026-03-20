@@ -1,0 +1,73 @@
+{% extends "layouts/world.njk" %}
+{% set activeDomain = domainConfig.id %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <span>{{ domainConfig.name }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 style="color: {{ domainConfig.color }}">{{ domainConfig.namePlural }}</h1>
+    <p class="subtitle">{{ domainConfig.description }}</p>
+  </div>
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new" class="btn btn-primary">+ New {{ domainConfig.name }}</a>
+</div>
+
+{% if domainConfig.elementTypes.length > 1 %}
+<div class="filter-bar">
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}" class="filter-chip {% if not currentType %}active{% endif %}">All</a>
+  {% for t in domainConfig.elementTypes %}
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}?type={{ t }}" class="filter-chip {% if currentType == t %}active{% endif %}">{{ t | replace('_', ' ') | capitalize }}</a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if result.items.length == 0 %}
+<div class="empty-state">
+  <h3>No {{ domainConfig.namePlural | lower }} yet</h3>
+  <p>{{ domainConfig.prompts[0] if domainConfig.prompts.length > 0 }}</p>
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new" class="btn btn-primary">Create First {{ domainConfig.name }}</a>
+</div>
+{% else %}
+<div class="element-grid">
+  {% for el in result.items %}
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ el.id }}" class="element-card" style="--domain-color: {{ domainConfig.color }}">
+    <div class="element-card-header">
+      {% if el.element_type %}
+      <span class="element-type-badge">{{ el.element_type | replace('_', ' ') | capitalize }}</span>
+      {% endif %}
+    </div>
+    <h3>{{ el.name }}</h3>
+    {% if el.summary %}<p>{{ el.summary | truncate(100) }}</p>{% endif %}
+    <div class="element-meta text-muted">{{ el.updated_at }}</div>
+  </a>
+  {% endfor %}
+</div>
+
+{% if result.total_pages > 1 %}
+<div class="pagination">
+  {% for p in range(1, result.total_pages + 1) %}
+  <a href="?page={{ p }}{% if currentType %}&type={{ currentType }}{% endif %}" class="page-link {% if p == result.page %}active{% endif %}">{{ p }}</a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endif %}
+
+{% if domainConfig.prompts.length > 0 %}
+<div class="prompts-panel" x-data="{ open: false }">
+  <button class="btn btn-ghost btn-sm" @click="open = !open">
+    <span x-text="open ? 'Hide' : 'Show'">Show</span> Worldbuilding Prompts
+  </button>
+  <div class="prompts-list" x-show="open" x-transition>
+    {% for p in domainConfig.prompts %}
+    <div class="prompt-item">{{ p }}</div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

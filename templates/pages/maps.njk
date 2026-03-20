@@ -1,0 +1,74 @@
+{% extends "layouts/world.njk" %}
+
+{% block title %}Maps - {{ world.name }}{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <span>Maps</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Maps</h1>
+</div>
+
+{% if maps.length > 0 %}
+<div class="element-grid">
+  {% for map in maps %}
+  <a href="/worlds/{{ world.id }}/maps/{{ map.id }}" class="element-card">
+    <h3>{{ map.name }}</h3>
+    <p>{{ map.map_type | replace('_', ' ') | capitalize }} - {{ map.width }}x{{ map.height }}</p>
+    {% if map.scale_label %}<p class="text-muted">Scale: {{ map.scale_label }}</p>{% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">&#9776;</div>
+  <h3>No Maps Yet</h3>
+  <p>Create a map to place your world's elements on a canvas with pins and regions.</p>
+</div>
+{% endif %}
+
+<div x-data="{ showForm: false }" style="margin-top:24px">
+  <button class="btn btn-primary" @click="showForm = !showForm">+ New Map</button>
+  <div class="form-card" x-show="showForm" x-transition style="margin-top:16px">
+    <form method="POST" action="/worlds/{{ world.id }}/maps">
+      <div class="form-group">
+        <label>Map Name</label>
+        <input type="text" name="name" required class="form-control" placeholder="e.g. World Map, Kingdom of...">
+      </div>
+      <div style="display:flex; gap:12px">
+        <div class="form-group" style="flex:1">
+          <label>Width</label>
+          <input type="number" name="width" value="1200" class="form-control">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label>Height</label>
+          <input type="number" name="height" value="800" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select name="map_type" class="form-control">
+          <option value="world">World Map</option>
+          <option value="region">Region</option>
+          <option value="city">City</option>
+          <option value="dungeon">Dungeon</option>
+          <option value="planar">Planar</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Scale Label</label>
+        <input type="text" name="scale_label" class="form-control" placeholder="e.g. 1 square = 50 miles">
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Map</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

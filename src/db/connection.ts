@@ -1,0 +1,80 @@
+import Database from 'better-sqlite3';
+import path from 'path';
+import fs from 'fs';
+import { config } from '../config.js';
+import { runMigrations } from './migrate.js';
+
+const dbInstances = new Map<string, Database.Database>();
+
+export function getWorldDbPath(worldId: string): string {
+  const worldDir = path.join(config.dataDir, worldId);
+  if (!fs.existsSync(worldDir)) {
+    fs.mkdirSync(worldDir, { recursive: true });
+  }
+  return path.join(worldDir, 'world.db');
+}
+
+export function getWorldDb(worldId: string): Database.Database {
+  if (dbInstances.has(worldId)) {
+    return dbInstances.get(worldId)!;
+  }
+  const dbPath = getWorldDbPath(worldId);
+  const db = new Database(dbPath);
+  db.pragma('journal_mode = WAL');
+  db.pragma('foreign_keys = ON');
+  runMigrations(db);
+  dbInstances.set(worldId, db);
+  return db;
+}
+
+export function closeWorldDb(worldId: string): void {
+  const db = dbInstances.get(worldId);
+  if (db) {
+    db.close();
+    dbInstances.delete(worldId);
+  }
+}
+
+export function closeAllDbs(): void {
+  for (const [id, db] of dbInstances) {
+    db.close();
+  }
+  dbInstances.clear();
+}
+
+// Master DB for world list (lives in data dir root)
+let masterDb: Database.Database | null = null;
+
+export function getMasterDb(): Database.Database {
+  if (masterDb) return masterDb;
+  if (!fs.existsSync(config.dataDir)) {
+    fs.mkdirSync(config.dataDir, { recursive: true });
+  }
+  const dbPath = path.join(config.dataDir, 'master.db');
+  masterDb = new Database(dbPath);
+  masterDb.pragma('journal_mode = WAL');
+  masterDb.pragma('foreign_keys = ON');
+
+  masterDb.exec(`
+    CREATE TABLE IF NOT EXISTS worlds (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      tagline TEXT DEFAULT '',
+      description TEXT DEFAULT '',
+      magic_enabled INTEGER DEFAULT 1,
+      settings TEXT DEFAULT '{}',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+      forked_from TEXT
+    )
+  `);
+
+  return masterDb;
+}
+
+export function closeMasterDb(): void {
+  if (masterDb) {
+    masterDb.close();
+    masterDb = null;
+  }
+}

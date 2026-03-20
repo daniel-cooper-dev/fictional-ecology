@@ -1,0 +1,89 @@
+<div class="form-group">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+  <label for="material_type">Material Type</label>
+  <select id="material_type" name="material_type" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="metal" {% if item and item.material_type == 'metal' %}selected{% endif %}>Metal</option>
+    <option value="crystal" {% if item and item.material_type == 'crystal' %}selected{% endif %}>Crystal</option>
+    <option value="organic" {% if item and item.material_type == 'organic' %}selected{% endif %}>Organic</option>
+    <option value="liquid" {% if item and item.material_type == 'liquid' %}selected{% endif %}>Liquid</option>
+    <option value="gas" {% if item and item.material_type == 'gas' %}selected{% endif %}>Gas</option>
+    <option value="composite" {% if item and item.material_type == 'composite' %}selected{% endif %}>Composite</option>
+    <option value="exotic" {% if item and item.material_type == 'exotic' %}selected{% endif %}>Exotic</option>
+    <option value="planar" {% if item and item.material_type == 'planar' %}selected{% endif %}>Planar</option>
+    <option value="synthetic" {% if item and item.material_type == 'synthetic' %}selected{% endif %}>Synthetic</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="magical_properties">Magical Properties <small>(JSON)</small></label>
+  <textarea id="magical_properties" name="magical_properties" rows="3" class="form-control">{{ item.magical_properties if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="rarity">Rarity</label>
+  <select id="rarity" name="rarity" class="form-control">
+    <option value="">-- Select --</option>
+    <option value="common" {% if item and item.rarity == 'common' %}selected{% endif %}>Common</option>
+    <option value="uncommon" {% if item and item.rarity == 'uncommon' %}selected{% endif %}>Uncommon</option>
+    <option value="rare" {% if item and item.rarity == 'rare' %}selected{% endif %}>Rare</option>
+    <option value="very_rare" {% if item and item.rarity == 'very_rare' %}selected{% endif %}>Very Rare</option>
+    <option value="legendary" {% if item and item.rarity == 'legendary' %}selected{% endif %}>Legendary</option>
+    <option value="mythic" {% if item and item.rarity == 'mythic' %}selected{% endif %}>Mythic</option>
+    <option value="unique" {% if item and item.rarity == 'unique' %}selected{% endif %}>Unique</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="source_location">Source Location</label>
+  <input type="text" id="source_location" name="source_location" value="{{ item.source_location if item else '' }}" class="form-control">
+</div>
+
+<div class="form-group">
+  <label for="extraction_method">Extraction Method</label>
+  <textarea id="extraction_method" name="extraction_method" rows="3" class="form-control">{{ item.extraction_method if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="refinement_process">Refinement Process</label>
+  <textarea id="refinement_process" name="refinement_process" rows="3" class="form-control">{{ item.refinement_process if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="conductivity">Conductivity <small>(1-10)</small></label>
+  <input type="range" id="conductivity" name="conductivity" value="{{ item.conductivity if item else 5 }}" min="1" max="10" class="form-range">
+</div>
+
+<div class="form-group">
+  <label for="capacity">Capacity <small>(1-10)</small></label>
+  <input type="range" id="capacity" name="capacity" value="{{ item.capacity if item else 5 }}" min="1" max="10" class="form-range">
+</div>
+
+<div class="form-group">
+  <label for="resistance">Resistance <small>(1-10)</small></label>
+  <input type="range" id="resistance" name="resistance" value="{{ item.resistance if item else 5 }}" min="1" max="10" class="form-range">
+</div>
+
+<div class="form-group">
+  <label for="stability_rating">Stability Rating <small>(1-10)</small></label>
+  <input type="range" id="stability_rating" name="stability_rating" value="{{ item.stability_rating if item else 5 }}" min="1" max="10" class="form-range">
+</div>
+
+<div class="form-group">
+  <label for="mundane_properties">Mundane Properties</label>
+  <textarea id="mundane_properties" name="mundane_properties" rows="3" class="form-control">{{ item.mundane_properties if item else '' }}</textarea>
+</div>
+
+<div class="form-group">
+  <label for="dangers">Dangers</label>
+  <textarea id="dangers" name="dangers" rows="3" class="form-control">{{ item.dangers if item else '' }}</textarea>
+</div>

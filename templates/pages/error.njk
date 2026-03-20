@@ -1,0 +1,11 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}{{ status }} - Fictional Ecology{% endblock %}
+
+{% block content %}
+<div class="empty-state">
+  <div class="empty-icon">{{ status }}</div>
+  <h2>{{ message }}</h2>
+  <a href="/worlds" class="btn btn-primary">Back to Worlds</a>
+</div>
+{% endblock %}

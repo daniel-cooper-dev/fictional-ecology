@@ -1,0 +1,26 @@
+{% if relationships and relationships.length > 0 %}
+<div class="relationship-items">
+  {% for rel in relationships %}
+  <div class="relationship-item">
+    <div class="rel-info">
+      <span class="rel-type-badge">{{ rel.relationship_type | replace('_', ' ') }}</span>
+      {% if rel.source_id == element.id %}
+        <a href="/worlds/{{ world.id }}/{{ rel.target_domain }}/{{ rel.target_id }}">{{ rel.target_name }}</a>
+        <span class="rel-domain text-muted">({{ rel.target_domain | domain_name }})</span>
+      {% else %}
+        <a href="/worlds/{{ world.id }}/{{ rel.source_domain }}/{{ rel.source_id }}">{{ rel.source_name }}</a>
+        <span class="rel-domain text-muted">({{ rel.source_domain | domain_name }})</span>
+      {% endif %}
+    </div>
+    {% if rel.description %}<p class="rel-desc text-muted">{{ rel.description }}</p>{% endif %}
+    <form method="POST" action="/worlds/{{ world.id }}/relationships/{{ rel.id }}/delete"
+      hx-post="/worlds/{{ world.id }}/relationships/{{ rel.id }}/delete"
+      hx-target="closest .relationship-item" hx-swap="outerHTML">
+      <button type="submit" class="btn-icon btn-delete" title="Remove">&times;</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No relationships yet.</p>
+{% endif %}

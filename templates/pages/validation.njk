@@ -1,0 +1,102 @@
+{% extends "layouts/world.njk" %}
+
+{% block title %}Validation - {{ world.name }}{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <span>Validation</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>World Consistency Check</h1>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="location.reload()">Re-check</button>
+  </div>
+</div>
+
+<div class="validation-summary">
+  <div class="val-stat val-errors">
+    <span class="val-count">{{ errors.length }}</span>
+    <span class="val-label">Errors</span>
+  </div>
+  <div class="val-stat val-warnings">
+    <span class="val-count">{{ warnings.length }}</span>
+    <span class="val-label">Warnings</span>
+  </div>
+  <div class="val-stat val-infos">
+    <span class="val-count">{{ infos.length }}</span>
+    <span class="val-label">Suggestions</span>
+  </div>
+</div>
+
+{% if issues.length == 0 %}
+<div class="empty-state">
+  <div class="empty-icon">&#10003;</div>
+  <h3>All Clear</h3>
+  <p>No consistency issues found in your world.</p>
+</div>
+{% else %}
+
+{% if errors.length > 0 %}
+<div class="card">
+  <h3 style="color: var(--danger)">Errors</h3>
+  <div class="validation-list">
+    {% for issue in errors %}
+    <div class="validation-item validation-error">
+      <div class="val-domain-badge" style="background: {{ issue.domain | domain_color }}22; color: {{ issue.domain | domain_color }}">{{ issue.domain | domain_name }}</div>
+      <div class="val-content">
+        <div class="val-message">{{ issue.message }}</div>
+        {% if issue.suggestion %}<div class="val-suggestion">{{ issue.suggestion }}</div>{% endif %}
+      </div>
+      {% if issue.element_id %}
+      <a href="/worlds/{{ world.id }}/{{ issue.domain }}/{{ issue.element_id }}" class="btn btn-ghost btn-sm">View</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if warnings.length > 0 %}
+<div class="card">
+  <h3 style="color: var(--warning)">Warnings</h3>
+  <div class="validation-list">
+    {% for issue in warnings %}
+    <div class="validation-item validation-warning">
+      <div class="val-domain-badge" style="background: {{ issue.domain | domain_color }}22; color: {{ issue.domain | domain_color }}">{{ issue.domain | domain_name }}</div>
+      <div class="val-content">
+        <div class="val-message">{{ issue.message }}</div>
+        {% if issue.suggestion %}<div class="val-suggestion">{{ issue.suggestion }}</div>{% endif %}
+      </div>
+      {% if issue.element_id %}
+      <a href="/worlds/{{ world.id }}/{{ issue.domain }}/{{ issue.element_id }}" class="btn btn-ghost btn-sm">View</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if infos.length > 0 %}
+<div class="card">
+  <h3 style="color: var(--accent)">Suggestions</h3>
+  <div class="validation-list">
+    {% for issue in infos %}
+    <div class="validation-item validation-info">
+      <div class="val-domain-badge" style="background: {{ issue.domain | domain_color }}22; color: {{ issue.domain | domain_color }}">{{ issue.domain | domain_name }}</div>
+      <div class="val-content">
+        <div class="val-message">{{ issue.message }}</div>
+        {% if issue.suggestion %}<div class="val-suggestion">{{ issue.suggestion }}</div>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endif %}
+{% endblock %}

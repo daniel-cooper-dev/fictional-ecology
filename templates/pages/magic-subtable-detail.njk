@@ -1,0 +1,50 @@
+{% extends "layouts/world.njk" %}
+{% set activeDomain = 'magic_systems' %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/magic">Magic Systems</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/magic/{{ subTable }}">{{ subTableLabel }}</a>
+  <span class="sep">/</span>
+  <span>{{ item.name or item.tier_name }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 style="color: #f39c12">{{ item.name or item.tier_name }}</h1>
+  <div class="header-actions">
+    <a href="/worlds/{{ world.id }}/magic/{{ subTable }}/{{ item.id }}/edit" class="btn btn-primary">Edit</a>
+    <form method="POST" action="/worlds/{{ world.id }}/magic/{{ subTable }}/{{ item.id }}/delete"
+      onsubmit="return confirm('Delete this entry?')" style="display:inline">
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="detail-fields">
+    {% for key, value in item %}
+      {% if key not in ['id', 'world_id', 'created_at', 'updated_at'] and value is defined and value !== '' and value !== null %}
+      <div class="detail-field">
+        <dt>{{ key | replace('_', ' ') | capitalize }}</dt>
+        <dd>
+          {% if value is string and (value.startswith('[') or value.startswith('{')) %}
+            <pre class="json-display">{{ value | json_pretty }}</pre>
+          {% elif value is sameas true or value == 1 %}
+            Yes
+          {% elif value is sameas false or value == 0 %}
+            No
+          {% else %}
+            {{ value }}
+          {% endif %}
+        </dd>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "layouts/world.njk" %}
+
+{% block title %}Relationship Graph - {{ world.name }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/css/visualizations.css">
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <span>Relationship Graph</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Relationship Graph</h1>
+</div>
+
+<div class="graph-controls" x-data="{ filtersOpen: false }">
+  <button class="btn btn-ghost btn-sm" @click="filtersOpen = !filtersOpen">Filter Domains</button>
+  <div class="filter-checkboxes" x-show="filtersOpen" x-transition>
+    {% for d in allDomains %}
+    {% if d.category != 'magic' or magicEnabled %}
+    <label class="checkbox-label" style="--domain-color: {{ d.color }}">
+      <input type="checkbox" class="domain-filter" value="{{ d.id }}" checked
+        onchange="window.updateGraph && window.updateGraph()">
+      <span style="color: {{ d.color }}">{{ d.name }}</span>
+    </label>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div id="graph-container" class="graph-container"
+  data-world-id="{{ world.id }}"
+  data-domains='{{ allDomains | dump | safe }}'>
+  <div class="graph-loading">Loading graph...</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/dist/graph.js" type="module"></script>
+{% endblock %}

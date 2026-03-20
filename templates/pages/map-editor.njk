@@ -1,0 +1,83 @@
+{% extends "layouts/world.njk" %}
+
+{% block title %}{{ map.name }} - {{ world.name }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/css/visualizations.css">
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/maps">Maps</a>
+  <span class="sep">/</span>
+  <span>{{ map.name }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ map.name }}</h1>
+    <span class="element-type-badge">{{ map.map_type | replace('_', ' ') | capitalize }}</span>
+  </div>
+  <div class="header-actions">
+    <form method="POST" action="/worlds/{{ world.id }}/maps/{{ map.id }}/delete"
+      onsubmit="return confirm('Delete this map?')">
+      <button type="submit" class="btn btn-danger btn-sm">Delete Map</button>
+    </form>
+  </div>
+</div>
+
+<div class="map-editor-layout">
+  <div id="map-container" class="map-container"
+    data-world-id="{{ world.id }}"
+    data-map-id="{{ map.id }}"
+    data-width="{{ map.width }}"
+    data-height="{{ map.height }}"
+    data-pins='{{ pins | dump | safe }}'
+    data-regions='{{ regions | dump | safe }}'>
+    <div class="graph-loading">Loading map...</div>
+  </div>
+
+  <div class="map-sidebar">
+    <div class="card">
+      <h3>Tools</h3>
+      <div class="map-tools">
+        <button class="btn btn-ghost btn-sm map-tool active" data-tool="select">Select</button>
+        <button class="btn btn-ghost btn-sm map-tool" data-tool="pin">Place Pin</button>
+        <button class="btn btn-ghost btn-sm map-tool" data-tool="region">Draw Region</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Pins ({{ pins.length }})</h3>
+      <div class="pin-list">
+        {% for pin in pins %}
+        <div class="pin-item" data-pin-id="{{ pin.id }}">
+          <span class="pin-dot" style="background: {{ pin.color }}"></span>
+          <span class="pin-label">{{ pin.label or pin.element_name or 'Unnamed' }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Regions ({{ regions.length }})</h3>
+      <div class="region-list">
+        {% for region in regions %}
+        <div class="region-item" data-region-id="{{ region.id }}">
+          <span class="pin-dot" style="background: {{ region.fill_color }}"></span>
+          <span>{{ region.label or region.element_name or 'Unnamed' }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/dist/map-editor.js" type="module"></script>
+{% endblock %}

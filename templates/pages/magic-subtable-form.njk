@@ -1,0 +1,60 @@
+{% extends "layouts/world.njk" %}
+{% set activeDomain = 'magic_systems' %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs">
+  <a href="/worlds/{{ world.id }}">{{ world.name }}</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/magic">Magic Systems</a>
+  <span class="sep">/</span>
+  <a href="/worlds/{{ world.id }}/magic/{{ subTable }}">{{ subTableLabel }}</a>
+  <span class="sep">/</span>
+  <span>{{ "New" if isNew else (item.name or item.tier_name or 'Edit') }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ ("New " + subTableLabel) if isNew else ("Edit " + (item.name or item.tier_name or '')) }}</h1>
+</div>
+
+<form method="POST"
+  action="{% if isNew %}/worlds/{{ world.id }}/magic/{{ subTable }}{% else %}/worlds/{{ world.id }}/magic/{{ subTable }}/{{ item.id }}{% endif %}"
+  class="form-card" hx-boost="true">
+
+  {# Dynamically render fields based on sub-table type #}
+  {% if subTable == 'magic_sources' %}
+    {% include "partials/magic-forms/sources.njk" %}
+  {% elif subTable == 'magic_energy_types' %}
+    {% include "partials/magic-forms/energy-types.njk" %}
+  {% elif subTable == 'magic_laws' %}
+    {% include "partials/magic-forms/laws.njk" %}
+  {% elif subTable == 'magic_taxonomies' %}
+    {% include "partials/magic-forms/taxonomies.njk" %}
+  {% elif subTable == 'magical_materials' %}
+    {% include "partials/magic-forms/materials.njk" %}
+  {% elif subTable == 'spell_classifications' %}
+    {% include "partials/magic-forms/spells.njk" %}
+  {% elif subTable == 'magic_costs_consequences' %}
+    {% include "partials/magic-forms/costs.njk" %}
+  {% elif subTable == 'magical_phenomena' %}
+    {% include "partials/magic-forms/phenomena.njk" %}
+  {% elif subTable == 'power_scaling_framework' %}
+    {% include "partials/magic-forms/power-scaling.njk" %}
+  {% else %}
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="{{ item.name if item else '' }}" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4" class="form-control">{{ item.description if item else '' }}</textarea>
+    </div>
+  {% endif %}
+
+  <div class="form-actions">
+    <a href="/worlds/{{ world.id }}/magic/{{ subTable }}" class="btn btn-ghost">Cancel</a>
+    <button type="submit" class="btn btn-primary">{{ "Create" if isNew else "Save" }}</button>
+  </div>
+</form>
+{% endblock %}

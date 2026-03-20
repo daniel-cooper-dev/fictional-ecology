@@ -8,7 +8,7 @@
   </div>
   <div class="header-actions" x-data="{ showSettings: false }">
     <button class="btn btn-ghost" @click="showSettings = !showSettings">Settings</button>
-    <div class="settings-panel" x-show="showSettings" @click.outside="showSettings = false" x-transition>
+    <div class="settings-panel" x-show="showSettings" @click.outside="showSettings = false" @keydown.escape.window="showSettings = false" x-transition>
       <form method="POST" action="/worlds/{{ world.id }}/settings">
         <div class="form-group">
           <label>Name</label>

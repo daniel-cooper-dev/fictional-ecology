@@ -38,6 +38,27 @@ export const atmosphereConfig: DomainConfig = {
       helpText: 'The dominant color of the sky as seen from the surface.',
     },
     {
+      name: 'layers',
+      label: 'Atmospheric Layers',
+      type: 'json',
+      placeholder: '[{"name": "lower", "altitude": "0-10km", "traits": "breathable"}, ...]',
+      helpText: 'The distinct layers of the atmosphere and their characteristics.',
+    },
+    {
+      name: 'wind_systems',
+      label: 'Wind Systems',
+      type: 'textarea',
+      placeholder: 'Describe prevailing winds, jet streams, trade winds...',
+      helpText: 'Major wind patterns including prevailing winds, jet streams, and seasonal wind shifts.',
+    },
+    {
+      name: 'weather_patterns',
+      label: 'Weather Patterns',
+      type: 'textarea',
+      placeholder: 'Describe recurring weather systems, storm tracks, monsoons...',
+      helpText: 'Recurring weather systems and patterns distinct from one-off phenomena.',
+    },
+    {
       name: 'phenomena',
       label: 'Atmospheric Phenomena',
       type: 'json',

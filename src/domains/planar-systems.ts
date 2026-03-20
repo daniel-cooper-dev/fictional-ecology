@@ -100,6 +100,20 @@ export const planarSystemsConfig: DomainConfig = {
       placeholder: 'How was this plane created? By whom or what?',
       helpText: 'The origin story of this plane—divine creation, magical accident, natural emergence, or unknown.',
     },
+    {
+      name: 'inhabitants',
+      label: 'Inhabitants',
+      type: 'textarea',
+      placeholder: 'Describe who or what lives in this plane...',
+      helpText: 'The beings, entities, and civilizations native to or residing in this plane.',
+    },
+    {
+      name: 'hazards',
+      label: 'Hazards',
+      type: 'textarea',
+      placeholder: 'Describe environmental dangers, hostile entities, reality distortions...',
+      helpText: 'Dangers that threaten visitors — environmental hazards, hostile natives, reality distortions, madness effects.',
+    },
   ],
   elementTypes: ['material', 'astral', 'elemental', 'shadow', 'ethereal', 'divine', 'demonic', 'fey', 'dream', 'temporal', 'void', 'mirror', 'pocket', 'demiplane', 'custom'],
   prompts: [

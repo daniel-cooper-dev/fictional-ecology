@@ -384,6 +384,13 @@ select.form-control {
   margin-bottom: 4px;
 }
 
+.char-count {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
 .option-desc {
   font-style: italic;
   margin-top: 6px;

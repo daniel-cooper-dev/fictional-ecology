@@ -15,7 +15,7 @@ export const geologyConfig: DomainConfig = {
       label: 'Feature Type',
       type: 'select',
       required: true,
-      options: ['mountain_range', 'volcano', 'canyon', 'plain', 'cave_system', 'fault_line', 'crater', 'plateau', 'island'],
+      options: ['mountain_range', 'volcano', 'canyon', 'plain', 'cave_system', 'fault_line', 'crater', 'plateau', 'island', 'rift_valley', 'mesa', 'fjord', 'badlands', 'delta'],
       helpText: 'The geological classification of this feature.',
     },
     {

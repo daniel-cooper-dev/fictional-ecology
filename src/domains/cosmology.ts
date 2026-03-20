@@ -19,6 +19,13 @@ export const cosmologyConfig: DomainConfig = {
       helpText: 'The classification of this celestial body.',
     },
     {
+      name: 'composition',
+      label: 'Composition',
+      type: 'select',
+      options: ['rocky', 'gas_giant', 'ice_giant', 'metallic', 'plasma', 'mixed', 'energy', 'unknown'],
+      helpText: 'The primary material composition of this celestial body.',
+    },
+    {
       name: 'mass',
       label: 'Mass',
       type: 'text',

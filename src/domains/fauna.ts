@@ -96,6 +96,13 @@ export const faunaConfig: DomainConfig = {
       helpText: 'How this species communicates — vocalizations, chemical signals, visual displays, etc.',
     },
     {
+      name: 'habitat_description',
+      label: 'Habitat Description',
+      type: 'textarea',
+      placeholder: 'Describe preferred environment, shelter, territory needs...',
+      helpText: 'Prose description of habitat preferences beyond biome classification.',
+    },
+    {
       name: 'biome_ids',
       label: 'Native Biomes',
       type: 'json',

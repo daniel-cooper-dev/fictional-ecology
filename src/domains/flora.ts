@@ -89,6 +89,13 @@ export const floraConfig: DomainConfig = {
       helpText: 'The current population health and conservation status of this species.',
     },
     {
+      name: 'habitat_description',
+      label: 'Habitat Description',
+      type: 'textarea',
+      placeholder: 'Describe preferred growing conditions, soil, light, moisture...',
+      helpText: 'Prose description of habitat preferences — where and how this species grows.',
+    },
+    {
       name: 'biome_ids',
       label: 'Native Biomes',
       type: 'json',

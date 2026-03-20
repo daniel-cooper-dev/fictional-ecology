@@ -16,6 +16,10 @@
   <h1>{{ "Create New " + domainConfig.name if isNew else "Edit " + element.name }}</h1>
 </div>
 
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
 {% if isNew and domainConfig.archetypes and domainConfig.archetypes.length > 0 %}
 <div class="archetype-picker">
   <p class="archetype-heading">Start from a template, or begin with a blank form.</p>

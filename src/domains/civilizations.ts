@@ -75,6 +75,27 @@ export const civilizationsConfig: DomainConfig = {
       options: ['none', 'militia_only', 'moderate', 'strong', 'dominant', 'legendary'],
       helpText: 'Overall military power relative to neighboring civilizations.',
     },
+    {
+      name: 'capital_id',
+      label: 'Capital',
+      type: 'text',
+      placeholder: 'ID of the capital city or seat of power',
+      helpText: 'The geographic place serving as the capital or seat of government.',
+    },
+    {
+      name: 'growth_status',
+      label: 'Growth Status',
+      type: 'select',
+      options: ['nascent', 'growing', 'stable', 'stagnant', 'declining', 'collapsed', 'resurgent'],
+      helpText: 'Whether this civilization is expanding, stable, or in decline.',
+    },
+    {
+      name: 'diplomatic_stance',
+      label: 'Diplomatic Stance',
+      type: 'select',
+      options: ['expansionist', 'aggressive', 'defensive', 'isolationist', 'mercantile', 'diplomatic', 'tributary', 'hegemonic'],
+      helpText: 'The general approach this civilization takes toward foreign relations.',
+    },
   ],
   elementTypes: ['empire', 'kingdom', 'republic', 'tribal_confederation', 'city_state', 'nomadic', 'theocracy', 'magocracy', 'custom'],
   prompts: [

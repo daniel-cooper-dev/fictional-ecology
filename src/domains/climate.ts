@@ -56,6 +56,27 @@ export const climateConfig: DomainConfig = {
       helpText: 'How many distinct seasons this zone experiences.',
     },
     {
+      name: 'humidity',
+      label: 'Humidity',
+      type: 'text',
+      placeholder: 'e.g. arid, semi-arid, moderate, humid, saturated',
+      helpText: 'Typical humidity level for this climate zone.',
+    },
+    {
+      name: 'weather_extremes',
+      label: 'Weather Extremes',
+      type: 'json',
+      placeholder: '["hurricanes", "blizzards", "flash floods", "dust storms"]',
+      helpText: 'Extreme weather events that can occur in this climate zone.',
+    },
+    {
+      name: 'historical_shifts',
+      label: 'Historical Climate Shifts',
+      type: 'textarea',
+      placeholder: 'Describe long-term climate changes — ice ages, warming periods, desertification...',
+      helpText: 'How this climate zone has changed over geological or historical time.',
+    },
+    {
       name: 'season_descriptions',
       label: 'Season Descriptions',
       type: 'json',

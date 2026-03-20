@@ -44,7 +44,7 @@
     </div>
     <h3>{{ el.name }}</h3>
     {% if el.summary %}<p>{{ el.summary | truncate(100) }}</p>{% endif %}
-    <div class="element-meta text-muted">{{ el.updated_at }}</div>
+    <div class="element-meta text-muted">{{ el.updated_at | relative_time }}</div>
   </a>
   {% endfor %}
 </div>

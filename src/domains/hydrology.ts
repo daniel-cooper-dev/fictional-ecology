@@ -15,7 +15,7 @@ export const hydrologyConfig: DomainConfig = {
       label: 'Water Type',
       type: 'select',
       required: true,
-      options: ['ocean', 'sea', 'lake', 'river', 'glacier', 'aquifer', 'swamp', 'hot_spring'],
+      options: ['ocean', 'sea', 'lake', 'river', 'glacier', 'aquifer', 'swamp', 'hot_spring', 'estuary', 'geyser', 'spring', 'reef'],
       helpText: 'The classification of this water body.',
     },
     {
@@ -52,6 +52,13 @@ export const hydrologyConfig: DomainConfig = {
       type: 'text',
       placeholder: 'e.g. 2°C - 28°C',
       helpText: 'Typical water temperature range across seasons.',
+    },
+    {
+      name: 'water_quality',
+      label: 'Water Quality',
+      type: 'textarea',
+      placeholder: 'Describe clarity, purity, drinkability, pollutants...',
+      helpText: 'The quality, clarity, and potability of the water — important for ecosystems and settlements.',
     },
     {
       name: 'connected_to',

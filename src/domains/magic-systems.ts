@@ -11,6 +11,13 @@ export const magicSystemsConfig: DomainConfig = {
   category: 'magic',
   fields: [
     {
+      name: 'magic_philosophy',
+      label: 'Magic Philosophy',
+      type: 'textarea',
+      placeholder: 'Describe the overall paradigm — hard vs soft magic, deterministic vs chaotic, scientific vs mystical...',
+      helpText: 'The overarching philosophy or paradigm of this magic system — how rigorous, predictable, and systematized magic is in your world.',
+    },
+    {
       name: 'properties',
       label: 'Properties',
       type: 'json',

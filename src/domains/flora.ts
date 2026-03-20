@@ -68,6 +68,27 @@ export const floraConfig: DomainConfig = {
       helpText: 'Whether this species possesses any form of awareness or intelligence.',
     },
     {
+      name: 'seasonal_behavior',
+      label: 'Seasonal Behavior',
+      type: 'textarea',
+      placeholder: 'Describe deciduous/evergreen cycles, dormancy, bloom timing...',
+      helpText: 'How this species changes through the seasons — leaf drop, dormancy, flowering, fruiting cycles.',
+    },
+    {
+      name: 'cultivation_difficulty',
+      label: 'Cultivation Difficulty',
+      type: 'select',
+      options: ['wild_only', 'difficult', 'moderate', 'easy', 'domesticated'],
+      helpText: 'How difficult it is to cultivate or farm this species.',
+    },
+    {
+      name: 'endangered_status',
+      label: 'Endangered Status',
+      type: 'select',
+      options: ['thriving', 'stable', 'declining', 'endangered', 'critical', 'extinct_in_wild'],
+      helpText: 'The current population health and conservation status of this species.',
+    },
+    {
       name: 'biome_ids',
       label: 'Native Biomes',
       type: 'json',

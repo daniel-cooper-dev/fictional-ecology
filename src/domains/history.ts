@@ -53,6 +53,27 @@ export const historyConfig: DomainConfig = {
       placeholder: '["fall of the old empire", "discovery of mithril", "planar seal broken"]',
       helpText: 'The major outcomes and lasting effects of this event.',
     },
+    {
+      name: 'reliability',
+      label: 'Reliability',
+      type: 'select',
+      options: ['mythological', 'legendary', 'oral_tradition', 'partially_documented', 'well_documented', 'verified'],
+      helpText: 'How trustworthy the historical record is for this event — from pure myth to verified fact.',
+    },
+    {
+      name: 'geographic_scope',
+      label: 'Geographic Scope',
+      type: 'select',
+      options: ['local', 'regional', 'continental', 'global', 'planar', 'cosmic'],
+      helpText: 'How geographically widespread this event\'s impact was.',
+    },
+    {
+      name: 'significance',
+      label: 'Significance',
+      type: 'select',
+      options: ['minor', 'moderate', 'major', 'transformative', 'world_altering'],
+      helpText: 'The overall historical importance and lasting impact of this event.',
+    },
   ],
   elementTypes: ['war', 'discovery', 'founding', 'disaster', 'migration', 'cultural_shift', 'political_event', 'magical_event', 'technological_breakthrough', 'economic_event'],
   prompts: [

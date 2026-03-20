@@ -47,6 +47,13 @@ export const sentientSpeciesConfig: DomainConfig = {
       helpText: 'Notable cognitive abilities or tendencies that distinguish this species.',
     },
     {
+      name: 'diet',
+      label: 'Diet',
+      type: 'select',
+      options: ['herbivore', 'carnivore', 'omnivore', 'filter_feeder', 'photosynthetic', 'detritivore', 'magical', 'custom'],
+      helpText: 'Primary dietary needs of this species.',
+    },
+    {
       name: 'communication_method',
       label: 'Communication Method',
       type: 'text',

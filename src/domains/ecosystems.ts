@@ -55,6 +55,27 @@ export const ecosystemsConfig: DomainConfig = {
       helpText: 'The biomes this ecosystem spans or exists within.',
     },
     {
+      name: 'geographic_scope',
+      label: 'Geographic Scope',
+      type: 'text',
+      placeholder: 'e.g. 500 km², a single valley, continent-wide',
+      helpText: 'The approximate area or extent of this ecosystem.',
+    },
+    {
+      name: 'succession_stage',
+      label: 'Succession Stage',
+      type: 'select',
+      options: ['pioneer', 'early', 'developing', 'mature', 'climax', 'degraded'],
+      helpText: 'The ecological succession stage — how mature and established this ecosystem is.',
+    },
+    {
+      name: 'age',
+      label: 'Age',
+      type: 'text',
+      placeholder: 'e.g. 10,000 years, recently formed, ancient',
+      helpText: 'How long this ecosystem has existed in its current form.',
+    },
+    {
       name: 'threats',
       label: 'Threats',
       type: 'json',

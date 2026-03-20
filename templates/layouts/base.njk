@@ -81,6 +81,16 @@
         if (form) { e.preventDefault(); form.requestSubmit(); }
       }
     });
+    (function() {
+      const form = document.querySelector('main form.form-card');
+      if (!form) return;
+      let dirty = false;
+      form.addEventListener('input', () => { dirty = true; });
+      form.addEventListener('submit', () => { dirty = false; });
+      window.addEventListener('beforeunload', (e) => {
+        if (dirty) { e.preventDefault(); }
+      });
+    })();
   </script>
 </body>
 </html>

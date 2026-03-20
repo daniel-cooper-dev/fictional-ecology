@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { WorldService } from '../services/WorldService.js';
-import { ALL_DOMAINS } from '../domains/index.js';
+import { ALL_DOMAINS, DOMAIN_CATEGORIES } from '../domains/index.js';
 
 const router = Router();
 const worldService = new WorldService();
@@ -32,7 +32,7 @@ router.post('/', (req, res) => {
     name: name.trim(),
     tagline: tagline || '',
     description: description || '',
-    magic_enabled: magic_enabled !== 'false',
+    magic_enabled: magic_enabled === 'on' || magic_enabled === 'true',
   });
   const startDomain = req.body.start_domain;
   if (startDomain && startDomain !== 'cosmology') {
@@ -50,7 +50,7 @@ router.get('/:worldId', (req, res) => {
   res.render('pages/world-dashboard.njk', {
     world, stats, domains: ALL_DOMAINS,
     magicEnabled: !!world.magic_enabled,
-    domainCategories: res.locals.domainCategories || require('../domains/index.js').DOMAIN_CATEGORIES,
+    domainCategories: res.locals.domainCategories || DOMAIN_CATEGORIES,
   });
 });
 

@@ -50,11 +50,11 @@ router.post('/:worldId/relationships/:relId/delete', (req, res) => {
 // API: search elements for relationship picker
 router.get('/:worldId/api/elements', (req, res) => {
   const db = getWorldDb(req.params.worldId);
-  const q = req.query.q as string || '';
+  const q = (req.query.q as string || '').replace(/[%_]/g, '\\$&');
   const elements = db.prepare(`
     SELECT id, name, domain, element_type
     FROM world_elements
-    WHERE world_id = ? AND name LIKE ?
+    WHERE world_id = ? AND name LIKE ? ESCAPE '\\'
     ORDER BY name
     LIMIT 20
   `).all(req.params.worldId, `%${q}%`);

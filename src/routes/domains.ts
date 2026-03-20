@@ -38,10 +38,28 @@ router.get('/:worldId/:domainId/new', (req, res) => {
   const config = getDomainConfig(req.params.domainId);
   if (!config) { res.status(404).render('pages/error.njk', { status: 404, message: 'Domain not found' }); return; }
 
+  let element = null;
+  let selectedArchetype = null;
+  const archetypeId = req.query.archetype as string | undefined;
+
+  if (archetypeId && config.archetypes) {
+    const archetype = config.archetypes.find(a => a.id === archetypeId);
+    if (archetype) {
+      selectedArchetype = archetype;
+      element = {
+        element_type: archetype.element_type,
+        summary: archetype.summary || '',
+        detailed_notes: archetype.detailed_notes || '',
+        extension: archetype.fields,
+      };
+    }
+  }
+
   res.render('pages/element-form.njk', {
     domainConfig: config,
-    element: null,
+    element,
     isNew: true,
+    selectedArchetype,
   });
 });
 
@@ -59,6 +77,7 @@ router.post('/:worldId/:domainId', (req, res) => {
       domainConfig: config,
       error: 'Name is required',
       element: req.body,
+      isNew: true,
     });
     return;
   }

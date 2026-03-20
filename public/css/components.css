@@ -995,6 +995,27 @@ legend {
   line-height: 1.5;
 }
 
+/* --- Archetype picker --- */
+.archetype-picker {
+  margin-bottom: 24px;
+}
+
+.archetype-picker .onboarding-options {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.archetype-heading {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.archetype-picker .onboarding-option {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 /* --- Domain category groups --- */
 .domain-category-group {
   margin-bottom: 20px;

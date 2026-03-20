@@ -43,9 +43,10 @@ export class SearchService {
       let sql = `
         SELECT id as element_id, domain, name, summary as snippet, 0 as rank
         FROM world_elements
-        WHERE (name LIKE ? OR summary LIKE ? OR detailed_notes LIKE ?)
+        WHERE (name LIKE ? ESCAPE '\\' OR summary LIKE ? ESCAPE '\\' OR detailed_notes LIKE ? ESCAPE '\\')
       `;
-      const like = `%${sanitized}%`;
+      const likeSafe = sanitized.replace(/[%_]/g, '\\$&');
+      const like = `%${likeSafe}%`;
       const params: any[] = [like, like, like];
 
       if (domain) {

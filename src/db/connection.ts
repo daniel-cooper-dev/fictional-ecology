@@ -4,6 +4,10 @@ import fs from 'fs';
 import { config } from '../config.js';
 import { runMigrations } from './migrate.js';
 
+// WAL mode requires shared memory, which doesn't work on NTFS mounts in WSL
+const isNtfsMount = config.dataDir.startsWith('/mnt/');
+const journalMode = isNtfsMount ? 'DELETE' : 'WAL';
+
 const dbInstances = new Map<string, Database.Database>();
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -29,7 +33,7 @@ export function getWorldDb(worldId: string): Database.Database {
   }
   const dbPath = getWorldDbPath(worldId);
   const db = new Database(dbPath);
-  db.pragma('journal_mode = WAL');
+  db.pragma(`journal_mode = ${journalMode}`);
   db.pragma('foreign_keys = ON');
   runMigrations(db);
   dbInstances.set(worldId, db);
@@ -61,7 +65,7 @@ export function getMasterDb(): Database.Database {
   }
   const dbPath = path.join(config.dataDir, 'master.db');
   masterDb = new Database(dbPath);
-  masterDb.pragma('journal_mode = WAL');
+  masterDb.pragma(`journal_mode = ${journalMode}`);
   masterDb.pragma('foreign_keys = ON');
 
   masterDb.exec(`

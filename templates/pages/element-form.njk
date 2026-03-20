@@ -16,6 +16,28 @@
   <h1>{{ "Create New " + domainConfig.name if isNew else "Edit " + element.name }}</h1>
 </div>
 
+{% if isNew and domainConfig.archetypes and domainConfig.archetypes.length > 0 %}
+<div class="archetype-picker">
+  <p class="archetype-heading">Start from a template, or begin with a blank form.</p>
+  <div class="onboarding-options">
+    <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new"
+       class="onboarding-option{% if not selectedArchetype %} selected{% endif %}">
+      <div class="opt-icon">📝</div>
+      <h3>From Scratch</h3>
+      <p>Start with a blank form</p>
+    </a>
+    {% for arch in domainConfig.archetypes %}
+    <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new?archetype={{ arch.id }}"
+       class="onboarding-option{% if selectedArchetype and selectedArchetype.id == arch.id %} selected{% endif %}">
+      <div class="opt-icon"><i data-lucide="{{ domainConfig.icon }}"></i></div>
+      <h3>{{ arch.name }}</h3>
+      <p>{{ arch.description }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
 <form method="POST"
   action="{% if isNew %}/worlds/{{ world.id }}/{{ domainConfig.id }}{% else %}/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ element.id }}{% endif %}"
   class="form-card"
@@ -95,7 +117,7 @@
 
         {% elif field.type == 'boolean' %}
           <label class="checkbox-label">
-            <input type="checkbox" id="{{ field.name }}" name="{{ field.name }}" value="1" {% if val %}checked{% endif %}>
+            <input type="checkbox" id="{{ field.name }}" name="{{ field.name }}" value="1" {% if val and val != '0' and val != 'false' %}checked{% endif %}>
             <span>{{ field.label }}</span>
           </label>
 
@@ -161,7 +183,7 @@
             </select>
           {% elif field.type == 'boolean' %}
             <label class="checkbox-label">
-              <input type="checkbox" id="magic_{{ field.name }}" name="magic_{{ field.name }}" value="1" {% if val %}checked{% endif %}>
+              <input type="checkbox" id="magic_{{ field.name }}" name="magic_{{ field.name }}" value="1" {% if val and val != '0' and val != 'false' %}checked{% endif %}>
               <span>{{ field.label }}</span>
             </label>
           {% elif field.type == 'textarea' %}

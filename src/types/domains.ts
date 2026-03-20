@@ -26,6 +26,17 @@ export interface DomainConfig {
   prompts: string[];
   magicPermeation: MagicPermeationConfig | null;
   defaultSortField?: string;
+  archetypes?: Archetype[];
+}
+
+export interface Archetype {
+  id: string;
+  name: string;
+  description: string;
+  element_type: string;
+  summary?: string;
+  detailed_notes?: string;
+  fields: Record<string, any>;
 }
 
 export interface MagicPermeationConfig {

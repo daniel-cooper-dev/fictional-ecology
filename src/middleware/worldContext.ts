@@ -5,7 +5,7 @@ import { ALL_DOMAINS, DOMAIN_CATEGORIES } from '../domains/index.js';
 const worldService = new WorldService();
 
 export function worldContext(req: Request, res: Response, next: NextFunction): void {
-  const worldId = req.params.worldId;
+  const worldId = req.params.worldId as string;
   if (!worldId) return next();
 
   const world = worldService.get(worldId);

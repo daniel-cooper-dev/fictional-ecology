@@ -1178,3 +1178,27 @@ legend {
 .htmx-request.htmx-indicator {
   display: inline-block;
 }
+
+/* Top progress bar for page navigations */
+#page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 9999;
+  transition: width 0.3s ease;
+  width: 0;
+  opacity: 0;
+}
+
+#page-progress.active {
+  opacity: 1;
+  animation: progress-bar 2s ease-in-out forwards;
+}
+
+@keyframes progress-bar {
+  0% { width: 0; }
+  50% { width: 70%; }
+  100% { width: 95%; }
+}

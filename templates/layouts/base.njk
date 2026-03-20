@@ -12,6 +12,7 @@
   {% block head %}{% endblock %}
 </head>
 <body hx-boost="true">
+  <div id="page-progress"></div>
   <header class="top-bar">
     <a href="/worlds" class="logo">
       <span class="logo-icon" aria-hidden="true">&#9672;</span>
@@ -55,6 +56,25 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
     document.body.addEventListener('htmx:afterSwap', () => lucide.createIcons());
+    (function() {
+      const bar = document.getElementById('page-progress');
+      if (!bar) return;
+      document.body.addEventListener('htmx:beforeRequest', () => {
+        bar.style.width = '0';
+        bar.classList.add('active');
+      });
+      document.body.addEventListener('htmx:afterRequest', () => {
+        bar.style.width = '100%';
+        bar.style.transition = 'width 0.2s, opacity 0.4s 0.2s';
+        bar.style.opacity = '0';
+        setTimeout(() => {
+          bar.classList.remove('active');
+          bar.style.transition = '';
+          bar.style.width = '0';
+          bar.style.opacity = '';
+        }, 600);
+      });
+    })();
   </script>
 </body>
 </html>

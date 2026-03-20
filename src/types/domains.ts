@@ -4,6 +4,7 @@ export interface FieldDefinition {
   type: 'text' | 'textarea' | 'number' | 'select' | 'multiselect' | 'json' | 'boolean' | 'range';
   required?: boolean;
   options?: string[];
+  optionDescriptions?: Record<string, string>;
   placeholder?: string;
   min?: number;
   max?: number;

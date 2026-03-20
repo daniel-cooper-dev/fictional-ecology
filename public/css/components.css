@@ -367,11 +367,20 @@ select.form-control {
   accent-color: var(--accent);
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 .help-text {
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 2px;
   margin-bottom: 4px;
+}
+
+.option-desc {
+  font-style: italic;
+  margin-top: 6px;
 }
 
 .form-actions {

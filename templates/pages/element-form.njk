@@ -69,12 +69,26 @@
         {% if field.helpText %}<p class="help-text">{{ field.helpText }}</p>{% endif %}
 
         {% if field.type == 'select' and field.options %}
+          {% if field.optionDescriptions %}
+          <div x-data="{ selected: '{{ val }}' }">
+            <select id="{{ field.name }}" name="{{ field.name }}" class="form-control" x-model="selected">
+              <option value="">-- Select --</option>
+              {% for opt in field.options %}
+              <option value="{{ opt }}" {% if val == opt %}selected{% endif %}>{{ opt | replace('_', ' ') | capitalize }}</option>
+              {% endfor %}
+            </select>
+            {% for opt, desc in field.optionDescriptions %}
+            <p class="help-text option-desc" x-show="selected === '{{ opt }}'" x-cloak>{{ desc }}</p>
+            {% endfor %}
+          </div>
+          {% else %}
           <select id="{{ field.name }}" name="{{ field.name }}" class="form-control">
             <option value="">-- Select --</option>
             {% for opt in field.options %}
             <option value="{{ opt }}" {% if val == opt %}selected{% endif %}>{{ opt | replace('_', ' ') | capitalize }}</option>
             {% endfor %}
           </select>
+          {% endif %}
 
         {% elif field.type == 'textarea' %}
           <textarea id="{{ field.name }}" name="{{ field.name }}" rows="3" class="form-control" placeholder="{{ field.placeholder or '' }}">{{ val }}</textarea>

@@ -109,6 +109,20 @@ export const arcaneSciencesConfig: DomainConfig = {
       placeholder: 'ID of the device this evolved from',
       helpText: 'The earlier device or principle that this technology builds upon.',
     },
+    {
+      name: 'research_methodology',
+      label: 'Research Methodology',
+      type: 'textarea',
+      placeholder: 'Describe how R&D works — empirical testing, intuitive discovery, divine revelation...',
+      helpText: 'How this technology was developed — empirical experimentation, magical intuition, reverse-engineering, or divine inspiration.',
+    },
+    {
+      name: 'safety_standards',
+      label: 'Safety Standards',
+      type: 'textarea',
+      placeholder: 'Describe testing requirements, certifications, known risks...',
+      helpText: 'Regulations, testing standards, and safety protocols governing this technology.',
+    },
   ],
   elementTypes: ['device', 'principle', 'infrastructure', 'research_node', 'failure', 'era'],
   prompts: [

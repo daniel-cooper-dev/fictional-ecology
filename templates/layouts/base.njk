@@ -75,6 +75,12 @@
         }, 600);
       });
     })();
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        const form = document.querySelector('main form.form-card');
+        if (form) { e.preventDefault(); form.requestSubmit(); }
+      }
+    });
   </script>
 </body>
 </html>

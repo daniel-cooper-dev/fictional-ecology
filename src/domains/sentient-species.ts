@@ -82,6 +82,20 @@ export const sentientSpeciesConfig: DomainConfig = {
       helpText: 'The geographic region where this species originated or is primarily found.',
     },
     {
+      name: 'sex_and_gender',
+      label: 'Sex & Gender',
+      type: 'textarea',
+      placeholder: 'Describe biological sexes, gender systems, dimorphism...',
+      helpText: 'Biological sex characteristics, sexual dimorphism, and gender systems within this species.',
+    },
+    {
+      name: 'aging_stages',
+      label: 'Aging Stages',
+      type: 'textarea',
+      placeholder: 'Describe life phases — infancy, youth, adulthood, elderhood...',
+      helpText: 'The major life phases and how capabilities, appearance, or status change with age.',
+    },
+    {
       name: 'reproduction',
       label: 'Reproduction',
       type: 'textarea',

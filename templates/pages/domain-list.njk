@@ -34,6 +34,22 @@
   <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new" class="btn btn-primary">Create First {{ domainConfig.name }}</a>
 </div>
 {% else %}
+{% macro sortLink(field, label) %}
+  {% set nextDir = 'asc' if (currentSort == field and currentDir == 'desc') else 'desc' %}
+  <a href="?sort={{ field }}&dir={{ nextDir }}{% if currentType %}&type={{ currentType }}{% endif %}"
+     class="sort-link{% if currentSort == field %} active{% endif %}">
+    {{ label }}
+    {% if currentSort == field %}
+      <span class="sort-arrow">{{ '&#9650;' if currentDir == 'asc' else '&#9660;' }}</span>
+    {% endif %}
+  </a>
+{% endmacro %}
+<div class="sort-bar">
+  Sort by: {{ sortLink('name', 'Name') }} {{ sortLink('updated_at', 'Updated') }} {{ sortLink('created_at', 'Created') }} {{ sortLink('element_type', 'Type') }}
+</div>
+{% endif %}
+
+{% if result.items.length > 0 %}
 <div class="element-grid">
   {% for el in result.items %}
   <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ el.id }}" class="element-card" style="--domain-color: {{ domainConfig.color }}">
@@ -52,7 +68,7 @@
 {% if result.total_pages > 1 %}
 <div class="pagination">
   {% for p in range(1, result.total_pages + 1) %}
-  <a href="?page={{ p }}{% if currentType %}&type={{ currentType }}{% endif %}" class="page-link {% if p == result.page %}active{% endif %}">{{ p }}</a>
+  <a href="?page={{ p }}{% if currentType %}&type={{ currentType }}{% endif %}{% if currentSort != 'updated_at' %}&sort={{ currentSort }}{% endif %}{% if currentDir != 'desc' %}&dir={{ currentDir }}{% endif %}" class="page-link {% if p == result.page %}active{% endif %}">{{ p }}</a>
   {% endfor %}
 </div>
 {% endif %}

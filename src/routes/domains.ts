@@ -24,12 +24,16 @@ router.get('/:worldId/:domainId', (req, res) => {
   let page = parseInt(req.query.page as string) || 1;
   if (page < 1) page = 1;
   const type = req.query.type as string | undefined;
-  const result = service.list(req.params.worldId, { page, limit: 50, type });
+  const sort_by = req.query.sort as string | undefined;
+  const sort_dir = req.query.dir as string | undefined;
+  const result = service.list(req.params.worldId, { page, limit: 50, type, sort_by, sort_dir });
 
   res.render('pages/domain-list.njk', {
     domainConfig: config,
     result,
     currentType: type,
+    currentSort: sort_by || 'updated_at',
+    currentDir: sort_dir || 'desc',
   });
 });
 

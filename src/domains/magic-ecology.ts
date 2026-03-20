@@ -67,6 +67,20 @@ export const magicEcologyConfig: DomainConfig = {
       placeholder: 'Past events that disrupted this cycle and their consequences...',
       helpText: 'Known historical instances where this cycle was disrupted and what resulted.',
     },
+    {
+      name: 'mana_pollution',
+      label: 'Mana Pollution',
+      type: 'textarea',
+      placeholder: 'Describe magical waste, contamination, toxic mana buildup...',
+      helpText: 'How magical waste, byproducts, or contamination affects this cycle and the surrounding environment.',
+    },
+    {
+      name: 'dead_zones',
+      label: 'Dead Zones',
+      type: 'textarea',
+      placeholder: 'Describe mana-barren areas, causes, and effects on life...',
+      helpText: 'Areas where mana has been depleted or blocked — their causes, boundaries, and impact on magical and mundane life.',
+    },
   ],
   elementTypes: ['mana_cycle', 'mutation', 'magical_food_web', 'saturated_environment'],
   prompts: [

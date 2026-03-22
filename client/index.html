@@ -1314,7 +1314,7 @@
                           <textarea class="form-control" x-model="magicProps[f.name]" :placeholder="f.placeholder || ''" rows="3"></textarea>
                         </template>
                         <template x-if="f.type === 'number'">
-                          <input class="form-control" type="number" x-model="magicProps[f.name]" :placeholder="f.placeholder || ''">
+                          <input class="form-control" type="number" x-model.number="magicProps[f.name]" :placeholder="f.placeholder || ''">
                         </template>
                         <template x-if="f.type === 'select'">
                           <select class="form-control" x-model="magicProps[f.name]">
@@ -1335,7 +1335,7 @@
                         </template>
                         <template x-if="f.type === 'range'">
                           <div>
-                            <input type="range" class="form-range" x-model="magicProps[f.name]" :min="f.min || 0" :max="f.max || 100" :step="f.step || 1">
+                            <input type="range" class="form-range" x-model.number="magicProps[f.name]" :min="f.min || 0" :max="f.max || 100" :step="f.step || 1">
                             <span class="text-muted" x-text="magicProps[f.name]"></span>
                           </div>
                         </template>
@@ -1689,7 +1689,7 @@
         magic_enabled: true,
         magic_level: 'medium',
         startingDomains: [],
-        stepLabels: ['Name', 'Tagline', 'Blueprint', 'Magic', 'Level', 'Domains', 'Review'],
+        stepLabels: ['Name', 'Describe', 'Blueprint', 'Magic', 'Level', 'Domains', 'Review'],
         get canNext() {
           if (this.step === 1) return this.name.trim().length > 0;
           return true;
@@ -1721,7 +1721,7 @@
         create() {
           if (!this.name.trim()) return;
           const settings = {};
-          if (this.magic_level) settings.magic_level = this.magic_level;
+          if (this.magic_enabled && this.magic_level) settings.magic_level = this.magic_level;
           if (this.startingDomains.length) settings.starting_domains = this.startingDomains;
           const w = store.createWorld({
             name: this.name.trim(),
@@ -1803,7 +1803,7 @@
             <h2>Choose a Blueprint</h2>
             <p class="step-hint">Blueprints provide suggestions and structure. You can always customize later.</p>
             <div class="onboarding-options mb-16">
-              <div class="onboarding-option" :class="{ selected: !blueprint_id }" @click="blueprint_id = ''">
+              <div class="onboarding-option" :class="{ selected: !blueprint_id }" @click="blueprint_id = ''; magic_enabled = true">
                 <div class="opt-icon"><i data-lucide="file-plus"></i></div>
                 <h3>From Scratch</h3>
                 <p>Start with a blank canvas</p>

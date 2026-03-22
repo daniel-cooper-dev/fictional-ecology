@@ -315,8 +315,8 @@ export const historyConfig: DomainConfig = {
       },
     },
     {
-      id: 'the_silence',
-      name: 'The Silence',
+      id: 'the_great_silence',
+      name: 'The Great Silence',
       description: 'An era when all magic stopped. Devastating consequences for magic-dependent civilizations.',
       element_type: 'magical_event',
       summary: 'A period when all magic ceased to function — the lights went out and stayed out',

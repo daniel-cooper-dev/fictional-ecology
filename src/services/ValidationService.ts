@@ -188,8 +188,12 @@ export class ValidationService {
   }
 
   private checkMagicConsistency(db: any, worldId: string, issues: ValidationIssue[]) {
-    // Check if magic is enabled but no magic sources defined
+    // Only check if magic is enabled for this world
     try {
+      const masterDb = getMasterDb();
+      const world = masterDb.prepare('SELECT magic_enabled FROM worlds WHERE id = ?').get(worldId) as any;
+      if (!world || !world.magic_enabled) return;
+
       const sourceCount = db.prepare('SELECT COUNT(*) as count FROM magic_sources WHERE world_id = ?')
         .get(worldId) as any;
 

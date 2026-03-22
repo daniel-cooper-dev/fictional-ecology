@@ -86,7 +86,12 @@ function getJSON<T>(key: string, fallback: T): T {
 }
 
 function setJSON(key: string, value: any): void {
-  localStorage.setItem(key, JSON.stringify(value));
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.error('localStorage write failed (storage full?):', key, e);
+    alert('Storage is full. Try deleting some worlds or exporting your data.');
+  }
 }
 
 // --- Key scheme ---
@@ -107,7 +112,7 @@ export const store = {
 
   listWorlds(): World[] {
     return getJSON<World[]>(KEYS.worlds, []).sort(
-      (a, b) => b.updated_at.localeCompare(a.updated_at)
+      (a, b) => (b.updated_at || '').localeCompare(a.updated_at || '')
     );
   },
 
@@ -257,8 +262,8 @@ export const store = {
     const field = sortBy || 'updated_at';
     const dir = sortDir || 'desc';
     elements.sort((a: any, b: any) => {
-      const va = a[field] || '';
-      const vb = b[field] || '';
+      const va = a[field] ?? '';
+      const vb = b[field] ?? '';
       return dir === 'asc' ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
     });
 
@@ -339,7 +344,7 @@ export const store = {
     if (elementId) {
       rels = rels.filter(r => r.source_id === elementId || r.target_id === elementId);
     }
-    return rels.sort((a, b) => b.created_at.localeCompare(a.created_at));
+    return rels.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
   },
 
   createRelationship(worldId: string, data: {
@@ -432,7 +437,7 @@ export const store = {
   // ==================== ERAS ====================
 
   listEras(worldId: string): Era[] {
-    return getJSON<Era[]>(KEYS.eras(worldId), []).sort((a, b) => a.sort_order - b.sort_order || a.start_year - b.start_year);
+    return getJSON<Era[]>(KEYS.eras(worldId), []).sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || (a.start_year ?? 0) - (b.start_year ?? 0));
   },
 
   createEra(worldId: string, data: {
@@ -554,6 +559,10 @@ export const store = {
   importData(json: any): { constellationId?: string; worldIds: string[] } {
     const result: { constellationId?: string; worldIds: string[] } = { worldIds: [] };
 
+    if (!json || typeof json !== 'object' || !json.type || !json.version) {
+      return result;
+    }
+
     if (json.type === 'constellation' && json.constellation && json.worlds) {
       // Import constellation
       const idMap = new Map<string, string>();
@@ -598,14 +607,16 @@ export const store = {
       return { ...e, id: newId, world_id: newWorldId };
     });
 
-    // Remap relationship IDs and references
-    const relationships: Relationship[] = (data.relationships || []).map((r: Relationship) => ({
-      ...r,
-      id: generateId(),
-      world_id: newWorldId,
-      source_id: idMap.get(r.source_id) || r.source_id,
-      target_id: idMap.get(r.target_id) || r.target_id,
-    }));
+    // Remap relationship IDs and references — drop orphaned refs
+    const relationships: Relationship[] = (data.relationships || [])
+      .filter((r: Relationship) => idMap.has(r.source_id) && idMap.has(r.target_id))
+      .map((r: Relationship) => ({
+        ...r,
+        id: generateId(),
+        world_id: newWorldId,
+        source_id: idMap.get(r.source_id)!,
+        target_id: idMap.get(r.target_id)!,
+      }));
 
     // Remap tag IDs
     const tags: Tag[] = (data.tags || []).map((t: Tag) => {
@@ -614,11 +625,13 @@ export const store = {
       return { ...t, id: newId, world_id: newWorldId };
     });
 
-    // Remap element_tag references
-    const elementTags: ElementTag[] = (data.element_tags || []).map((et: ElementTag) => ({
-      element_id: idMap.get(et.element_id) || et.element_id,
-      tag_id: idMap.get(et.tag_id) || et.tag_id,
-    }));
+    // Remap element_tag references — drop orphaned refs
+    const elementTags: ElementTag[] = (data.element_tags || [])
+      .filter((et: ElementTag) => idMap.has(et.element_id) && idMap.has(et.tag_id))
+      .map((et: ElementTag) => ({
+        element_id: idMap.get(et.element_id)!,
+        tag_id: idMap.get(et.tag_id)!,
+      }));
 
     // Remap era IDs
     const eras: Era[] = (data.eras || []).map((e: Era) => ({

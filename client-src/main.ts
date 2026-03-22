@@ -113,6 +113,8 @@ window.handleFileUpload = (event: Event) => {
     }
   };
   reader.readAsText(file);
+  // Reset input so the same file can be re-uploaded
+  input.value = '';
 };
 
 // Initialize the Alpine.js app store

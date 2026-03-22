@@ -240,6 +240,7 @@
         }
       }" x-init="
         if ($store.app.query.blueprint) blueprint_id = $store.app.query.blueprint;
+        $watch('$store.app.page', v => { if (v === 'world-new') { name=''; tagline=''; description=''; constellation_id=''; magic_enabled=true; blueprint_id = $store.app.query.blueprint || ''; } });
         $nextTick(() => lucide.createIcons())
       ">
         <div class="page-header">
@@ -264,7 +265,7 @@
               <select class="form-control" x-model="blueprint_id">
                 <option value="">None (from scratch)</option>
                 <template x-for="bp in ALL_BLUEPRINTS" :key="bp.id">
-                  <option :value="bp.id" x-text="bp.name" :selected="blueprint_id === bp.id"></option>
+                  <option :value="bp.id" x-text="bp.name"></option>
                 </template>
               </select>
             </div>
@@ -328,7 +329,7 @@
           this.showSettings = false;
         },
         deleteWorld() {
-          if (!confirm('Delete world \"' + this.world.name + '\"? This cannot be undone.')) return;
+          if (!confirm('Delete world ' + this.world.name + '? This cannot be undone.')) return;
           store.deleteWorld(this.world.id);
           navigate('/');
         },
@@ -490,7 +491,10 @@
           });
           navigate('/constellations/' + c.id);
         }
-      }" x-init="$nextTick(() => lucide.createIcons())">
+      }" x-init="
+        $watch('$store.app.page', v => { if (v === 'constellation-new') { name=''; description=''; color='#6366f1'; } });
+        $nextTick(() => lucide.createIcons())
+      ">
         <div class="page-header">
           <h1>New Constellation</h1>
         </div>
@@ -560,7 +564,7 @@
           this.load();
         },
         deleteConstellation() {
-          if (!confirm('Delete constellation \"' + this.constellation.name + '\"?')) return;
+          if (!confirm('Delete constellation ' + this.constellation.name + '?')) return;
           store.deleteConstellation(this.constellation.id);
           navigate('/');
         },
@@ -1231,7 +1235,7 @@
                   <select class="form-control" x-model="element_type">
                     <option value="">Select type...</option>
                     <template x-for="t in (domainConfig.elementTypes || [])" :key="t">
-                      <option :value="t" x-text="formatFieldName(t)" :selected="element_type === t"></option>
+                      <option :value="t" x-text="formatFieldName(t)"></option>
                     </template>
                   </select>
                   <template x-if="element_type && domainConfig.elementTypeDescriptions && domainConfig.elementTypeDescriptions[element_type]">
@@ -1269,7 +1273,7 @@
                         <select class="form-control" x-model="properties[f.name]">
                           <option value="">Select...</option>
                           <template x-for="opt in (f.options || [])" :key="opt">
-                            <option :value="opt" x-text="formatFieldName(opt)" :selected="properties[f.name] === opt"></option>
+                            <option :value="opt" x-text="formatFieldName(opt)"></option>
                           </template>
                         </select>
                       </template>
@@ -1320,7 +1324,7 @@
                           <select class="form-control" x-model="magicProps[f.name]">
                             <option value="">Select...</option>
                             <template x-for="opt in (f.options || [])" :key="opt">
-                              <option :value="opt" x-text="formatFieldName(opt)" :selected="magicProps[f.name] === opt"></option>
+                              <option :value="opt" x-text="formatFieldName(opt)"></option>
                             </template>
                           </select>
                         </template>

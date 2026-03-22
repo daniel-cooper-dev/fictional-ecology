@@ -135,7 +135,7 @@ app.use('/worlds', domainsRouter);
 app.use(errorHandler);
 
 const server = app.listen(config.port, () => {
-  console.log(`\n  Fictional Ecology World-Builder`);
+  console.log(`\n  Worldwright`);
   console.log(`  Running at http://${config.host}:${config.port}\n`);
 });
 

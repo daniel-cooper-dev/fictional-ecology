@@ -26,7 +26,7 @@ router.get('/:worldId/:domainId', (req, res) => {
   if (page < 1) page = 1;
   const type = req.query.type as string | undefined;
   const sort_by = req.query.sort as string | undefined;
-  const sort_dir = req.query.dir as string | undefined;
+  const sort_dir = (req.query.dir as string | undefined) === 'asc' ? 'asc' as const : (req.query.dir as string | undefined) === 'desc' ? 'desc' as const : undefined;
   const result = service.list(req.params.worldId, { page, limit: 50, type, sort_by, sort_dir });
 
   res.render('pages/domain-list.njk', {

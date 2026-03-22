@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Worldwright</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    [x-cloak] { display: none !important; }
+    .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .constellation-border { border-left: 3px solid var(--accent); padding-left: 16px; margin-bottom: 24px; }
+    .inline-flex { display: inline-flex; align-items: center; gap: 6px; }
+    .flex { display: flex; }
+    .flex-wrap { flex-wrap: wrap; }
+    .gap-8 { gap: 8px; }
+    .gap-12 { gap: 12px; }
+    .gap-16 { gap: 16px; }
+    .gap-4 { gap: 4px; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-12 { margin-bottom: 12px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-24 { margin-bottom: 24px; }
+    .ml-auto { margin-left: auto; }
+    .w-full { width: 100%; }
+    .text-center { text-align: center; }
+    .hidden-input { display: none; }
+    .surprise-pool { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 16px; }
+    .props-table { width: 100%; }
+    .props-table td { padding: 6px 0; vertical-align: top; }
+    .props-table td:first-child { font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; width: 180px; }
+    .props-table td:last-child { color: var(--text-primary); font-size: 0.9rem; }
+    .pairs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .pair-card { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 12px; font-size: 0.8rem; }
+    .pair-card .pair-reason { color: var(--text-muted); font-style: italic; margin-top: 4px; }
+    .wizard-domain-check { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius); cursor: pointer; transition: all var(--transition); }
+    .wizard-domain-check:hover { background: var(--bg-hover); }
+    .wizard-domain-check.selected { border-color: var(--accent); background: var(--accent-subtle); }
+    .blueprint-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .blueprint-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; transition: all var(--transition); cursor: pointer; display: block; color: var(--text-primary); }
+    .blueprint-card:hover { border-color: var(--accent); box-shadow: var(--shadow); transform: translateY(-2px); color: var(--text-primary); }
+    .blueprint-icon { font-size: 1.5rem; margin-bottom: 8px; display: inline-flex; align-items: center; }
+    .blueprint-icon svg { width: 1.5em; height: 1.5em; }
+    .suggestion-group { margin-bottom: 20px; }
+    .suggestion-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--bg-tertiary); border-radius: var(--radius); margin-bottom: 6px; font-size: 0.85rem; }
+    .suggestion-item .domain-icon svg { width: 16px; height: 16px; }
+    .priority-essential { background: var(--accent); color: white; }
+    .priority-recommended { background: var(--magic-subtle); color: var(--magic-glow); border: 1px solid var(--magic-glow); }
+    .priority-optional { background: var(--bg-tertiary); color: var(--text-muted); }
+    .archetype-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .archetype-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; }
+    .archetype-card h4 { margin-bottom: 4px; }
+    .archetype-card p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px; }
+    .era-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 8px; }
+    .era-color { width: 4px; height: 40px; border-radius: 2px; flex-shrink: 0; }
+    .era-info { flex: 1; }
+    .era-info h4 { margin-bottom: 2px; font-size: 0.95rem; }
+    .era-info .era-years { font-size: 0.8rem; color: var(--text-muted); }
+    .era-info .era-desc { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+    .color-picker-row { display: flex; align-items: center; gap: 8px; }
+    .color-picker-row input[type="color"] { width: 40px; height: 32px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-tertiary); cursor: pointer; padding: 2px; }
+  </style>
+</head>
+<body x-cloak>
+
+  <!-- Top Bar -->
+  <nav class="top-bar">
+    <a class="logo" href="#/" @click.prevent="navigate('/')">
+      <span class="logo-icon"><i data-lucide="globe-2"></i></span>
+      Worldwright
+    </a>
+    <div class="search-container" x-data="{ q: '', results: [], show: false }" @click.away="show = false">
+      <template x-if="$store.app.params.worldId">
+        <div>
+          <input type="text" placeholder="Search elements..."
+            x-model="q"
+            @input.debounce.300ms="results = q.trim() ? store.search($store.app.params.worldId, q) : []; show = results.length > 0"
+            @focus="if (results.length) show = true">
+          <div class="search-dropdown" x-show="show" x-cloak>
+            <template x-for="r in results" :key="r.element_id">
+              <a class="search-result-item" :href="'#/worlds/' + $store.app.params.worldId + '/' + r.domain + '/' + r.element_id"
+                @click="show = false; q = ''">
+                <span class="search-domain-badge" x-text="r.domain" :style="'background:' + (getDomainConfig(r.domain)?.color || '#666') + '22; color:' + (getDomainConfig(r.domain)?.color || '#666')"></span>
+                <span x-text="r.name"></span>
+                <span class="search-snippet" x-text="r.snippet"></span>
+              </a>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+    <div class="top-nav">
+      <a class="nav-link" href="#/" @click.prevent="navigate('/')">
+        <i data-lucide="home" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px"></i> Home
+      </a>
+      <a class="nav-link" href="#/blueprints" @click.prevent="navigate('/blueprints')">
+        <i data-lucide="layout-template" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px"></i> Blueprints
+      </a>
+      <a class="nav-link" href="#/archetypes" @click.prevent="navigate('/archetypes')">
+        <i data-lucide="sparkles" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px"></i> Archetypes
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="app-layout">
+    <div class="main-content" x-data x-init="$nextTick(() => lucide.createIcons())">
+
+      <!-- ============================================================ -->
+      <!-- HOME PAGE -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'home'" x-data="{
+        constellations: [],
+        unlinked: [],
+        refresh() {
+          this.constellations = store.listConstellations();
+          this.unlinked = store.getUnlinkedWorlds();
+        }
+      }" x-init="refresh(); $watch('$store.app.page', v => { if (v === 'home') refresh() }); $nextTick(() => lucide.createIcons())">
+
+        <div class="page-header">
+          <div>
+            <h1>Your Worlds</h1>
+            <p class="subtitle">Build and manage fictional ecosystems</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-ghost btn-sm" @click="navigate('/constellations/new')">
+              <i data-lucide="folder-plus" style="width:14px;height:14px"></i> + Constellation
+            </button>
+            <button class="btn btn-primary btn-sm" @click="navigate('/worlds/new/wizard')">
+              <i data-lucide="wand-2" style="width:14px;height:14px"></i> Create with Wizard
+            </button>
+            <button class="btn btn-ghost btn-sm" @click="navigate('/worlds/new')">
+              <i data-lucide="plus" style="width:14px;height:14px"></i> Quick Create
+            </button>
+            <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+              <i data-lucide="upload" style="width:14px;height:14px"></i> Import
+              <input type="file" accept=".json" class="hidden-input" @change="handleFileUpload($event)">
+            </label>
+          </div>
+        </div>
+
+        <!-- Constellation groups -->
+        <template x-for="c in constellations" :key="c.id">
+          <div class="constellation-border" :style="'border-left-color:' + c.color">
+            <a class="constellation-header" :href="'#/constellations/' + c.id" @click.prevent="navigate('/constellations/' + c.id)">
+              <span class="color-dot" :style="'background:' + c.color"></span>
+              <h2 x-text="c.name"></h2>
+              <span class="text-muted" x-text="store.getConstellationWorlds(c.id).length + ' worlds'"></span>
+            </a>
+            <div class="world-grid">
+              <template x-for="w in store.getConstellationWorlds(c.id)" :key="w.id">
+                <a class="world-card" :href="'#/worlds/' + w.id" @click.prevent="navigate('/worlds/' + w.id)">
+                  <h3 x-text="w.name"></h3>
+                  <div class="world-tagline" x-text="w.tagline" x-show="w.tagline"></div>
+                  <div class="world-desc" x-text="truncate(w.description, 120)" x-show="w.description"></div>
+                  <div class="world-meta">
+                    <div class="flex gap-4">
+                      <span class="badge badge-magic" x-show="w.magic_enabled">Magic</span>
+                      <span class="badge badge-mundane" x-show="!w.magic_enabled">Mundane</span>
+                      <template x-if="w.blueprint_id && getBlueprint(w.blueprint_id)">
+                        <span class="badge" :style="'background:' + getBlueprint(w.blueprint_id).color + '22; color:' + getBlueprint(w.blueprint_id).color" x-text="getBlueprint(w.blueprint_id).name"></span>
+                      </template>
+                    </div>
+                    <span class="text-muted" x-text="relativeTime(w.updated_at)"></span>
+                  </div>
+                </a>
+              </template>
+            </div>
+          </div>
+        </template>
+
+        <!-- Unlinked worlds -->
+        <template x-if="unlinked.length > 0">
+          <div>
+            <h3 class="section-title" x-show="constellations.length > 0">Unlinked Worlds</h3>
+            <div class="world-grid">
+              <template x-for="w in unlinked" :key="w.id">
+                <a class="world-card" :href="'#/worlds/' + w.id" @click.prevent="navigate('/worlds/' + w.id)">
+                  <h3 x-text="w.name"></h3>
+                  <div class="world-tagline" x-text="w.tagline" x-show="w.tagline"></div>
+                  <div class="world-desc" x-text="truncate(w.description, 120)" x-show="w.description"></div>
+                  <div class="world-meta">
+                    <div class="flex gap-4">
+                      <span class="badge badge-magic" x-show="w.magic_enabled">Magic</span>
+                      <span class="badge badge-mundane" x-show="!w.magic_enabled">Mundane</span>
+                      <template x-if="w.blueprint_id && getBlueprint(w.blueprint_id)">
+                        <span class="badge" :style="'background:' + getBlueprint(w.blueprint_id).color + '22; color:' + getBlueprint(w.blueprint_id).color" x-text="getBlueprint(w.blueprint_id).name"></span>
+                      </template>
+                    </div>
+                    <span class="text-muted" x-text="relativeTime(w.updated_at)"></span>
+                  </div>
+                </a>
+              </template>
+            </div>
+          </div>
+        </template>
+
+        <!-- Empty state -->
+        <template x-if="constellations.length === 0 && unlinked.length === 0">
+          <div class="empty-state">
+            <div class="empty-icon"><i data-lucide="globe-2"></i></div>
+            <h2>No worlds yet</h2>
+            <p>Create your first world to start building a fictional ecosystem.</p>
+            <button class="btn btn-primary" @click="navigate('/worlds/new/wizard')">
+              <i data-lucide="wand-2" style="width:16px;height:16px"></i> Create with Wizard
+            </button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- WORLD CREATE (Quick Create) -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'world-new'" x-data="{
+        name: '',
+        tagline: '',
+        description: '',
+        blueprint_id: '',
+        constellation_id: '',
+        magic_enabled: true,
+        submit() {
+          if (!this.name.trim()) return;
+          const w = store.createWorld({
+            name: this.name.trim(),
+            tagline: this.tagline.trim(),
+            description: this.description.trim(),
+            blueprint_id: this.blueprint_id || null,
+            constellation_id: this.constellation_id || null,
+            magic_enabled: this.magic_enabled
+          });
+          navigate('/worlds/' + w.id);
+        }
+      }" x-init="
+        if ($store.app.query.blueprint) blueprint_id = $store.app.query.blueprint;
+        $nextTick(() => lucide.createIcons())
+      ">
+        <div class="page-header">
+          <h1>Create a New World</h1>
+        </div>
+        <div class="form-card">
+          <form @submit.prevent="submit()">
+            <div class="form-group">
+              <label>Name *</label>
+              <input class="form-control" x-model="name" placeholder="Enter world name" required>
+            </div>
+            <div class="form-group">
+              <label>Tagline</label>
+              <input class="form-control" x-model="tagline" placeholder="A short tagline for your world">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea class="form-control" x-model="description" placeholder="Describe your world..." rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Blueprint</label>
+              <select class="form-control" x-model="blueprint_id">
+                <option value="">None (from scratch)</option>
+                <template x-for="bp in ALL_BLUEPRINTS" :key="bp.id">
+                  <option :value="bp.id" x-text="bp.name" :selected="blueprint_id === bp.id"></option>
+                </template>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Constellation</label>
+              <select class="form-control" x-model="constellation_id">
+                <option value="">None</option>
+                <template x-for="c in store.listConstellations()" :key="c.id">
+                  <option :value="c.id" x-text="c.name"></option>
+                </template>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" x-model="magic_enabled">
+                Enable Magic
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-ghost" @click="navigate('/')">Cancel</button>
+              <button type="submit" class="btn btn-primary" :disabled="!name.trim()">Create World</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- WORLD DASHBOARD -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'world-dashboard'" x-data="{
+        world: null,
+        stats: {},
+        showSettings: false,
+        editName: '',
+        editTagline: '',
+        editDesc: '',
+        editMagic: true,
+        blueprint: null,
+        constellation: null,
+        load() {
+          const id = $store.app.params.worldId;
+          this.world = store.getWorld(id);
+          if (!this.world) return;
+          this.stats = store.getWorldStats(id);
+          this.editName = this.world.name;
+          this.editTagline = this.world.tagline || '';
+          this.editDesc = this.world.description || '';
+          this.editMagic = this.world.magic_enabled;
+          this.blueprint = this.world.blueprint_id ? getBlueprint(this.world.blueprint_id) : null;
+          this.constellation = this.world.constellation_id ? store.getConstellation(this.world.constellation_id) : null;
+        },
+        saveSettings() {
+          store.updateWorld(this.world.id, {
+            name: this.editName.trim(),
+            tagline: this.editTagline.trim(),
+            description: this.editDesc.trim(),
+            magic_enabled: this.editMagic
+          });
+          this.load();
+          this.showSettings = false;
+        },
+        deleteWorld() {
+          if (!confirm('Delete world \"' + this.world.name + '\"? This cannot be undone.')) return;
+          store.deleteWorld(this.world.id);
+          navigate('/');
+        },
+        exportWorld() {
+          const data = store.exportWorld(this.world.id);
+          if (data) downloadJSON(data, this.world.name.replace(/\s+/g, '_') + '.json');
+        },
+        isMagicDomain(d) {
+          return d.category === 'magic';
+        }
+      }" x-init="load(); $watch('$store.app.params.worldId', () => load()); $nextTick(() => lucide.createIcons())">
+
+        <template x-if="world">
+          <div>
+            <div class="breadcrumbs">
+              <a href="#/" @click.prevent="navigate('/')">Home</a>
+              <span class="sep">/</span>
+              <span x-text="world.name"></span>
+            </div>
+
+            <div class="page-header">
+              <div>
+                <h1 x-text="world.name"></h1>
+                <p class="subtitle" x-text="world.tagline" x-show="world.tagline"></p>
+                <template x-if="constellation">
+                  <a class="inline-flex mt-8" :href="'#/constellations/' + constellation.id" @click.prevent="navigate('/constellations/' + constellation.id)" style="font-size:0.8rem">
+                    <span class="color-dot" :style="'background:' + constellation.color"></span>
+                    <span x-text="constellation.name"></span>
+                  </a>
+                </template>
+              </div>
+              <div class="header-actions" style="position:relative">
+                <button class="btn btn-ghost btn-sm" @click="showSettings = !showSettings">
+                  <i data-lucide="settings" style="width:14px;height:14px"></i> Settings
+                </button>
+
+                <!-- Settings Panel -->
+                <div class="settings-panel" x-show="showSettings" x-cloak @click.away="showSettings = false">
+                  <h3 style="margin-bottom:12px">World Settings</h3>
+                  <div class="form-group">
+                    <label>Name</label>
+                    <input class="form-control form-control-sm" x-model="editName">
+                  </div>
+                  <div class="form-group">
+                    <label>Tagline</label>
+                    <input class="form-control form-control-sm" x-model="editTagline">
+                  </div>
+                  <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control form-control-sm" x-model="editDesc" rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" x-model="editMagic"> Enable Magic
+                    </label>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn btn-ghost btn-sm" @click="showSettings = false">Cancel</button>
+                    <button class="btn btn-primary btn-sm" @click="saveSettings()">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="element-summary" x-text="world.description" x-show="world.description"></p>
+
+            <!-- Domain Grid -->
+            <h3 class="section-title">Domains</h3>
+            <div class="domain-grid mb-24">
+              <template x-for="d in ALL_DOMAINS" :key="d.id">
+                <a class="domain-card"
+                  :class="{ 'magic-sub-card': isMagicDomain(d) }"
+                  x-show="!isMagicDomain(d) || world.magic_enabled"
+                  :style="'--domain-color:' + d.color"
+                  :href="'#/worlds/' + world.id + '/' + d.id"
+                  @click.prevent="navigate('/worlds/' + world.id + '/' + d.id)"
+                  x-init="$nextTick(() => lucide.createIcons())">
+                  <div class="domain-card-header">
+                    <span class="domain-icon"><i :data-lucide="d.icon"></i></span>
+                    <span class="domain-count" x-text="stats[d.id] || 0"></span>
+                  </div>
+                  <h3 x-text="d.name"></h3>
+                  <p class="domain-desc" x-text="truncate(d.description, 80)"></p>
+                  <span class="text-muted" x-text="(d.archetypes?.length || 0) + ' archetypes'" style="font-size:0.7rem"></span>
+                </a>
+              </template>
+            </div>
+
+            <!-- Blueprint Suggestions -->
+            <template x-if="blueprint">
+              <div class="card mb-24">
+                <h3>Blueprint Suggestions</h3>
+                <p class="text-muted mb-12" x-text="'Based on the ' + blueprint.name + ' blueprint'"></p>
+                <template x-for="s in blueprint.suggestions" :key="s.domain + s.archetypeId">
+                  <div class="suggestion-item" x-init="$nextTick(() => lucide.createIcons())">
+                    <span class="domain-icon" :style="'color:' + (getDomainConfig(s.domain)?.color || '#666')">
+                      <i :data-lucide="getDomainConfig(s.domain)?.icon || 'circle'"></i>
+                    </span>
+                    <div style="flex:1">
+                      <strong x-text="getDomainConfig(s.domain)?.name || s.domain"></strong>
+                      <span class="text-muted" x-text="' - ' + (getDomainConfig(s.domain)?.archetypes?.find(a => a.id === s.archetypeId)?.name || s.archetypeId)"></span>
+                      <div class="text-muted" x-text="s.note" style="margin-top:2px"></div>
+                    </div>
+                    <span class="badge" :class="{
+                      'priority-essential': s.priority === 'essential',
+                      'priority-recommended': s.priority === 'recommended',
+                      'priority-optional': s.priority === 'optional'
+                    }" x-text="s.priority"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+
+            <!-- Timeline link -->
+            <div class="card mb-24">
+              <h3>Timeline</h3>
+              <p class="text-muted mb-8">Manage eras and historical periods for this world.</p>
+              <button class="btn btn-ghost btn-sm" @click="navigate('/worlds/' + world.id + '/timeline')">
+                <i data-lucide="clock" style="width:14px;height:14px"></i> View Timeline
+              </button>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="dashboard-footer flex gap-8">
+              <button class="btn btn-ghost btn-sm" @click="exportWorld()">
+                <i data-lucide="download" style="width:14px;height:14px"></i> Export JSON
+              </button>
+              <button class="btn btn-danger btn-sm" @click="deleteWorld()">
+                <i data-lucide="trash-2" style="width:14px;height:14px"></i> Delete World
+              </button>
+            </div>
+          </div>
+        </template>
+
+        <template x-if="!world && $store.app.page === 'world-dashboard'">
+          <div class="empty-state">
+            <h2>World not found</h2>
+            <p>This world may have been deleted.</p>
+            <button class="btn btn-primary" @click="navigate('/')">Go Home</button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- CONSTELLATION CREATE -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'constellation-new'" x-data="{
+        name: '',
+        description: '',
+        color: '#6366f1',
+        submit() {
+          if (!this.name.trim()) return;
+          const c = store.createConstellation({
+            name: this.name.trim(),
+            description: this.description.trim(),
+            color: this.color
+          });
+          navigate('/constellations/' + c.id);
+        }
+      }" x-init="$nextTick(() => lucide.createIcons())">
+        <div class="page-header">
+          <h1>New Constellation</h1>
+        </div>
+        <div class="form-card">
+          <form @submit.prevent="submit()">
+            <div class="form-group">
+              <label>Name *</label>
+              <input class="form-control" x-model="name" placeholder="Constellation name" required>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea class="form-control" x-model="description" placeholder="Describe this constellation..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Color</label>
+              <div class="color-picker-row">
+                <input type="color" x-model="color">
+                <span class="text-muted" x-text="color"></span>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-ghost" @click="navigate('/')">Cancel</button>
+              <button type="submit" class="btn btn-primary" :disabled="!name.trim()">Create Constellation</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- CONSTELLATION DETAIL -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'constellation-detail'" x-data="{
+        constellation: null,
+        worlds: [],
+        showSettings: false,
+        editName: '',
+        editDesc: '',
+        editColor: '#6366f1',
+        addWorldId: '',
+        load() {
+          const id = $store.app.params.constellationId;
+          this.constellation = store.getConstellation(id);
+          if (!this.constellation) return;
+          this.worlds = store.getConstellationWorlds(id);
+          this.editName = this.constellation.name;
+          this.editDesc = this.constellation.description || '';
+          this.editColor = this.constellation.color || '#6366f1';
+        },
+        saveSettings() {
+          store.updateConstellation(this.constellation.id, {
+            name: this.editName.trim(),
+            description: this.editDesc.trim(),
+            color: this.editColor
+          });
+          this.load();
+          this.showSettings = false;
+        },
+        unlinkWorld(wId) {
+          store.removeWorldFromConstellation(wId);
+          this.load();
+        },
+        addWorld() {
+          if (!this.addWorldId) return;
+          store.addWorldToConstellation(this.constellation.id, this.addWorldId);
+          this.addWorldId = '';
+          this.load();
+        },
+        deleteConstellation() {
+          if (!confirm('Delete constellation \"' + this.constellation.name + '\"?')) return;
+          store.deleteConstellation(this.constellation.id);
+          navigate('/');
+        },
+        exportConstellation() {
+          const data = store.exportConstellation(this.constellation.id);
+          if (data) downloadJSON(data, this.constellation.name.replace(/\s+/g, '_') + '.json');
+        }
+      }" x-init="load(); $watch('$store.app.params.constellationId', () => load()); $nextTick(() => lucide.createIcons())">
+
+        <template x-if="constellation">
+          <div>
+            <div class="breadcrumbs">
+              <a href="#/" @click.prevent="navigate('/')">Home</a>
+              <span class="sep">/</span>
+              <span x-text="constellation.name"></span>
+            </div>
+
+            <div class="page-header">
+              <div class="flex items-center gap-12">
+                <span class="color-dot" :style="'background:' + constellation.color + '; width:16px; height:16px'"></span>
+                <div>
+                  <h1 x-text="constellation.name"></h1>
+                  <p class="subtitle" x-text="constellation.description" x-show="constellation.description"></p>
+                  <span class="text-muted" x-text="worlds.length + ' world' + (worlds.length !== 1 ? 's' : '')"></span>
+                </div>
+              </div>
+              <div class="header-actions" style="position:relative">
+                <button class="btn btn-ghost btn-sm" @click="showSettings = !showSettings">
+                  <i data-lucide="settings" style="width:14px;height:14px"></i> Settings
+                </button>
+                <div class="settings-panel" x-show="showSettings" x-cloak @click.away="showSettings = false">
+                  <h3 style="margin-bottom:12px">Constellation Settings</h3>
+                  <div class="form-group">
+                    <label>Name</label>
+                    <input class="form-control form-control-sm" x-model="editName">
+                  </div>
+                  <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control form-control-sm" x-model="editDesc" rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Color</label>
+                    <div class="color-picker-row">
+                      <input type="color" x-model="editColor">
+                      <span class="text-muted" x-text="editColor"></span>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn btn-ghost btn-sm" @click="showSettings = false">Cancel</button>
+                    <button class="btn btn-primary btn-sm" @click="saveSettings()">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Linked worlds -->
+            <h3 class="section-title">Worlds</h3>
+            <div class="world-grid mb-24">
+              <template x-for="w in worlds" :key="w.id">
+                <div class="world-card" style="display:flex; flex-direction:column">
+                  <a :href="'#/worlds/' + w.id" @click.prevent="navigate('/worlds/' + w.id)" style="flex:1; color: var(--text-primary)">
+                    <h3 x-text="w.name"></h3>
+                    <div class="world-tagline" x-text="w.tagline" x-show="w.tagline"></div>
+                    <div class="world-desc" x-text="truncate(w.description, 80)"></div>
+                  </a>
+                  <div class="flex justify-between items-center mt-8">
+                    <span class="text-muted" x-text="relativeTime(w.updated_at)"></span>
+                    <button class="btn btn-ghost btn-sm" @click="unlinkWorld(w.id)">
+                      <i data-lucide="unlink" style="width:12px;height:12px"></i> Unlink
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <!-- Add existing world -->
+            <div class="card mb-16" x-data="{ available: store.getUnlinkedWorlds() }">
+              <h3>Add Existing World</h3>
+              <template x-if="available.length > 0">
+                <div class="flex gap-8 mt-8">
+                  <select class="form-control form-control-sm" x-model="addWorldId" style="max-width:300px">
+                    <option value="">Select a world...</option>
+                    <template x-for="uw in available" :key="uw.id">
+                      <option :value="uw.id" x-text="uw.name"></option>
+                    </template>
+                  </select>
+                  <button class="btn btn-primary btn-sm" @click="addWorld(); available = store.getUnlinkedWorlds()">Add</button>
+                </div>
+              </template>
+              <template x-if="available.length === 0">
+                <p class="text-muted mt-8">No unlinked worlds available.</p>
+              </template>
+              <div class="mt-12">
+                <a href="#" @click.prevent="navigate('/worlds/new')" class="text-muted" style="font-size:0.85rem">+ Create New World</a>
+              </div>
+            </div>
+
+            <div class="dashboard-footer flex gap-8">
+              <button class="btn btn-ghost btn-sm" @click="exportConstellation()">
+                <i data-lucide="download" style="width:14px;height:14px"></i> Download JSON
+              </button>
+              <button class="btn btn-danger btn-sm" @click="deleteConstellation()">
+                <i data-lucide="trash-2" style="width:14px;height:14px"></i> Delete Constellation
+              </button>
+            </div>
+          </div>
+        </template>
+
+        <template x-if="!constellation && $store.app.page === 'constellation-detail'">
+          <div class="empty-state">
+            <h2>Constellation not found</h2>
+            <button class="btn btn-primary" @click="navigate('/')">Go Home</button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- BLUEPRINT LIST -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'blueprint-list'" x-data="{
+        tagFilter: '',
+        get filtered() {
+          if (!this.tagFilter) return ALL_BLUEPRINTS;
+          return ALL_BLUEPRINTS.filter(b => b.tags.includes(this.tagFilter));
+        }
+      }" x-init="$nextTick(() => lucide.createIcons())">
+        <div class="page-header">
+          <div>
+            <h1>World Blueprints</h1>
+            <p class="subtitle">Pre-configured templates to jumpstart your world</p>
+          </div>
+        </div>
+
+        <!-- Tag filter -->
+        <div class="filter-bar mb-16">
+          <button class="filter-chip" :class="{ active: !tagFilter }" @click="tagFilter = ''">All</button>
+          <template x-for="t in BLUEPRINT_TAGS" :key="t">
+            <button class="filter-chip" :class="{ active: tagFilter === t }" @click="tagFilter = tagFilter === t ? '' : t" x-text="t"></button>
+          </template>
+        </div>
+
+        <div class="blueprint-grid">
+          <template x-for="bp in filtered" :key="bp.id">
+            <a class="blueprint-card" :href="'#/blueprints/' + bp.id" @click.prevent="navigate('/blueprints/' + bp.id)"
+              x-init="$nextTick(() => lucide.createIcons())">
+              <div class="blueprint-icon" :style="'color:' + bp.color">
+                <i :data-lucide="bp.icon"></i>
+              </div>
+              <h3 x-text="bp.name" style="margin-bottom:6px"></h3>
+              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:10px" x-text="truncate(bp.description, 100)"></p>
+              <div class="flex gap-4 flex-wrap">
+                <template x-for="tag in bp.tags" :key="tag">
+                  <span class="badge badge-mundane" x-text="tag"></span>
+                </template>
+                <span class="badge badge-magic" x-show="bp.magic">Magic</span>
+              </div>
+              <div class="text-muted mt-8" x-text="bp.suggestions.length + ' suggestions'"></div>
+            </a>
+          </template>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- BLUEPRINT DETAIL -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'blueprint-detail'" x-data="{
+        bp: null,
+        load() {
+          this.bp = getBlueprint($store.app.params.blueprintId);
+        },
+        groupedSuggestions(priority) {
+          if (!this.bp) return [];
+          return this.bp.suggestions.filter(s => s.priority === priority);
+        }
+      }" x-init="load(); $watch('$store.app.params.blueprintId', () => load()); $nextTick(() => lucide.createIcons())">
+
+        <template x-if="bp">
+          <div>
+            <div class="breadcrumbs">
+              <a href="#/blueprints" @click.prevent="navigate('/blueprints')">Blueprints</a>
+              <span class="sep">/</span>
+              <span x-text="bp.name"></span>
+            </div>
+
+            <div class="page-header">
+              <div class="flex items-center gap-12">
+                <div class="blueprint-icon" :style="'color:' + bp.color + '; font-size:2rem'">
+                  <i :data-lucide="bp.icon"></i>
+                </div>
+                <div>
+                  <h1 x-text="bp.name"></h1>
+                  <p class="subtitle" x-text="bp.description"></p>
+                  <div class="flex gap-4 flex-wrap mt-8">
+                    <template x-for="tag in bp.tags" :key="tag">
+                      <span class="badge badge-mundane" x-text="tag"></span>
+                    </template>
+                    <span class="badge badge-magic" x-show="bp.magic">Magic</span>
+                  </div>
+                </div>
+              </div>
+              <div class="header-actions">
+                <button class="btn btn-primary" @click="navigate('/worlds/new?blueprint=' + bp.id)">
+                  <i data-lucide="plus" style="width:14px;height:14px"></i> Use This Blueprint
+                </button>
+              </div>
+            </div>
+
+            <!-- Suggestions by priority -->
+            <template x-for="priority in ['essential', 'recommended', 'optional']" :key="priority">
+              <div class="suggestion-group" x-show="groupedSuggestions(priority).length > 0">
+                <h3 class="section-title" style="text-transform:capitalize" x-text="priority + ' (' + groupedSuggestions(priority).length + ')'"></h3>
+                <template x-for="s in groupedSuggestions(priority)" :key="s.domain + s.archetypeId">
+                  <div class="suggestion-item" x-init="$nextTick(() => lucide.createIcons())">
+                    <span class="domain-icon" :style="'color:' + (getDomainConfig(s.domain)?.color || '#666')">
+                      <i :data-lucide="getDomainConfig(s.domain)?.icon || 'circle'"></i>
+                    </span>
+                    <div style="flex:1">
+                      <strong x-text="getDomainConfig(s.domain)?.name || s.domain"></strong>
+                      <span style="color:var(--text-secondary);font-size:0.85rem" x-text="' - ' + (getDomainConfig(s.domain)?.archetypes?.find(a => a.id === s.archetypeId)?.name || s.archetypeId)"></span>
+                      <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px" x-text="getDomainConfig(s.domain)?.archetypes?.find(a => a.id === s.archetypeId)?.description || ''"></div>
+                      <div class="text-muted" x-show="s.note" x-text="s.note" style="margin-top:4px;font-style:italic"></div>
+                    </div>
+                    <span class="badge" :class="{
+                      'priority-essential': priority === 'essential',
+                      'priority-recommended': priority === 'recommended',
+                      'priority-optional': priority === 'optional'
+                    }" x-text="priority"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <template x-if="!bp && $store.app.page === 'blueprint-detail'">
+          <div class="empty-state">
+            <h2>Blueprint not found</h2>
+            <button class="btn btn-primary" @click="navigate('/blueprints')">Browse Blueprints</button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- ARCHETYPE SEARCH -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'archetype-search'" x-data="{
+        searchQ: '',
+        categoryFilter: '',
+        get allArchetypes() {
+          let result = [];
+          for (const d of ALL_DOMAINS) {
+            if (this.categoryFilter && d.category !== this.categoryFilter) continue;
+            for (const a of (d.archetypes || [])) {
+              if (this.searchQ) {
+                const q = this.searchQ.toLowerCase();
+                if (!a.name.toLowerCase().includes(q) && !a.description.toLowerCase().includes(q) && !d.name.toLowerCase().includes(q)) continue;
+              }
+              result.push({ ...a, domainId: d.id, domainName: d.name, domainIcon: d.icon, domainColor: d.color });
+            }
+          }
+          return result;
+        },
+        worlds: [],
+        loadWorlds() { this.worlds = store.listWorlds(); }
+      }" x-init="loadWorlds(); $nextTick(() => lucide.createIcons())">
+        <div class="page-header">
+          <div>
+            <h1>Archetype Search</h1>
+            <p class="subtitle">Browse and search all archetypes across domains</p>
+          </div>
+        </div>
+
+        <div class="mb-16">
+          <input class="form-control" x-model.debounce.200ms="searchQ" placeholder="Search archetypes..." style="max-width:400px">
+        </div>
+
+        <div class="filter-bar mb-16">
+          <button class="filter-chip" :class="{ active: !categoryFilter }" @click="categoryFilter = ''">All</button>
+          <button class="filter-chip" :class="{ active: categoryFilter === 'natural' }" @click="categoryFilter = categoryFilter === 'natural' ? '' : 'natural'">Natural</button>
+          <button class="filter-chip" :class="{ active: categoryFilter === 'sentient' }" @click="categoryFilter = categoryFilter === 'sentient' ? '' : 'sentient'">Sentient</button>
+          <button class="filter-chip" :class="{ active: categoryFilter === 'magic' }" @click="categoryFilter = categoryFilter === 'magic' ? '' : 'magic'">Magic</button>
+          <button class="filter-chip" :class="{ active: categoryFilter === 'meta' }" @click="categoryFilter = categoryFilter === 'meta' ? '' : 'meta'">Meta</button>
+        </div>
+
+        <div class="archetype-grid" x-init="$watch('allArchetypes', () => $nextTick(() => lucide.createIcons()))">
+          <template x-for="a in allArchetypes" :key="a.domainId + a.id">
+            <div class="archetype-card">
+              <div class="flex items-center gap-8 mb-8">
+                <span class="domain-icon" :style="'color:' + a.domainColor"><i :data-lucide="a.domainIcon"></i></span>
+                <span style="font-size:0.75rem;color:var(--text-muted)" x-text="a.domainName"></span>
+                <span class="element-type-badge" x-text="a.element_type" x-show="a.element_type"></span>
+              </div>
+              <h4 x-text="a.name"></h4>
+              <p x-text="truncate(a.description, 120)"></p>
+              <div class="mt-8" x-data="{ showWorldPicker: false }">
+                <button class="btn btn-ghost btn-sm" @click="showWorldPicker = !showWorldPicker">
+                  <i data-lucide="plus-circle" style="width:12px;height:12px"></i> Use in World
+                </button>
+                <div x-show="showWorldPicker" x-cloak class="mt-8">
+                  <template x-if="worlds.length > 0">
+                    <select class="form-control form-control-sm" @change="if ($event.target.value) { navigate('/worlds/' + $event.target.value + '/' + a.domainId + '/new?archetype=' + a.id); $event.target.value = ''; }">
+                      <option value="">Select world...</option>
+                      <template x-for="w in worlds" :key="w.id">
+                        <option :value="w.id" x-text="w.name"></option>
+                      </template>
+                    </select>
+                  </template>
+                  <template x-if="worlds.length === 0">
+                    <p class="text-muted">Create a world first.</p>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <template x-if="allArchetypes.length === 0">
+          <div class="empty-state">
+            <h3>No archetypes found</h3>
+            <p>Try adjusting your search or filter.</p>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- DOMAIN LIST (elements for a domain in a world) -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'domain-list'" x-data="{
+        world: null,
+        domainConfig: null,
+        elements: [],
+        typeFilter: '',
+        sortBy: 'updated_at',
+        sortDir: 'desc',
+        load() {
+          this.world = store.getWorld($store.app.params.worldId);
+          this.domainConfig = getDomainConfig($store.app.params.domainId);
+          this.refresh();
+        },
+        refresh() {
+          if (!this.world || !this.domainConfig) return;
+          this.elements = store.listElements(this.world.id, this.domainConfig.id, this.typeFilter || undefined, this.sortBy, this.sortDir);
+        },
+        setSort(field) {
+          if (this.sortBy === field) {
+            this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            this.sortBy = field;
+            this.sortDir = field === 'name' ? 'asc' : 'desc';
+          }
+          this.refresh();
+        },
+        surpriseMe() {
+          if (!this.domainConfig || !this.domainConfig.archetypes?.length) return;
+          const a = this.domainConfig.archetypes[Math.floor(Math.random() * this.domainConfig.archetypes.length)];
+          navigate('/worlds/' + this.world.id + '/' + this.domainConfig.id + '/new?archetype=' + a.id);
+        }
+      }" x-init="load(); $watch('$store.app.params', () => { load() }); $watch('typeFilter', () => refresh()); $nextTick(() => lucide.createIcons())">
+
+        <template x-if="world && domainConfig">
+          <div>
+            <div class="breadcrumbs">
+              <a href="#/" @click.prevent="navigate('/')">Home</a>
+              <span class="sep">/</span>
+              <a :href="'#/worlds/' + world.id" @click.prevent="navigate('/worlds/' + world.id)" x-text="world.name"></a>
+              <span class="sep">/</span>
+              <span x-text="domainConfig.name"></span>
+            </div>
+
+            <div class="page-header">
+              <div>
+                <h1 :style="'color:' + domainConfig.color" x-text="domainConfig.name"></h1>
+                <p class="subtitle" x-text="domainConfig.description"></p>
+              </div>
+              <div class="header-actions">
+                <button class="btn btn-ghost btn-sm" @click="surpriseMe()" x-show="domainConfig.archetypes?.length">
+                  <i data-lucide="shuffle" style="width:14px;height:14px"></i> Surprise Me
+                </button>
+                <button class="btn btn-primary btn-sm" @click="navigate('/worlds/' + world.id + '/' + domainConfig.id + '/new')">
+                  <i data-lucide="plus" style="width:14px;height:14px"></i> + New
+                </button>
+              </div>
+            </div>
+
+            <!-- Type filter -->
+            <div class="filter-bar" x-show="domainConfig.elementTypes?.length > 1">
+              <button class="filter-chip" :class="{ active: !typeFilter }" @click="typeFilter = ''">All</button>
+              <template x-for="t in domainConfig.elementTypes" :key="t">
+                <button class="filter-chip" :class="{ active: typeFilter === t }" @click="typeFilter = typeFilter === t ? '' : t" x-text="formatFieldName(t)"></button>
+              </template>
+            </div>
+
+            <!-- Sort controls -->
+            <div class="sort-bar">
+              <span>Sort:</span>
+              <a href="#" class="sort-link" :class="{ active: sortBy === 'name' }" @click.prevent="setSort('name')">
+                Name <span class="sort-arrow" x-show="sortBy === 'name'" x-text="sortDir === 'asc' ? '\u2191' : '\u2193'"></span>
+              </a>
+              <a href="#" class="sort-link" :class="{ active: sortBy === 'element_type' }" @click.prevent="setSort('element_type')">
+                Type <span class="sort-arrow" x-show="sortBy === 'element_type'" x-text="sortDir === 'asc' ? '\u2191' : '\u2193'"></span>
+              </a>
+              <a href="#" class="sort-link" :class="{ active: sortBy === 'updated_at' }" @click.prevent="setSort('updated_at')">
+                Updated <span class="sort-arrow" x-show="sortBy === 'updated_at'" x-text="sortDir === 'asc' ? '\u2191' : '\u2193'"></span>
+              </a>
+            </div>
+
+            <!-- Elements -->
+            <template x-if="elements.length > 0">
+              <div class="element-grid" x-init="$nextTick(() => lucide.createIcons())">
+                <template x-for="el in elements" :key="el.id">
+                  <a class="element-card" :style="'--domain-color:' + domainConfig.color"
+                    :href="'#/worlds/' + world.id + '/' + domainConfig.id + '/' + el.id"
+                    @click.prevent="navigate('/worlds/' + world.id + '/' + domainConfig.id + '/' + el.id)">
+                    <div class="element-card-header">
+                      <span class="element-type-badge" x-text="formatFieldName(el.element_type)" x-show="el.element_type"></span>
+                    </div>
+                    <h3 x-text="el.name"></h3>
+                    <p x-text="truncate(el.summary, 100)"></p>
+                    <span class="text-muted" x-text="relativeTime(el.updated_at)"></span>
+                  </a>
+                </template>
+              </div>
+            </template>
+
+            <!-- Empty state with archetype quick-starts -->
+            <template x-if="elements.length === 0">
+              <div class="empty-state">
+                <div class="empty-icon"><i :data-lucide="domainConfig.icon"></i></div>
+                <h3 x-text="'No ' + domainConfig.namePlural + ' yet'"></h3>
+                <p>Start by creating your first element or use an archetype below.</p>
+                <button class="btn btn-primary mb-24" @click="navigate('/worlds/' + world.id + '/' + domainConfig.id + '/new')">
+                  <i data-lucide="plus" style="width:14px;height:14px"></i> Create New
+                </button>
+                <template x-if="domainConfig.archetypes?.length">
+                  <div>
+                    <h3 class="section-title">Quick Start Archetypes</h3>
+                    <div class="surprise-pool">
+                      <template x-for="a in domainConfig.archetypes.slice(0, 6)" :key="a.id">
+                        <a class="element-card" :style="'--domain-color:' + domainConfig.color + '; cursor:pointer'"
+                          @click.prevent="navigate('/worlds/' + world.id + '/' + domainConfig.id + '/new?archetype=' + a.id)">
+                          <span class="element-type-badge" x-text="formatFieldName(a.element_type)" x-show="a.element_type"></span>
+                          <h3 x-text="a.name" style="margin-top:6px"></h3>
+                          <p x-text="truncate(a.description, 80)"></p>
+                        </a>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
+
+            <!-- Domain prompts -->
+            <template x-if="domainConfig.prompts?.length">
+              <div class="prompts-panel">
+                <h3 class="section-title">World-Building Prompts</h3>
+                <div class="prompts-list">
+                  <template x-for="p in domainConfig.prompts" :key="p">
+                    <div class="prompt-item" x-text="p"></div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <template x-if="(!world || !domainConfig) && $store.app.page === 'domain-list'">
+          <div class="empty-state">
+            <h2>Not found</h2>
+            <button class="btn btn-primary" @click="navigate('/')">Go Home</button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- ELEMENT CREATE / EDIT -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'element-new' || $store.app.page === 'element-edit'" x-data="{
+        world: null,
+        domainConfig: null,
+        isEdit: false,
+        elementId: null,
+        selectedArchetype: null,
+        pairs: [],
+        name: '',
+        element_type: '',
+        summary: '',
+        detailed_notes: '',
+        properties: {},
+        magicProps: {},
+        init() {
+          this.load();
+          this.$watch('$store.app.params', () => this.load());
+        },
+        load() {
+          this.world = store.getWorld($store.app.params.worldId);
+          this.domainConfig = getDomainConfig($store.app.params.domainId);
+          if (!this.world || !this.domainConfig) return;
+
+          this.isEdit = $store.app.page === 'element-edit';
+          this.properties = {};
+          this.magicProps = {};
+          this.selectedArchetype = null;
+          this.pairs = [];
+
+          if (this.isEdit) {
+            this.elementId = $store.app.params.elementId;
+            const el = store.getElement(this.world.id, this.elementId);
+            if (el) {
+              this.name = el.name;
+              this.element_type = el.element_type || '';
+              this.summary = el.summary || '';
+              this.detailed_notes = el.detailed_notes || '';
+              const props = parseProps(el);
+              for (const f of this.domainConfig.fields || []) {
+                this.properties[f.name] = props[f.name] !== undefined ? props[f.name] : (f.type === 'boolean' ? false : '');
+              }
+              if (this.domainConfig.magicPermeation) {
+                for (const f of this.domainConfig.magicPermeation.fields || []) {
+                  this.magicProps[f.name] = props['magic_' + f.name] !== undefined ? props['magic_' + f.name] : (f.type === 'boolean' ? false : '');
+                }
+              }
+            }
+          } else {
+            this.name = '';
+            this.element_type = '';
+            this.summary = '';
+            this.detailed_notes = '';
+            for (const f of this.domainConfig.fields || []) {
+              this.properties[f.name] = f.type === 'boolean' ? false : '';
+            }
+            if (this.domainConfig.magicPermeation) {
+              for (const f of this.domainConfig.magicPermeation.fields || []) {
+                this.magicProps[f.name] = f.type === 'boolean' ? false : '';
+              }
+            }
+            // Check for archetype query param
+            const archetypeId = $store.app.query.archetype;
+            if (archetypeId) {
+              this.selectArchetype(archetypeId);
+            }
+          }
+          this.$nextTick(() => lucide.createIcons());
+        },
+        selectArchetype(archetypeId) {
+          const a = (this.domainConfig.archetypes || []).find(x => x.id === archetypeId);
+          if (!a) return;
+          this.selectedArchetype = a;
+          if (a.name) this.name = a.name;
+          if (a.element_type) this.element_type = a.element_type;
+          if (a.summary) this.summary = a.summary;
+          if (a.detailed_notes) this.detailed_notes = a.detailed_notes;
+          if (a.fields) {
+            for (const [k, v] of Object.entries(a.fields)) {
+              if (this.properties.hasOwnProperty(k)) {
+                this.properties[k] = v;
+              }
+            }
+          }
+          this.pairs = getPairs(this.domainConfig.id, archetypeId);
+          this.$nextTick(() => lucide.createIcons());
+        },
+        buildProps() {
+          const result = { ...this.properties };
+          if (this.world.magic_enabled && this.domainConfig.magicPermeation) {
+            for (const [k, v] of Object.entries(this.magicProps)) {
+              result['magic_' + k] = v;
+            }
+          }
+          // Clean up empty strings and convert types
+          for (const f of this.domainConfig.fields || []) {
+            if (f.type === 'number' && result[f.name] !== '' && result[f.name] !== undefined) {
+              result[f.name] = Number(result[f.name]);
+            }
+            if (f.type === 'json' && typeof result[f.name] === 'string' && result[f.name].trim()) {
+              try { result[f.name] = JSON.parse(result[f.name]); } catch(e) {}
+            }
+          }
+          return result;
+        },
+        submit() {
+          if (!this.name.trim()) return;
+          const data = {
+            domain: this.domainConfig.id,
+            element_type: this.element_type,
+            name: this.name.trim(),
+            summary: this.summary.trim(),
+            detailed_notes: this.detailed_notes.trim(),
+            properties: this.buildProps()
+          };
+          if (this.isEdit) {
+            store.updateElement(this.world.id, this.elementId, data);
+            navigate('/worlds/' + this.world.id + '/' + this.domainConfig.id + '/' + this.elementId);
+          } else {
+            const el = store.createElement(this.world.id, data);
+            navigate('/worlds/' + this.world.id + '/' + this.domainConfig.id + '/' + el.id);
+          }
+        }
+      }">
+        <template x-if="world && domainConfig">
+          <div>
+            <div class="breadcrumbs">
+              <a href="#/" @click.prevent="navigate('/')">Home</a>
+              <span class="sep">/</span>
+              <a :href="'#/worlds/' + world.id" @click.prevent="navigate('/worlds/' + world.id)" x-text="world.name"></a>
+              <span class="sep">/</span>
+              <a :href="'#/worlds/' + world.id + '/' + domainConfig.id" @click.prevent="navigate('/worlds/' + world.id + '/' + domainConfig.id)" x-text="domainConfig.name"></a>
+              <span class="sep">/</span>
+              <span x-text="isEdit ? 'Edit' : 'New'"></span>
+            </div>
+
+            <div class="page-header">
+              <h1 x-text="isEdit ? 'Edit Element' : 'New ' + domainConfig.name + ' Element'" :style="'color:' + domainConfig.color"></h1>
+            </div>
+
+            <!-- Archetype Picker (create only) -->
+            <template x-if="!isEdit && domainConfig.archetypes?.length">
+              <div class="archetype-picker mb-24">
+                <h3 class="archetype-heading">Start from an archetype (optional)</h3>
+                <div class="onboarding-options" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr))">
+                  <template x-for="a in domainConfig.archetypes" :key="a.id">
+                    <div class="onboarding-option"
+                      :class="{ selected: selectedArchetype?.id === a.id }"
+                      @click="selectArchetype(a.id)">
+                      <h3 x-text="a.name" style="font-size:0.9rem"></h3>
+                      <p x-text="truncate(a.description, 60)" style="font-size:0.75rem"></p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <!-- Pairs Well With -->
+            <template x-if="pairs.length > 0">
+              <div class="mb-24">
+                <h3 class="archetype-heading">Pairs Well With</h3>
+                <div class="pairs-grid">
+                  <template x-for="p in pairs" :key="p.domain + p.archetypeId">
+                    <div class="pair-card" x-init="$nextTick(() => lucide.createIcons())">
+                      <div class="flex items-center gap-8">
+                        <span class="domain-icon" :style="'color:' + (getDomainConfig(p.domain)?.color || '#666')">
+                          <i :data-lucide="getDomainConfig(p.domain)?.icon || 'circle'"></i>
+                        </span>
+                        <span x-text="getDomainConfig(p.domain)?.name || p.domain" style="font-weight:600"></span>
+                        <span class="text-muted" x-text="getDomainConfig(p.domain)?.archetypes?.find(a => a.id === p.archetypeId)?.name || p.archetypeId"></span>
+                      </div>
+                      <div class="pair-reason" x-text="p.reason"></div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <!-- Form -->
+            <div class="form-card">
+              <form @submit.prevent="submit()">
+                <div class="form-group">
+                  <label>Name *</label>
+                  <input class="form-control" x-model="name" placeholder="Element name" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Type</label>
+                  <select class="form-control" x-model="element_type">
+                    <option value="">Select type...</option>
+                    <template x-for="t in (domainConfig.elementTypes || [])" :key="t">
+                      <option :value="t" x-text="formatFieldName(t)" :selected="element_type === t"></option>
+                    </template>
+                  </select>
+                  <template x-if="element_type && domainConfig.elementTypeDescriptions && domainConfig.elementTypeDescriptions[element_type]">
+                    <p class="help-text option-desc" x-text="domainConfig.elementTypeDescriptions[element_type]"></p>
+                  </template>
+                </div>
+
+                <div class="form-group">
+                  <label>Summary</label>
+                  <textarea class="form-control" x-model="summary" placeholder="Brief summary..." rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label>Detailed Notes</label>
+                  <textarea class="form-control" x-model="detailed_notes" placeholder="Detailed world-building notes..." rows="5"></textarea>
+                </div>
+
+                <!-- Domain-specific fields -->
+                <fieldset class="mb-16">
+                  <legend x-text="domainConfig.name + ' Properties'"></legend>
+                  <template x-for="f in (domainConfig.fields || [])" :key="f.name">
+                    <div class="form-group">
+                      <label x-text="f.label || formatFieldName(f.name)">
+                      </label>
+                      <template x-if="f.type === 'text'">
+                        <input class="form-control" x-model="properties[f.name]" :placeholder="f.placeholder || ''">
+                      </template>
+                      <template x-if="f.type === 'textarea'">
+                        <textarea class="form-control" x-model="properties[f.name]" :placeholder="f.placeholder || ''" rows="3"></textarea>
+                      </template>
+                      <template x-if="f.type === 'number'">
+                        <input class="form-control" type="number" x-model.number="properties[f.name]" :placeholder="f.placeholder || ''">
+                      </template>
+                      <template x-if="f.type === 'select'">
+                        <select class="form-control" x-model="properties[f.name]">
+                          <option value="">Select...</option>
+                          <template x-for="opt in (f.options || [])" :key="opt">
+                            <option :value="opt" x-text="formatFieldName(opt)" :selected="properties[f.name] === opt"></option>
+                          </template>
+                        </select>
+                      </template>
+                      <template x-if="f.type === 'boolean'">
+                        <label class="checkbox-label">
+                          <input type="checkbox" x-model="properties[f.name]">
+                          <span x-text="f.label || formatFieldName(f.name)"></span>
+                        </label>
+                      </template>
+                      <template x-if="f.type === 'json'">
+                        <textarea class="form-control code-input" x-model="properties[f.name]" :placeholder="f.placeholder || '{}'" rows="3"></textarea>
+                      </template>
+                      <template x-if="f.type === 'range'">
+                        <div>
+                          <input type="range" class="form-range" x-model.number="properties[f.name]" :min="f.min || 0" :max="f.max || 100" :step="f.step || 1">
+                          <span class="text-muted" x-text="properties[f.name]"></span>
+                        </div>
+                      </template>
+                      <p class="help-text" x-text="f.helpText" x-show="f.helpText"></p>
+                    </div>
+                  </template>
+                </fieldset>
+
+                <!-- Magic permeation fields -->
+                <template x-if="world.magic_enabled && domainConfig.magicPermeation">
+                  <fieldset class="magic-fieldset mb-16">
+                    <legend>Magic Properties</legend>
+                    <template x-if="domainConfig.magicPermeation.prompts?.length">
+                      <div class="magic-prompts mb-12">
+                        <template x-for="p in domainConfig.magicPermeation.prompts" :key="p">
+                          <div class="prompt-item" x-text="p"></div>
+                        </template>
+                      </div>
+                    </template>
+                    <template x-for="f in (domainConfig.magicPermeation.fields || [])" :key="f.name">
+                      <div class="form-group">
+                        <label x-text="f.label || formatFieldName(f.name)"></label>
+                        <template x-if="f.type === 'text'">
+                          <input class="form-control" x-model="magicProps[f.name]" :placeholder="f.placeholder || ''">
+                        </template>
+                        <template x-if="f.type === 'textarea'">
+                          <textarea class="form-control" x-model="magicProps[f.name]" :placeholder="f.placeholder || ''" rows="3"></textarea>
+                        </template>
+                        <template x-if="f.type === 'number'">
+                          <input class="form-control" type="number" x-model="magicProps[f.name]" :placeholder="f.placeholder || ''">
+                        </template>
+                        <template x-if="f.type === 'select'">
+                          <select class="form-control" x-model="magicProps[f.name]">
+                            <option value="">Select...</option>
+                            <template x-for="opt in (f.options || [])" :key="opt">
+                              <option :value="opt" x-text="formatFieldName(opt)" :selected="magicProps[f.name] === opt"></option>
+                            </template>
+                          </select>
+                        </template>
+                        <template x-if="f.type === 'boolean'">
+                          <label class="checkbox-label">
+                            <input type="checkbox" x-model="magicProps[f.name]">
+                            <span x-text="f.label || formatFieldName(f.name)"></span>
+                          </label>
+                        </template>
+                        <template x-if="f.type === 'json'">
+                          <textarea class="form-control code-input" x-model="magicProps[f.name]" :placeholder="f.placeholder || '{}'" rows="3"></textarea>
+                        </template>
+                        <template x-if="f.type === 'range'">
+                          <div>
+                            <input type="range" class="form-range" x-model="magicProps[f.name]" :min="f.min || 0" :max="f.max || 100" :step="f.step || 1">
+                            <span class="text-muted" x-text="magicProps[f.name]"></span>
+                          </div>
+                        </template>
+                        <p class="help-text" x-text="f.helpText" x-show="f.helpText"></p>
+                      </div>
+                    </template>
+                  </fieldset>
+                </template>
+
+                <div class="form-actions">
+                  <button type="button" class="btn btn-ghost" @click="navigate('/worlds/' + world.id + '/' + domainConfig.id)">Cancel</button>
+                  <button type="submit" class="btn btn-primary" :disabled="!name.trim()" x-text="isEdit ? 'Save Changes' : 'Create Element'"></button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </template>
+
+        <template x-if="(!world || !domainConfig) && ($store.app.page === 'element-new' || $store.app.page === 'element-edit')">
+          <div class="empty-state">
+            <h2>Not found</h2>
+            <button class="btn btn-primary" @click="navigate('/')">Go Home</button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- ELEMENT DETAIL -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'element-detail'" x-data="{
+        world: null,
+        domainConfig: null,
+        element: null,
+        props: {},
+        relationships: [],
+        tags: [],
+        allElements: [],
+        allTags: [],
+        relSearch: '',
+        relTargetId: '',
+        relType: 'influences',
+        relDesc: '',
+        newTagName: '',
+        newTagColor: '#4a9eff',
+        addExistingTagId: '',
+        showRelForm: false,
+        showTagForm: false,
+        load() {
+          this.world = store.getWorld($store.app.params.worldId);
+          this.domainConfig = getDomainConfig($store.app.params.domainId);
+          if (!this.world || !this.domainConfig) return;
+          this.element = store.getElement(this.world.id, $store.app.params.elementId);
+          if (!this.element) return;
+          this.props = parseProps(this.element);
+          this.relationships = store.listRelationships(this.world.id, this.element.id);
+          this.tags = store.listElementTags(this.world.id, this.element.id);
+          this.allElements = store.listElements(this.world.id).filter(e => e.id !== this.element.id);
+          this.allTags = store.listTags(this.world.id);
+        },
+        getRelatedElement(relId) {
+          return store.getElement(this.world.id, relId) || null;
+        },
+        addRelationship() {
+          if (!this.relTargetId || !this.relType) return;
+          store.createRelationship(this.world.id, {
+            source_id: this.element.id,
+            target_id: this.relTargetId,
+            relationship_type: this.relType,
+            description: this.relDesc
+          });
+          this.relTargetId = '';
+          this.relDesc = '';
+          this.showRelForm = false;
+          this.load();
+        },
+        removeRelationship(relId) {
+          store.deleteRelationship(this.world.id, relId);
+          this.load();
+        },
+        createAndAddTag() {
+          if (!this.newTagName.trim()) return;
+          const tag = store.createTag(this.world.id, this.newTagName.trim(), this.newTagColor);
+          store.addTagToElement(this.world.id, this.element.id, tag.id);
+          this.newTagName = '';
+          this.showTagForm = false;
+          this.load();
+        },
+        addExistingTag() {
+          if (!this.addExistingTagId) return;
+          store.addTagToElement(this.world.id, this.element.id, this.addExistingTagId);
+          this.addExistingTagId = '';
+          this.load();
+        },
+        removeTag(tagId) {
+          store.removeTagFromElement(this.world.id, this.element.id, tagId);
+          this.load();
+        },
+        deleteElement() {
+          if (!confirm('Delete \"' + this.element.name + '\"?')) return;
+          store.deleteElement(this.world.id, this.element.id);
+          navigate('/worlds/' + this.world.id + '/' + this.domainConfig.id);
+        },
+        get filteredSearchElements() {
+          if (!this.relSearch.trim()) return this.allElements.slice(0, 20);
+          const q = this.relSearch.toLowerCase();
+          return this.allElements.filter(e => e.name.toLowerCase().includes(q)).slice(0, 20);
+        },
+        get unassignedTags() {
+          const assignedIds = new Set(this.tags.map(t => t.id));
+          return this.allTags.filter(t => !assignedIds.has(t.id));
+        }
+      }" x-init="load(); $watch('$store.app.params', () => load()); $nextTick(() => lucide.createIcons())">
+
+        <template x-if="world && domainConfig && element">
+          <div>
+            <div class="breadcrumbs">
+              <a href="#/" @click.prevent="navigate('/')">Home</a>
+              <span class="sep">/</span>
+              <a :href="'#/worlds/' + world.id" @click.prevent="navigate('/worlds/' + world.id)" x-text="world.name"></a>
+              <span class="sep">/</span>
+              <a :href="'#/worlds/' + world.id + '/' + domainConfig.id" @click.prevent="navigate('/worlds/' + world.id + '/' + domainConfig.id)" x-text="domainConfig.name"></a>
+              <span class="sep">/</span>
+              <span x-text="element.name"></span>
+            </div>
+
+            <div class="page-header">
+              <div>
+                <div class="flex items-center gap-8 mb-8">
+                  <span class="element-type-badge" x-text="formatFieldName(element.element_type)" x-show="element.element_type" :style="'border-left: 3px solid ' + domainConfig.color"></span>
+                  <span class="text-muted" x-text="domainConfig.name" :style="'color:' + domainConfig.color"></span>
+                </div>
+                <h1 x-text="element.name"></h1>
+              </div>
+              <div class="header-actions">
+                <button class="btn btn-ghost btn-sm" @click="navigate('/worlds/' + world.id + '/' + domainConfig.id + '/' + element.id + '/edit')">
+                  <i data-lucide="edit" style="width:14px;height:14px"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" @click="deleteElement()">
+                  <i data-lucide="trash-2" style="width:14px;height:14px"></i> Delete
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary -->
+            <p class="element-summary" x-text="element.summary" x-show="element.summary"></p>
+
+            <div class="detail-grid">
+              <div class="detail-main">
+                <!-- Detailed Notes -->
+                <template x-if="element.detailed_notes">
+                  <div class="card">
+                    <h3>Detailed Notes</h3>
+                    <div class="notes-content" x-text="element.detailed_notes"></div>
+                  </div>
+                </template>
+
+                <!-- Properties -->
+                <div class="card">
+                  <h3>Properties</h3>
+                  <div class="detail-fields">
+                    <template x-for="f in (domainConfig.fields || [])" :key="f.name">
+                      <template x-if="props[f.name] !== undefined && props[f.name] !== '' && props[f.name] !== null">
+                        <div class="detail-field">
+                          <dt x-text="f.label || formatFieldName(f.name)"></dt>
+                          <dd>
+                            <template x-if="typeof props[f.name] === 'object'">
+                              <pre class="json-display" x-text="JSON.stringify(props[f.name], null, 2)"></pre>
+                            </template>
+                            <template x-if="typeof props[f.name] === 'boolean'">
+                              <span x-text="props[f.name] ? 'Yes' : 'No'"></span>
+                            </template>
+                            <template x-if="typeof props[f.name] !== 'object' && typeof props[f.name] !== 'boolean'">
+                              <span x-text="props[f.name]"></span>
+                            </template>
+                          </dd>
+                        </div>
+                      </template>
+                    </template>
+                  </div>
+
+                  <!-- Magic properties -->
+                  <template x-if="world.magic_enabled && domainConfig.magicPermeation">
+                    <div class="mt-16">
+                      <h3 style="color:var(--magic-glow)">Magic Properties</h3>
+                      <div class="detail-fields">
+                        <template x-for="f in (domainConfig.magicPermeation.fields || [])" :key="f.name">
+                          <template x-if="props['magic_' + f.name] !== undefined && props['magic_' + f.name] !== '' && props['magic_' + f.name] !== null">
+                            <div class="detail-field">
+                              <dt x-text="f.label || formatFieldName(f.name)"></dt>
+                              <dd>
+                                <template x-if="typeof props['magic_' + f.name] === 'object'">
+                                  <pre class="json-display" x-text="JSON.stringify(props['magic_' + f.name], null, 2)"></pre>
+                                </template>
+                                <template x-if="typeof props['magic_' + f.name] !== 'object'">
+                                  <span x-text="props['magic_' + f.name]"></span>
+                                </template>
+                              </dd>
+                            </div>
+                          </template>
+                        </template>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Sidebar -->
+              <div class="detail-sidebar">
+                <!-- Tags -->
+                <div class="card">
+                  <h3>Tags</h3>
+                  <div class="tag-list mb-8">
+                    <template x-for="t in tags" :key="t.id">
+                      <span class="tag-badge" :style="'background:' + t.color + '22; color:' + t.color + '; border: 1px solid ' + t.color + '44'">
+                        <span x-text="t.name"></span>
+                        <button class="tag-remove" @click="removeTag(t.id)">&times;</button>
+                      </span>
+                    </template>
+                    <span class="text-muted" x-show="tags.length === 0">No tags</span>
+                  </div>
+
+                  <!-- Add existing tag -->
+                  <template x-if="unassignedTags.length > 0">
+                    <div class="flex gap-4 mb-8">
+                      <select class="form-control form-control-sm" x-model="addExistingTagId" style="flex:1">
+                        <option value="">Add tag...</option>
+                        <template x-for="t in unassignedTags" :key="t.id">
+                          <option :value="t.id" x-text="t.name"></option>
+                        </template>
+                      </select>
+                      <button class="btn btn-ghost btn-sm" @click="addExistingTag()" :disabled="!addExistingTagId">Add</button>
+                    </div>
+                  </template>
+
+                  <!-- Create new tag -->
+                  <button class="btn btn-ghost btn-sm" @click="showTagForm = !showTagForm" x-show="!showTagForm">
+                    <i data-lucide="plus" style="width:12px;height:12px"></i> New Tag
+                  </button>
+                  <div x-show="showTagForm" x-cloak class="mt-8" style="padding:12px; background:var(--bg-tertiary); border-radius:var(--radius)">
+                    <div class="form-group">
+                      <input class="form-control form-control-sm" x-model="newTagName" placeholder="Tag name">
+                    </div>
+                    <div class="form-group">
+                      <div class="color-picker-row">
+                        <input type="color" x-model="newTagColor">
+                        <span class="text-muted" x-text="newTagColor"></span>
+                      </div>
+                    </div>
+                    <div class="flex gap-4">
+                      <button class="btn btn-ghost btn-sm" @click="showTagForm = false">Cancel</button>
+                      <button class="btn btn-primary btn-sm" @click="createAndAddTag()" :disabled="!newTagName.trim()">Create & Add</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Relationships -->
+                <div class="card">
+                  <h3>Relationships</h3>
+                  <div class="relationship-items" x-show="relationships.length > 0">
+                    <template x-for="r in relationships" :key="r.id">
+                      <div class="relationship-item">
+                        <div class="rel-info">
+                          <span class="rel-type-badge" x-text="formatFieldName(r.relationship_type)"></span>
+                          <template x-if="getRelatedElement(r.source_id === element.id ? r.target_id : r.source_id)">
+                            <a :href="'#/worlds/' + world.id + '/' + (getRelatedElement(r.source_id === element.id ? r.target_id : r.source_id)?.domain || '') + '/' + (r.source_id === element.id ? r.target_id : r.source_id)"
+                              x-text="getRelatedElement(r.source_id === element.id ? r.target_id : r.source_id)?.name || 'Unknown'"></a>
+                          </template>
+                          <div class="rel-desc text-muted" x-text="r.description" x-show="r.description"></div>
+                        </div>
+                        <button class="btn-icon" @click="removeRelationship(r.id)" title="Remove">
+                          <i data-lucide="x" style="width:14px;height:14px"></i>
+                        </button>
+                      </div>
+                    </template>
+                  </div>
+                  <p class="text-muted mb-8" x-show="relationships.length === 0">No relationships</p>
+
+                  <button class="btn btn-ghost btn-sm" @click="showRelForm = !showRelForm" x-show="!showRelForm">
+                    <i data-lucide="plus" style="width:12px;height:12px"></i> Add Relationship
+                  </button>
+                  <div class="add-relationship" x-show="showRelForm" x-cloak>
+                    <form @submit.prevent="addRelationship()">
+                      <div class="form-group">
+                        <label>Target Element</label>
+                        <input class="form-control form-control-sm" x-model="relSearch" placeholder="Search elements...">
+                        <select class="form-control form-control-sm mt-4" x-model="relTargetId" size="5" style="height:auto; max-height:150px">
+                          <template x-for="e in filteredSearchElements" :key="e.id">
+                            <option :value="e.id" x-text="e.name + ' (' + formatFieldName(e.domain) + ')'"></option>
+                          </template>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Type</label>
+                        <select class="form-control form-control-sm" x-model="relType">
+                          <template x-for="rt in RELATIONSHIP_TYPES" :key="rt">
+                            <option :value="rt" x-text="formatFieldName(rt)"></option>
+                          </template>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Description (optional)</label>
+                        <input class="form-control form-control-sm" x-model="relDesc" placeholder="Describe the relationship...">
+                      </div>
+                      <div class="flex gap-4">
+                        <button type="button" class="btn btn-ghost btn-sm" @click="showRelForm = false">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm" :disabled="!relTargetId">Add</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Meta -->
+                <div class="card">
+                  <h3>Meta</h3>
+                  <div class="detail-fields">
+                    <div class="detail-field">
+                      <dt>Created</dt>
+                      <dd x-text="relativeTime(element.created_at)"></dd>
+                    </div>
+                    <div class="detail-field">
+                      <dt>Updated</dt>
+                      <dd x-text="relativeTime(element.updated_at)"></dd>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template x-if="(!world || !domainConfig || !element) && $store.app.page === 'element-detail'">
+          <div class="empty-state">
+            <h2>Element not found</h2>
+            <button class="btn btn-primary" @click="navigate('/')">Go Home</button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- ONBOARDING WIZARD -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'onboarding'" x-data="{
+        step: 1,
+        totalSteps: 7,
+        name: '',
+        tagline: '',
+        description: '',
+        blueprint_id: '',
+        magic_enabled: true,
+        magic_level: 'medium',
+        startingDomains: [],
+        stepLabels: ['Name', 'Tagline', 'Blueprint', 'Magic', 'Level', 'Domains', 'Review'],
+        get canNext() {
+          if (this.step === 1) return this.name.trim().length > 0;
+          return true;
+        },
+        next() {
+          if (!this.canNext) return;
+          // Skip magic level step if no magic
+          if (this.step === 4 && !this.magic_enabled) {
+            this.step = 6;
+            return;
+          }
+          if (this.step < this.totalSteps) this.step++;
+          this.$nextTick(() => lucide.createIcons());
+        },
+        prev() {
+          // Skip magic level step if no magic
+          if (this.step === 6 && !this.magic_enabled) {
+            this.step = 4;
+            return;
+          }
+          if (this.step > 1) this.step--;
+          this.$nextTick(() => lucide.createIcons());
+        },
+        toggleDomain(id) {
+          const idx = this.startingDomains.indexOf(id);
+          if (idx >= 0) this.startingDomains.splice(idx, 1);
+          else this.startingDomains.push(id);
+        },
+        create() {
+          if (!this.name.trim()) return;
+          const settings = {};
+          if (this.magic_level) settings.magic_level = this.magic_level;
+          if (this.startingDomains.length) settings.starting_domains = this.startingDomains;
+          const w = store.createWorld({
+            name: this.name.trim(),
+            tagline: this.tagline.trim(),
+            description: this.description.trim(),
+            blueprint_id: this.blueprint_id || null,
+            magic_enabled: this.magic_enabled
+          });
+          if (Object.keys(settings).length) {
+            store.updateWorld(w.id, { settings: JSON.stringify(settings) });
+          }
+          navigate('/worlds/' + w.id);
+        },
+        getBlueprintName() {
+          if (!this.blueprint_id) return 'From Scratch';
+          const bp = getBlueprint(this.blueprint_id);
+          return bp ? bp.name : this.blueprint_id;
+        }
+      }" x-init="$nextTick(() => lucide.createIcons())">
+
+        <div class="onboarding-container">
+          <div class="onboarding-header">
+            <h1>Create a New World</h1>
+            <p class="onboarding-subtitle">Follow the steps to build your world.</p>
+
+            <!-- Progress Track -->
+            <div class="step-track">
+              <template x-for="(label, i) in stepLabels" :key="i">
+                <template x-if="true">
+                  <div style="display:contents">
+                    <div class="step-node" :class="{ active: step === (i+1), done: step > (i+1) }">
+                      <div class="step-dot">
+                        <span class="step-num" x-show="step <= (i+1)" x-text="i+1"></span>
+                        <span class="step-check" x-show="step > (i+1)">&#10003;</span>
+                      </div>
+                      <span class="step-label" x-text="label"></span>
+                    </div>
+                    <div class="step-line" :class="{ filled: step > (i+1) }" x-show="i < stepLabels.length - 1"></div>
+                  </div>
+                </template>
+              </template>
+            </div>
+          </div>
+
+          <!-- Step 1: Name -->
+          <div class="step-card" x-show="step === 1">
+            <h2>Name Your World</h2>
+            <p class="step-hint">Every world needs a name. Make it memorable.</p>
+            <div class="form-group">
+              <input class="form-control form-control-lg" x-model="name" placeholder="Enter world name..." autofocus>
+            </div>
+            <div class="step-actions" style="justify-content:flex-end">
+              <button class="btn btn-primary" @click="next()" :disabled="!canNext">
+                Next <span class="btn-arrow">&rarr;</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Tagline + Description -->
+          <div class="step-card" x-show="step === 2">
+            <h2>Describe Your World</h2>
+            <p class="step-hint">A brief tagline and optional description help you remember what makes this world unique.</p>
+            <div class="form-group">
+              <label>Tagline</label>
+              <input class="form-control" x-model="tagline" placeholder="A short tagline...">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea class="form-control" x-model="description" placeholder="Describe your world in more detail..." rows="4"></textarea>
+            </div>
+            <div class="step-actions">
+              <button class="btn btn-ghost" @click="prev()"><span class="btn-arrow">&larr;</span> Back</button>
+              <button class="btn btn-primary ml-auto" @click="next()">Next <span class="btn-arrow">&rarr;</span></button>
+            </div>
+          </div>
+
+          <!-- Step 3: Blueprint -->
+          <div class="step-card step-card-wide" x-show="step === 3">
+            <h2>Choose a Blueprint</h2>
+            <p class="step-hint">Blueprints provide suggestions and structure. You can always customize later.</p>
+            <div class="onboarding-options mb-16">
+              <div class="onboarding-option" :class="{ selected: !blueprint_id }" @click="blueprint_id = ''">
+                <div class="opt-icon"><i data-lucide="file-plus"></i></div>
+                <h3>From Scratch</h3>
+                <p>Start with a blank canvas</p>
+              </div>
+              <template x-for="bp in ALL_BLUEPRINTS" :key="bp.id">
+                <div class="onboarding-option" :class="{ selected: blueprint_id === bp.id }" @click="blueprint_id = bp.id; if (bp.magic !== undefined) magic_enabled = bp.magic">
+                  <div class="opt-icon" :style="'color:' + bp.color"><i :data-lucide="bp.icon"></i></div>
+                  <h3 x-text="bp.name"></h3>
+                  <p x-text="truncate(bp.description, 60)"></p>
+                </div>
+              </template>
+            </div>
+            <div class="step-actions">
+              <button class="btn btn-ghost" @click="prev()"><span class="btn-arrow">&larr;</span> Back</button>
+              <button class="btn btn-primary ml-auto" @click="next()">Next <span class="btn-arrow">&rarr;</span></button>
+            </div>
+          </div>
+
+          <!-- Step 4: Magic Toggle -->
+          <div class="step-card" x-show="step === 4">
+            <h2>Magic?</h2>
+            <p class="step-hint">Does this world have magic? You can always change this later.</p>
+            <div class="onboarding-options-sm" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; max-width:400px;">
+              <div class="onboarding-option" :class="{ selected: magic_enabled }" @click="magic_enabled = true">
+                <div class="opt-icon" style="color:var(--magic-glow)"><i data-lucide="sparkles"></i></div>
+                <h3>Yes, Magic!</h3>
+                <p>Unlock magic domains and arcane fields</p>
+              </div>
+              <div class="onboarding-option" :class="{ selected: !magic_enabled }" @click="magic_enabled = false">
+                <div class="opt-icon"><i data-lucide="shield-off"></i></div>
+                <h3>No Magic</h3>
+                <p>A mundane, realistic world</p>
+              </div>
+            </div>
+            <div class="step-actions">
+              <button class="btn btn-ghost" @click="prev()"><span class="btn-arrow">&larr;</span> Back</button>
+              <button class="btn btn-primary ml-auto" @click="next()">Next <span class="btn-arrow">&rarr;</span></button>
+            </div>
+          </div>
+
+          <!-- Step 5: Magic Level -->
+          <div class="step-card" x-show="step === 5">
+            <h2>Magic Level</h2>
+            <p class="step-hint">How prominent is magic in this world?</p>
+            <div class="onboarding-options-sm" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; max-width:500px;">
+              <div class="onboarding-option" :class="{ selected: magic_level === 'low' }" @click="magic_level = 'low'">
+                <h3>Low</h3>
+                <p>Rare and mysterious, feared or misunderstood</p>
+              </div>
+              <div class="onboarding-option" :class="{ selected: magic_level === 'medium' }" @click="magic_level = 'medium'">
+                <h3>Medium</h3>
+                <p>Known and practiced, but not ubiquitous</p>
+              </div>
+              <div class="onboarding-option" :class="{ selected: magic_level === 'high' }" @click="magic_level = 'high'">
+                <h3>High</h3>
+                <p>Pervasive, integral to everyday life</p>
+              </div>
+            </div>
+            <div class="step-actions">
+              <button class="btn btn-ghost" @click="prev()"><span class="btn-arrow">&larr;</span> Back</button>
+              <button class="btn btn-primary ml-auto" @click="next()">Next <span class="btn-arrow">&rarr;</span></button>
+            </div>
+          </div>
+
+          <!-- Step 6: Starting Domains -->
+          <div class="step-card step-card-wide" x-show="step === 6">
+            <h2>Starting Domains</h2>
+            <p class="step-hint">Pick a few domains to focus on first. You can always add more later.</p>
+
+            <template x-for="[catKey, catLabel] in [['natural','Natural'],['sentient','Sentient'],['magic','Magic'],['meta','Meta']]" :key="catKey">
+              <div class="domain-category-group" x-show="catKey !== 'magic' || magic_enabled">
+                <div class="category-tag" :class="'category-' + catKey">
+                  <span class="category-tag-dot" :style="'background:' + (catKey === 'natural' ? '#2ecc71' : catKey === 'sentient' ? '#9b59b6' : catKey === 'magic' ? '#f39c12' : '#95a5a6')"></span>
+                  <span x-text="catLabel"></span>
+                </div>
+                <div class="onboarding-domains">
+                  <template x-for="d in ALL_DOMAINS.filter(d => d.category === catKey)" :key="d.id">
+                    <div class="onboarding-domain" :style="'--domain-color:' + d.color"
+                      :class="{ selected: startingDomains.includes(d.id) }"
+                      @click="toggleDomain(d.id)"
+                      x-init="$nextTick(() => lucide.createIcons())">
+                      <span class="domain-icon"><i :data-lucide="d.icon"></i></span>
+                      <span class="domain-label" x-text="d.name"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <div class="step-actions">
+              <button class="btn btn-ghost" @click="prev()"><span class="btn-arrow">&larr;</span> Back</button>
+              <button class="btn btn-primary ml-auto" @click="next()">Next <span class="btn-arrow">&rarr;</span></button>
+            </div>
+          </div>
+
+          <!-- Step 7: Review + Create -->
+          <div class="step-card" x-show="step === 7">
+            <h2>Review</h2>
+            <p class="step-hint">Here's a summary of your new world.</p>
+
+            <div class="review-card mb-24">
+              <div class="review-row">
+                <span class="review-label">Name</span>
+                <span class="review-value" x-text="name"></span>
+              </div>
+              <div class="review-row" x-show="tagline">
+                <span class="review-label">Tagline</span>
+                <span class="review-value" x-text="tagline"></span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Blueprint</span>
+                <span class="review-value" x-text="getBlueprintName()"></span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Magic</span>
+                <span class="review-badge" :class="magic_enabled ? 'review-badge-magic' : 'review-badge-off'" x-text="magic_enabled ? 'Enabled (' + magic_level + ')' : 'Disabled'"></span>
+              </div>
+              <div class="review-row" x-show="startingDomains.length > 0">
+                <span class="review-label">Domains</span>
+                <span class="review-value" x-text="startingDomains.map(id => getDomainConfig(id)?.name || id).join(', ')"></span>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn btn-ghost" @click="prev()"><span class="btn-arrow">&larr;</span> Back</button>
+              <button class="btn btn-primary btn-create ml-auto" @click="create()">
+                <i data-lucide="rocket" style="width:18px;height:18px"></i> Create World
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- TIMELINE -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === 'timeline'" x-data="{
+        world: null,
+        eras: [],
+        showForm: false,
+        editingEra: null,
+        formName: '',
+        formStartYear: 0,
+        formEndYear: '',
+        formDescription: '',
+        formColor: '#4a9eff',
+        load() {
+          this.world = store.getWorld($store.app.params.worldId);
+          if (!this.world) return;
+          this.eras = store.listEras(this.world.id);
+        },
+        resetForm() {
+          this.editingEra = null;
+          this.formName = '';
+          this.formStartYear = 0;
+          this.formEndYear = '';
+          this.formDescription = '';
+          this.formColor = '#4a9eff';
+        },
+        openCreate() {
+          this.resetForm();
+          this.showForm = true;
+        },
+        openEdit(era) {
+          this.editingEra = era;
+          this.formName = era.name;
+          this.formStartYear = era.start_year;
+          this.formEndYear = era.end_year ?? '';
+          this.formDescription = era.description || '';
+          this.formColor = era.color || '#4a9eff';
+          this.showForm = true;
+        },
+        submit() {
+          if (!this.formName.trim()) return;
+          const data = {
+            name: this.formName.trim(),
+            start_year: Number(this.formStartYear) || 0,
+            end_year: this.formEndYear !== '' ? Number(this.formEndYear) : null,
+            description: this.formDescription.trim(),
+            color: this.formColor
+          };
+          if (this.editingEra) {
+            store.updateEra(this.world.id, this.editingEra.id, data);
+          } else {
+            store.createEra(this.world.id, data);
+          }
+          this.showForm = false;
+          this.resetForm();
+          this.load();
+        },
+        deleteEra(eraId) {
+          if (!confirm('Delete this era?')) return;
+          store.deleteEra(this.world.id, eraId);
+          this.load();
+        }
+      }" x-init="load(); $watch('$store.app.params.worldId', () => load()); $nextTick(() => lucide.createIcons())">
+
+        <template x-if="world">
+          <div>
+            <div class="breadcrumbs">
+              <a href="#/" @click.prevent="navigate('/')">Home</a>
+              <span class="sep">/</span>
+              <a :href="'#/worlds/' + world.id" @click.prevent="navigate('/worlds/' + world.id)" x-text="world.name"></a>
+              <span class="sep">/</span>
+              <span>Timeline</span>
+            </div>
+
+            <div class="page-header">
+              <h1>Timeline</h1>
+              <div class="header-actions">
+                <button class="btn btn-primary btn-sm" @click="openCreate()">
+                  <i data-lucide="plus" style="width:14px;height:14px"></i> New Era
+                </button>
+              </div>
+            </div>
+
+            <!-- Era Form -->
+            <template x-if="showForm">
+              <div class="form-card mb-24">
+                <h3 x-text="editingEra ? 'Edit Era' : 'New Era'" style="margin-bottom:16px"></h3>
+                <form @submit.prevent="submit()">
+                  <div class="form-group">
+                    <label>Name *</label>
+                    <input class="form-control" x-model="formName" placeholder="Era name" required>
+                  </div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                    <div class="form-group">
+                      <label>Start Year</label>
+                      <input class="form-control" type="number" x-model.number="formStartYear">
+                    </div>
+                    <div class="form-group">
+                      <label>End Year</label>
+                      <input class="form-control" type="number" x-model.number="formEndYear" placeholder="Ongoing if empty">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" x-model="formDescription" placeholder="Describe this era..." rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Color</label>
+                    <div class="color-picker-row">
+                      <input type="color" x-model="formColor">
+                      <span class="text-muted" x-text="formColor"></span>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="button" class="btn btn-ghost" @click="showForm = false; resetForm()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" :disabled="!formName.trim()" x-text="editingEra ? 'Save' : 'Create Era'"></button>
+                  </div>
+                </form>
+              </div>
+            </template>
+
+            <!-- Era List -->
+            <template x-if="eras.length > 0">
+              <div>
+                <template x-for="era in eras" :key="era.id">
+                  <div class="era-item">
+                    <div class="era-color" :style="'background:' + (era.color || '#4a9eff')"></div>
+                    <div class="era-info">
+                      <h4 x-text="era.name"></h4>
+                      <div class="era-years" x-text="era.start_year + (era.end_year !== null ? ' - ' + era.end_year : ' - ongoing')"></div>
+                      <div class="era-desc" x-text="era.description" x-show="era.description"></div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" @click="openEdit(era)">
+                      <i data-lucide="edit" style="width:12px;height:12px"></i>
+                    </button>
+                    <button class="btn-icon" @click="deleteEra(era.id)">
+                      <i data-lucide="trash-2" style="width:14px;height:14px"></i>
+                    </button>
+                  </div>
+                </template>
+              </div>
+            </template>
+
+            <template x-if="eras.length === 0 && !showForm">
+              <div class="empty-state">
+                <div class="empty-icon"><i data-lucide="clock"></i></div>
+                <h3>No eras defined</h3>
+                <p>Create your first era to start building a timeline.</p>
+                <button class="btn btn-primary" @click="openCreate()">
+                  <i data-lucide="plus" style="width:14px;height:14px"></i> New Era
+                </button>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <template x-if="!world && $store.app.page === 'timeline'">
+          <div class="empty-state">
+            <h2>World not found</h2>
+            <button class="btn btn-primary" @click="navigate('/')">Go Home</button>
+          </div>
+        </template>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- 404 PAGE -->
+      <!-- ============================================================ -->
+      <div x-show="$store.app.page === '404'">
+        <div class="empty-state">
+          <div class="empty-icon"><i data-lucide="compass"></i></div>
+          <h2>Page Not Found</h2>
+          <p>The page you're looking for doesn't exist or has been moved.</p>
+          <button class="btn btn-primary" @click="navigate('/')">
+            <i data-lucide="home" style="width:14px;height:14px"></i> Go Home
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /app-layout -->
+
+  <script src="app.js"></script>
+  <script src="js/lucide.min.js"></script>
+  <script src="js/alpine.min.js" defer></script>
+  <script>
+    // Initialize lucide icons once DOM is ready, and re-initialize on Alpine updates
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+    });
+    document.addEventListener('alpine:initialized', () => {
+      if (window.lucide) lucide.createIcons();
+      // Also re-create icons after any Alpine morph/render
+      const observer = new MutationObserver(() => {
+        if (window.lucide) lucide.createIcons();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+  </script>
+</body>
+</html>

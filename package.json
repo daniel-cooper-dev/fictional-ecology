@@ -1,12 +1,14 @@
 {
-  "name": "fictional-ecology",
+  "name": "worldwright",
   "version": "1.0.0",
-  "description": "A local web application for designing fictional worlds",
+  "description": "Worldwright — a world-building toolkit for designing fictional worlds",
   "main": "src/server.ts",
   "scripts": {
     "start": "tsx src/server.ts",
     "dev": "tsx watch src/server.ts",
     "build:client": "esbuild public/js-src/*.ts --bundle --outdir=public/dist --format=esm --minify",
+    "build:client-app": "tsx scripts/build-client.ts",
+    "build:client-app:prod": "tsx scripts/build-client.ts --minify",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "migrate": "tsx src/db/migrate.ts"

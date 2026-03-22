@@ -3,6 +3,7 @@ import { DomainService } from '../services/DomainService.js';
 import { RelationshipService } from '../services/RelationshipService.js';
 import { TagService } from '../services/TagService.js';
 import { getDomainConfig } from '../domains/index.js';
+import { getPairs } from '../blueprints/pairs.js';
 
 const router = Router();
 
@@ -59,11 +60,30 @@ router.get('/:worldId/:domainId/new', (req, res) => {
     }
   }
 
+  // Get "Pairs Well With" suggestions if an archetype is selected
+  let pairsWellWith: any[] = [];
+  if (selectedArchetype) {
+    const rawPairs = getPairs(config.id, selectedArchetype.id);
+    pairsWellWith = rawPairs.map(p => {
+      const pairDomain = getDomainConfig(p.domain);
+      const pairArchetype = pairDomain?.archetypes?.find(a => a.id === p.archetypeId);
+      return {
+        ...p,
+        domainName: pairDomain?.name || p.domain,
+        domainIcon: pairDomain?.icon || 'circle',
+        domainColor: pairDomain?.color || '#999',
+        archetypeName: pairArchetype?.name || p.archetypeId.replace(/_/g, ' '),
+        archetypeDescription: pairArchetype?.description || '',
+      };
+    });
+  }
+
   res.render('pages/element-form.njk', {
     domainConfig: config,
     element,
     isNew: true,
     selectedArchetype,
+    pairsWellWith,
   });
 });
 

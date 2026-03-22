@@ -1,0 +1,38 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}New Constellation - Fictional Ecology{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Create a Constellation</h1>
+</div>
+
+<form method="POST" action="/constellations" class="form-card">
+  {% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+  {% endif %}
+
+  <div class="form-group">
+    <label for="name">Constellation Name *</label>
+    <input type="text" id="name" name="name" required placeholder="e.g., The Shattered Realms, Aether Cycle, Twin Suns" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="3" placeholder="What connects these worlds? A shared cosmology, parallel dimensions, a branching timeline..." class="form-control"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="color">Color</label>
+    <div style="display: flex; align-items: center; gap: 12px">
+      <input type="color" id="color" name="color" value="#6366f1" style="width: 40px; height: 34px; border: 1px solid var(--border-color); border-radius: var(--radius); background: transparent; cursor: pointer;">
+      <span class="help-text">Used to visually identify this constellation</span>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <a href="/worlds" class="btn btn-ghost">Cancel</a>
+    <button type="submit" class="btn btn-primary">Create Constellation</button>
+  </div>
+</form>
+{% endblock %}

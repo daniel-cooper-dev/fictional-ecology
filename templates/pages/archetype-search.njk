@@ -1,0 +1,67 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}Browse Templates - Fictional Ecology{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Browse All Templates</h1>
+    <p class="subtitle">{{ total }} templates across all domains. Search, filter, and create directly.</p>
+  </div>
+</div>
+
+<div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: flex-end;">
+  <div style="flex: 1; min-width: 200px;">
+    <form method="GET" action="/archetypes" style="display: flex; gap: 8px;">
+      <input type="search" name="q" value="{{ query }}" placeholder="Search templates..." class="form-control" style="max-width: 300px;">
+      {% if domainFilter %}<input type="hidden" name="domain" value="{{ domainFilter }}">{% endif %}
+      {% if categoryFilter %}<input type="hidden" name="category" value="{{ categoryFilter }}">{% endif %}
+      <button type="submit" class="btn btn-primary btn-sm">Search</button>
+      {% if query %}
+      <a href="/archetypes{% if domainFilter %}?domain={{ domainFilter }}{% endif %}{% if categoryFilter %}{% if domainFilter %}&{% else %}?{% endif %}category={{ categoryFilter }}{% endif %}" class="btn btn-ghost btn-sm">Clear</a>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <a href="/archetypes{% if query %}?q={{ query }}{% endif %}" class="filter-chip {% if not categoryFilter and not domainFilter %}active{% endif %}">All</a>
+  {% for cat in categories %}
+  <a href="/archetypes?category={{ cat }}{% if query %}&q={{ query }}{% endif %}" class="filter-chip {% if categoryFilter == cat %}active{% endif %}">{{ cat | capitalize }}</a>
+  {% endfor %}
+</div>
+
+{% if domainFilter %}
+<div style="margin-bottom: 12px;">
+  <span style="font-size: 0.8rem; color: var(--text-muted);">Filtered to:</span>
+  <span class="badge" style="background: var(--bg-tertiary);">{{ domainFilter | replace('_', ' ') | capitalize }}</span>
+  <a href="/archetypes{% if query %}?q={{ query }}{% endif %}{% if categoryFilter %}{% if query %}&{% else %}?{% endif %}category={{ categoryFilter }}{% endif %}" style="font-size: 0.75rem; color: var(--accent);">Clear filter</a>
+</div>
+{% endif %}
+
+{% if archetypes.length == 0 %}
+<div class="empty-state">
+  <h3>No templates found</h3>
+  <p>Try a different search term or clear your filters.</p>
+</div>
+{% else %}
+<div class="element-grid">
+  {% for arch in archetypes %}
+  <div class="element-card" style="--domain-color: {{ arch.domainColor }};">
+    <div class="element-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="/archetypes?domain={{ arch.domainId }}{% if query %}&q={{ query }}{% endif %}" style="display: flex; align-items: center; gap: 4px; color: {{ arch.domainColor }}; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; text-decoration: none;">
+        <i data-lucide="{{ arch.domainIcon }}" style="width: 14px; height: 14px;"></i>
+        {{ arch.domainName }}
+      </a>
+      <span class="element-type-badge">{{ arch.element_type | replace('_', ' ') | capitalize }}</span>
+    </div>
+    <h3 style="margin-top: 6px;">{{ arch.name }}</h3>
+    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">{{ arch.description | truncate(120) }}</p>
+    <div style="font-size: 0.7rem; color: var(--text-muted); font-style: italic;">
+      Click "Use" to create an element from this template in any world.
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

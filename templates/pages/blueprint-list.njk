@@ -1,0 +1,52 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}World Blueprints - Fictional Ecology{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>World Blueprints</h1>
+    <p class="subtitle">Pre-built combinations of concepts that fit well together. Pick a blueprint to guide your world-building.</p>
+  </div>
+  <a href="/worlds/new/wizard" class="btn btn-primary">+ Create World</a>
+</div>
+
+<div class="filter-bar">
+  <a href="/blueprints" class="filter-chip {% if not currentTag %}active{% endif %}">All</a>
+  {% for tag in tags %}
+  <a href="/blueprints?tag={{ tag }}" class="filter-chip {% if currentTag == tag %}active{% endif %}">{{ tag | capitalize }}</a>
+  {% endfor %}
+</div>
+
+{% if blueprints.length == 0 %}
+<div class="empty-state">
+  <h3>No blueprints match this filter</h3>
+  <p>Try a different tag or view all blueprints.</p>
+</div>
+{% else %}
+<div class="world-grid">
+  {% for bp in blueprints %}
+  <a href="/blueprints/{{ bp.id }}" class="world-card" style="border-left: 3px solid {{ bp.color }};">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+      <span style="color: {{ bp.color }}"><i data-lucide="{{ bp.icon }}"></i></span>
+      <h3 style="margin: 0;">{{ bp.name }}</h3>
+    </div>
+    <p class="world-desc">{{ bp.description | truncate(140) }}</p>
+    <div class="world-meta">
+      <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+        {% for tag in bp.tags %}
+        <span class="badge" style="background: {{ bp.color }}15; color: {{ bp.color }}; border: 1px solid {{ bp.color }}40; font-size: 0.6rem;">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      <span class="badge {% if bp.magic %}badge-magic{% else %}badge-mundane{% endif %}">
+        {{ "Magic" if bp.magic else "No Magic" }}
+      </span>
+    </div>
+    <div style="margin-top: 8px; font-size: 0.75rem; color: var(--text-muted);">
+      {{ bp.suggestions | length }} suggestions
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

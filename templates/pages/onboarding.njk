@@ -2,10 +2,10 @@
 
 {% block title %}Create Your World - Fictional Ecology{% endblock %}
 
-{% set stepLabels = ['Name', 'Describe', 'Magic', 'Level', 'Domain', 'Review'] %}
+{% set stepLabels = ['Name', 'Describe', 'Blueprint', 'Magic', 'Level', 'Domain', 'Review'] %}
 
 {% block content %}
-<div class="onboarding-container" x-data="{ step: 1, worldName: '', tagline: '', description: '', magicEnabled: true, magicLevel: 'high', startDomain: 'cosmology' }">
+<div class="onboarding-container" x-data="{ step: 1, worldName: '', tagline: '', description: '', blueprintId: '', magicEnabled: true, magicLevel: 'high', startDomain: 'cosmology' }">
   <div class="onboarding-header">
     <h1>Create Your World</h1>
     <p class="onboarding-subtitle">Build something extraordinary, one step at a time.</p>
@@ -74,8 +74,40 @@
     </div>
   </div>
 
-  {# Step 3: Magic #}
+  {# Step 3: Blueprint (optional) #}
   <div class="onboarding-step" x-show="step === 3" x-transition>
+    <div class="step-card step-card-wide">
+      <h2>Start from a blueprint?</h2>
+      <p class="step-hint">Blueprints suggest coherent combinations of elements across domains. Pick one, or skip to build from scratch.</p>
+      <div class="onboarding-options" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div class="onboarding-option" :class="{ selected: blueprintId === '' }" @click="blueprintId = ''">
+          <div class="opt-icon">&#9997;</div>
+          <h3>From Scratch</h3>
+          <p>Build your world without a blueprint — total creative freedom.</p>
+        </div>
+        {% for bp in blueprints %}
+        <div class="onboarding-option" :class="{ selected: blueprintId === '{{ bp.id }}' }" @click="blueprintId = '{{ bp.id }}'; {% if bp.magic %}magicEnabled = true{% else %}magicEnabled = false{% endif %}">
+          <div class="opt-icon"><i data-lucide="{{ bp.icon }}"></i></div>
+          <h3>{{ bp.name }}</h3>
+          <p>{{ bp.description | truncate(80) }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="step-actions">
+        <button class="btn btn-ghost btn-lg" @click="step = 2">
+          <span class="btn-arrow">&larr;</span>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" @click="step = 4">
+          Continue
+          <span class="btn-arrow">&rarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {# Step 4: Magic #}
+  <div class="onboarding-step" x-show="step === 4" x-transition>
     <div class="step-card">
       <h2>Does your world have magic?</h2>
       <p class="step-hint">Magic permeates every aspect of your world — or maybe it doesn't. Your choice.</p>
@@ -92,11 +124,11 @@
         </div>
       </div>
       <div class="step-actions">
-        <button class="btn btn-ghost btn-lg" @click="step = 2">
+        <button class="btn btn-ghost btn-lg" @click="step = 3">
           <span class="btn-arrow">&larr;</span>
           Back
         </button>
-        <button class="btn btn-primary btn-lg" @click="step = magicEnabled ? 4 : 5">
+        <button class="btn btn-primary btn-lg" @click="step = magicEnabled ? 5 : 6">
           Continue
           <span class="btn-arrow">&rarr;</span>
         </button>
@@ -104,8 +136,8 @@
     </div>
   </div>
 
-  {# Step 4: Magic Level (only if magic enabled) #}
-  <div class="onboarding-step" x-show="step === 4" x-transition>
+  {# Step 5: Magic Level (only if magic enabled) #}
+  <div class="onboarding-step" x-show="step === 5" x-transition>
     <div class="step-card">
       <h2>How prevalent is magic?</h2>
       <p class="step-hint">This helps guide your world-building prompts and suggestions.</p>
@@ -124,11 +156,11 @@
         </div>
       </div>
       <div class="step-actions">
-        <button class="btn btn-ghost btn-lg" @click="step = 3">
+        <button class="btn btn-ghost btn-lg" @click="step = 4">
           <span class="btn-arrow">&larr;</span>
           Back
         </button>
-        <button class="btn btn-primary btn-lg" @click="step = 5">
+        <button class="btn btn-primary btn-lg" @click="step = 6">
           Continue
           <span class="btn-arrow">&rarr;</span>
         </button>
@@ -136,8 +168,8 @@
     </div>
   </div>
 
-  {# Step 5: Starting Domain #}
-  <div class="onboarding-step" x-show="step === 5" x-transition>
+  {# Step 6: Starting Domain #}
+  <div class="onboarding-step" x-show="step === 6" x-transition>
     <div class="step-card step-card-wide">
       <h2>Where do you want to start?</h2>
       <p class="step-hint">Pick a domain to begin building. You can explore any domain at any time.</p>
@@ -197,11 +229,11 @@
       </div>
 
       <div class="step-actions">
-        <button class="btn btn-ghost btn-lg" @click="step = magicEnabled ? 4 : 3">
+        <button class="btn btn-ghost btn-lg" @click="step = magicEnabled ? 5 : 4">
           <span class="btn-arrow">&larr;</span>
           Back
         </button>
-        <button class="btn btn-primary btn-lg" @click="step = 6">
+        <button class="btn btn-primary btn-lg" @click="step = 7">
           Continue
           <span class="btn-arrow">&rarr;</span>
         </button>
@@ -209,8 +241,8 @@
     </div>
   </div>
 
-  {# Step 6: Review & Create #}
-  <div class="onboarding-step" x-show="step === 6" x-transition>
+  {# Step 7: Review & Create #}
+  <div class="onboarding-step" x-show="step === 7" x-transition>
     <div class="step-card">
       <h2>Ready to build?</h2>
       <p class="step-hint">Here's what we've got. Hit create to start building your world.</p>
@@ -222,6 +254,10 @@
         <div class="review-row" x-show="tagline">
           <span class="review-label">Tagline</span>
           <span class="review-value" x-text="tagline"></span>
+        </div>
+        <div class="review-row" x-show="blueprintId">
+          <span class="review-label">Blueprint</span>
+          <span class="review-value review-value-cap" x-text="blueprintId.replace(/_/g, ' ')"></span>
         </div>
         <div class="review-row">
           <span class="review-label">Magic</span>
@@ -239,9 +275,10 @@
         <input type="hidden" name="tagline" :value="tagline">
         <input type="hidden" name="description" :value="description">
         <input type="hidden" name="magic_enabled" :value="magicEnabled">
+        <input type="hidden" name="blueprint_id" :value="blueprintId">
         <input type="hidden" name="start_domain" :value="startDomain">
         <div class="step-actions">
-          <button type="button" class="btn btn-ghost btn-lg" @click="step = 5">
+          <button type="button" class="btn btn-ghost btn-lg" @click="step = 6">
             <span class="btn-arrow">&larr;</span>
             Back
           </button>

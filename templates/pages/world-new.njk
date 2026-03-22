@@ -27,6 +27,36 @@
     <textarea id="description" name="description" rows="4" placeholder="Describe the broad strokes of your world..." class="form-control"></textarea>
   </div>
 
+  {% if blueprints and blueprints.length > 0 %}
+  <div class="form-group">
+    <label for="blueprint_id">World Blueprint</label>
+    <select id="blueprint_id" name="blueprint_id" class="form-control">
+      <option value="">None (build from scratch)</option>
+      {% for bp in blueprints %}
+      <option value="{{ bp.id }}" {% if preselectedBlueprint == bp.id %}selected{% endif %}>{{ bp.name }}</option>
+      {% endfor %}
+    </select>
+    <p class="help-text">Blueprints suggest coherent combinations of elements across domains — a creative starting point. <a href="/blueprints" style="color: var(--accent);">Browse blueprints</a></p>
+  </div>
+  {% elif preselectedBlueprint %}
+  <input type="hidden" name="blueprint_id" value="{{ preselectedBlueprint }}">
+  {% endif %}
+
+  {% if constellations and constellations.length > 0 %}
+  <div class="form-group">
+    <label for="constellation_id">Constellation</label>
+    <select id="constellation_id" name="constellation_id" class="form-control">
+      <option value="">None (standalone world)</option>
+      {% for c in constellations %}
+      <option value="{{ c.id }}" {% if preselectedConstellation == c.id %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+    <p class="help-text">Link this world to a constellation to group it with related worlds.</p>
+  </div>
+  {% elif preselectedConstellation %}
+  <input type="hidden" name="constellation_id" value="{{ preselectedConstellation }}">
+  {% endif %}
+
   <div class="form-group">
     <label class="checkbox-label">
       <input type="checkbox" name="magic_enabled" value="true" checked>

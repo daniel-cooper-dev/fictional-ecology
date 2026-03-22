@@ -5,8 +5,11 @@
 {% block content %}
 <div class="page-header">
   <h1>Your Worlds</h1>
-  <a href="/worlds/new/wizard" class="btn btn-primary">+ Create with Wizard</a>
-  <a href="/worlds/new" class="btn btn-ghost">Quick Create</a>
+  <div style="display: flex; gap: 8px;">
+    <a href="/constellations/new" class="btn btn-ghost">+ Constellation</a>
+    <a href="/worlds/new/wizard" class="btn btn-primary">+ Create with Wizard</a>
+    <a href="/worlds/new" class="btn btn-ghost">Quick Create</a>
+  </div>
 </div>
 
 {% if worlds.length == 0 %}
@@ -17,20 +20,77 @@
   <a href="/worlds/new/wizard" class="btn btn-primary btn-lg">Create Your First World</a>
 </div>
 {% else %}
-<div class="world-grid">
-  {% for w in worlds %}
-  <a href="/worlds/{{ w.id }}" class="world-card">
-    <h3>{{ w.name }}</h3>
-    {% if w.tagline %}<p class="world-tagline">{{ w.tagline }}</p>{% endif %}
-    {% if w.description %}<p class="world-desc">{{ w.description | truncate(120) }}</p>{% endif %}
-    <div class="world-meta">
-      <span class="badge {% if w.magic_enabled %}badge-magic{% else %}badge-mundane{% endif %}">
-        {{ "Magic Enabled" if w.magic_enabled else "No Magic" }}
-      </span>
-      <span class="text-muted">Updated {{ w.updated_at }}</span>
+
+  {# Constellation groups #}
+  {% for c in constellations %}
+    {% if c.worlds.length > 0 %}
+    <div class="constellation-group" style="margin-bottom: 28px;">
+      <a href="/constellations/{{ c.id }}" class="constellation-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; text-decoration: none; color: var(--text-primary);">
+        <span style="background: {{ c.color }}; width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0;"></span>
+        <h2 style="font-size: 1.1rem; margin: 0;">{{ c.name }}</h2>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">{{ c.worlds | length }} world{{ "s" if c.worlds | length != 1 }}</span>
+        <span style="font-size: 0.7rem; color: var(--text-muted); margin-left: auto;">View &rarr;</span>
+      </a>
+      {% if c.description %}
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; margin-left: 20px;">{{ c.description | truncate(150) }}</p>
+      {% endif %}
+      <div class="world-grid" style="border-left: 2px solid {{ c.color }}; padding-left: 18px; margin-left: 4px;">
+        {% for w in c.worlds %}
+        <a href="/worlds/{{ w.id }}" class="world-card">
+          <h3>{{ w.name }}</h3>
+          {% if w.tagline %}<p class="world-tagline">{{ w.tagline }}</p>{% endif %}
+          {% if w.description %}<p class="world-desc">{{ w.description | truncate(120) }}</p>{% endif %}
+          <div class="world-meta">
+            <span class="badge {% if w.magic_enabled %}badge-magic{% else %}badge-mundane{% endif %}">
+              {{ "Magic Enabled" if w.magic_enabled else "No Magic" }}
+            </span>
+            <span class="text-muted">Updated {{ w.updated_at }}</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
     </div>
-  </a>
+    {% endif %}
   {% endfor %}
-</div>
+
+  {# Empty constellations (show as small links) #}
+  {% set emptyConstellations = [] %}
+  {% for c in constellations %}
+    {% if c.worlds.length == 0 %}
+      {% set _ = emptyConstellations.push(c) %}
+    {% endif %}
+  {% endfor %}
+  {% if emptyConstellations.length > 0 %}
+  <div style="margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap;">
+    {% for c in emptyConstellations %}
+    <a href="/constellations/{{ c.id }}" class="btn btn-ghost btn-sm" style="border-left: 3px solid {{ c.color }};">
+      {{ c.name }} <span style="color: var(--text-muted); font-size: 0.7rem;">(empty)</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# Unlinked worlds #}
+  {% if unlinkedWorlds.length > 0 %}
+    {% if constellations.length > 0 %}
+    <h2 style="font-size: 1.1rem; margin-bottom: 12px; color: var(--text-secondary);">Unlinked Worlds</h2>
+    {% endif %}
+    <div class="world-grid">
+      {% for w in unlinkedWorlds %}
+      <a href="/worlds/{{ w.id }}" class="world-card">
+        <h3>{{ w.name }}</h3>
+        {% if w.tagline %}<p class="world-tagline">{{ w.tagline }}</p>{% endif %}
+        {% if w.description %}<p class="world-desc">{{ w.description | truncate(120) }}</p>{% endif %}
+        <div class="world-meta">
+          <span class="badge {% if w.magic_enabled %}badge-magic{% else %}badge-mundane{% endif %}">
+            {{ "Magic Enabled" if w.magic_enabled else "No Magic" }}
+          </span>
+          <span class="text-muted">Updated {{ w.updated_at }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
 {% endif %}
 {% endblock %}

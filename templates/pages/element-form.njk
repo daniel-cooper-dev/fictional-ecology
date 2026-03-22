@@ -42,6 +42,25 @@
 </div>
 {% endif %}
 
+{% if pairsWellWith and pairsWellWith.length > 0 %}
+<div style="margin-bottom: 20px;">
+  <h3 style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px;">Pairs Well With</h3>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+    {% for p in pairsWellWith %}
+    <a href="/worlds/{{ world.id }}/{{ p.domain }}/new?archetype={{ p.archetypeId }}"
+       class="element-card" style="--domain-color: {{ p.domainColor }}; max-width: 260px; padding: 12px;">
+      <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+        <span style="color: {{ p.domainColor }}"><i data-lucide="{{ p.domainIcon }}" style="width: 14px; height: 14px;"></i></span>
+        <span style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: {{ p.domainColor }};">{{ p.domainName }}</span>
+      </div>
+      <h3 style="font-size: 0.85rem; margin-bottom: 2px;">{{ p.archetypeName }}</h3>
+      <p style="font-size: 0.7rem; color: var(--text-muted); font-style: italic;">{{ p.reason }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
 <form method="POST"
   action="{% if isNew %}/worlds/{{ world.id }}/{{ domainConfig.id }}{% else %}/worlds/{{ world.id }}/{{ domainConfig.id }}/{{ element.id }}{% endif %}"
   class="form-card"
@@ -56,9 +75,9 @@
     </div>
 
     {% if domainConfig.elementTypes.length > 1 %}
-    <div class="form-group">
+    <div class="form-group" x-data="{ selectedType: '{{ element.element_type if element else '' }}' }">
       <label for="element_type">Type</label>
-      <select id="element_type" name="element_type" class="form-control">
+      <select id="element_type" name="element_type" class="form-control" x-model="selectedType">
         <option value="">-- Select Type --</option>
         {% for t in domainConfig.elementTypes %}
         <option value="{{ t }}" {% if element and element.element_type == t %}selected{% endif %}>
@@ -66,6 +85,11 @@
         </option>
         {% endfor %}
       </select>
+      {% if domainConfig.elementTypeDescriptions %}
+        {% for t in domainConfig.elementTypes %}
+        <p class="help-text" x-show="selectedType === '{{ t }}'" x-cloak>{{ domainConfig.elementTypeDescriptions[t] }}</p>
+        {% endfor %}
+      {% endif %}
     </div>
     {% endif %}
 

@@ -69,6 +69,17 @@ export function getMasterDb(): Database.Database {
   masterDb.pragma('foreign_keys = ON');
 
   masterDb.exec(`
+    CREATE TABLE IF NOT EXISTS constellations (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      color TEXT DEFAULT '#6366f1',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
+
+  masterDb.exec(`
     CREATE TABLE IF NOT EXISTS worlds (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -78,9 +89,20 @@ export function getMasterDb(): Database.Database {
       settings TEXT DEFAULT '{}',
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now')),
-      forked_from TEXT
+      forked_from TEXT,
+      constellation_id TEXT REFERENCES constellations(id) ON DELETE SET NULL,
+      blueprint_id TEXT
     )
   `);
+
+  // Migration: add columns to existing worlds table if missing
+  const worldCols = masterDb.prepare("PRAGMA table_info(worlds)").all() as { name: string }[];
+  if (!worldCols.some(c => c.name === 'constellation_id')) {
+    masterDb.exec(`ALTER TABLE worlds ADD COLUMN constellation_id TEXT REFERENCES constellations(id) ON DELETE SET NULL`);
+  }
+  if (!worldCols.some(c => c.name === 'blueprint_id')) {
+    masterDb.exec(`ALTER TABLE worlds ADD COLUMN blueprint_id TEXT`);
+  }
 
   return masterDb;
 }

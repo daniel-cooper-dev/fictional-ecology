@@ -5,6 +5,9 @@ import { config } from './config.js';
 import { worldContext } from './middleware/worldContext.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import worldsRouter from './routes/worlds.js';
+import constellationsRouter from './routes/constellations.js';
+import blueprintsRouter from './routes/blueprints.js';
+import archetypesRouter from './routes/archetypes.js';
 import domainsRouter from './routes/domains.js';
 import magicRouter from './routes/magic.js';
 import relationshipsRouter from './routes/relationships.js';
@@ -52,6 +55,11 @@ env.addFilter('domain_icon', (domainId: string) => {
 env.addFilter('domain_name', (domainId: string) => {
   const d = ALL_DOMAINS.find(d => d.id === domainId);
   return d ? d.name : domainId;
+});
+
+env.addFilter('random_item', (arr: any[]) => {
+  if (!arr || arr.length === 0) return null;
+  return arr[Math.floor(Math.random() * arr.length)];
 });
 
 env.addFilter('truncate', (str: string, len: number) => {
@@ -105,6 +113,9 @@ getMasterDb();
 
 // Routes
 app.get('/', (req, res) => res.redirect('/worlds'));
+app.use('/constellations', constellationsRouter);
+app.use('/blueprints', blueprintsRouter);
+app.use('/archetypes', archetypesRouter);
 app.use('/worlds', worldsRouter);
 
 // All world-scoped routes go through worldContext

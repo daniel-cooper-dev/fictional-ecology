@@ -23,6 +23,7 @@ export interface DomainConfig {
   category: 'natural' | 'sentient' | 'magic' | 'meta';
   fields: FieldDefinition[];
   elementTypes: string[];
+  elementTypeDescriptions?: Record<string, string>;
   prompts: string[];
   magicPermeation: MagicPermeationConfig | null;
   defaultSortField?: string;

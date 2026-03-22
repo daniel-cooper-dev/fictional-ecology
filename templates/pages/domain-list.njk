@@ -15,14 +15,22 @@
     <h1 style="color: {{ domainConfig.color }}">{{ domainConfig.namePlural }}</h1>
     <p class="subtitle">{{ domainConfig.description }}</p>
   </div>
-  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new" class="btn btn-primary">+ New {{ domainConfig.name }}</a>
+  <div style="display: flex; gap: 8px;">
+    {% if domainConfig.archetypes and domainConfig.archetypes.length > 0 %}
+    {% set randomArch = domainConfig.archetypes | random_item %}
+    {% if randomArch %}
+    <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new?archetype={{ randomArch.id }}" class="btn btn-ghost" title="Pick a random template">Surprise Me</a>
+    {% endif %}
+    {% endif %}
+    <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new" class="btn btn-primary">+ New {{ domainConfig.name }}</a>
+  </div>
 </div>
 
 {% if domainConfig.elementTypes.length > 1 %}
 <div class="filter-bar">
   <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}" class="filter-chip {% if not currentType %}active{% endif %}">All</a>
   {% for t in domainConfig.elementTypes %}
-  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}?type={{ t }}" class="filter-chip {% if currentType == t %}active{% endif %}">{{ t | replace('_', ' ') | capitalize }}</a>
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}?type={{ t }}" class="filter-chip {% if currentType == t %}active{% endif %}" {% if domainConfig.elementTypeDescriptions and domainConfig.elementTypeDescriptions[t] %}title="{{ domainConfig.elementTypeDescriptions[t] }}"{% endif %}>{{ t | replace('_', ' ') | capitalize }}</a>
   {% endfor %}
 </div>
 {% endif %}
@@ -31,7 +39,19 @@
 <div class="empty-state">
   <h3>No {{ domainConfig.namePlural | lower }} yet</h3>
   <p>{{ domainConfig.prompts[0] if domainConfig.prompts.length > 0 }}</p>
-  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new" class="btn btn-primary">Create First {{ domainConfig.name }}</a>
+  <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new" class="btn btn-primary" style="margin-bottom: 20px;">Create First {{ domainConfig.name }}</a>
+
+  {% if domainConfig.archetypes and domainConfig.archetypes.length > 0 %}
+  <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Or start from a template:</p>
+  <div class="element-grid" style="max-width: 900px; margin: 0 auto;">
+    {% for arch in domainConfig.archetypes.slice(0, 6) %}
+    <a href="/worlds/{{ world.id }}/{{ domainConfig.id }}/new?archetype={{ arch.id }}" class="element-card" style="--domain-color: {{ domainConfig.color }}; text-align: left;">
+      <h3 style="font-size: 0.9rem;">{{ arch.name }}</h3>
+      <p style="font-size: 0.75rem; color: var(--text-muted);">{{ arch.description | truncate(100) }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
 </div>
 {% else %}
 {% macro sortLink(field, label) %}

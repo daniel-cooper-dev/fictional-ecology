@@ -1,3 +1,12 @@
+export interface Constellation {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface World {
   id: string;
   name: string;
@@ -8,6 +17,8 @@ export interface World {
   created_at: string;
   updated_at: string;
   forked_from: string | null;
+  constellation_id: string | null;
+  blueprint_id: string | null;
 }
 
 export interface WorldElement {
@@ -85,6 +96,25 @@ export interface SearchResult {
   name: string;
   snippet: string;
   rank: number;
+}
+
+// World Blueprints — cross-domain templates
+export interface BlueprintSuggestion {
+  domain: string;
+  archetypeId: string;
+  priority: 'essential' | 'recommended' | 'optional';
+  note?: string;
+}
+
+export interface WorldBlueprint {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  tags: string[];
+  magic: boolean;
+  suggestions: BlueprintSuggestion[];
 }
 
 // Pagination

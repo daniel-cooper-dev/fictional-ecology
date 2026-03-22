@@ -1,0 +1,90 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}{{ blueprint.name }} - World Blueprints{% endblock %}
+
+{% block content %}
+<nav class="breadcrumbs">
+  <a href="/blueprints">Blueprints</a>
+  <span class="sep">/</span>
+  <span>{{ blueprint.name }}</span>
+</nav>
+
+<div class="page-header">
+  <div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="color: {{ blueprint.color }}; font-size: 1.5rem;"><i data-lucide="{{ blueprint.icon }}"></i></span>
+      <h1>{{ blueprint.name }}</h1>
+    </div>
+    <p class="subtitle">{{ blueprint.description }}</p>
+    <div style="display: flex; gap: 6px; margin-top: 8px;">
+      {% for tag in blueprint.tags %}
+      <span class="badge" style="background: {{ blueprint.color }}15; color: {{ blueprint.color }}; border: 1px solid {{ blueprint.color }}40;">{{ tag }}</span>
+      {% endfor %}
+      <span class="badge {% if blueprint.magic %}badge-magic{% else %}badge-mundane{% endif %}">
+        {{ "Magic Enabled" if blueprint.magic else "No Magic" }}
+      </span>
+    </div>
+  </div>
+  <a href="/worlds/new?blueprint={{ blueprint.id }}" class="btn btn-primary">Use This Blueprint</a>
+</div>
+
+{% macro suggestionCard(s) %}
+<div class="element-card" style="--domain-color: {{ s.domainColor }};">
+  <div class="element-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <span style="display: flex; align-items: center; gap: 6px; color: {{ s.domainColor }};">
+      <i data-lucide="{{ s.domainIcon }}" style="width: 16px; height: 16px;"></i>
+      <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">{{ s.domainName }}</span>
+    </span>
+    <span class="badge" style="font-size: 0.6rem;
+      {% if s.priority == 'essential' %}background: var(--accent); color: white;
+      {% elif s.priority == 'recommended' %}background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color);
+      {% else %}background: transparent; color: var(--text-muted); border: 1px solid var(--border-color);
+      {% endif %}">{{ s.priority }}</span>
+  </div>
+  {% if s.archetype %}
+  <h3 style="margin-top: 6px;">{{ s.archetype.name }}</h3>
+  <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">{{ s.archetype.description }}</p>
+  {% else %}
+  <h3 style="margin-top: 6px; color: var(--text-muted);">{{ s.archetypeId | replace('_', ' ') | capitalize }}</h3>
+  <p style="font-size: 0.75rem; color: var(--text-muted);">Archetype not found</p>
+  {% endif %}
+  {% if s.note %}
+  <p style="font-size: 0.7rem; color: var(--text-muted); font-style: italic; margin-top: 4px;">{{ s.note }}</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% if essential.length > 0 %}
+<h2 class="section-title" style="margin-top: 24px;">Essential</h2>
+<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Core elements that define this world type.</p>
+<div class="element-grid">
+  {% for s in essential %}
+    {{ suggestionCard(s) }}
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if recommended.length > 0 %}
+<h2 class="section-title" style="margin-top: 24px;">Recommended</h2>
+<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Strongly suggested elements that enrich the world.</p>
+<div class="element-grid">
+  {% for s in recommended %}
+    {{ suggestionCard(s) }}
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if optional.length > 0 %}
+<h2 class="section-title" style="margin-top: 24px;">Optional</h2>
+<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Additional ideas to deepen and personalize the world.</p>
+<div class="element-grid">
+  {% for s in optional %}
+    {{ suggestionCard(s) }}
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="dashboard-footer">
+  <a href="/worlds/new?blueprint={{ blueprint.id }}" class="btn btn-primary">Use This Blueprint to Create a World</a>
+</div>
+{% endblock %}

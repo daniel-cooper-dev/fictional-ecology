@@ -1,0 +1,99 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}{{ constellation.name }} - Fictional Ecology{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="constellation-dot" style="background: {{ constellation.color }}; width: 12px; height: 12px; border-radius: 50%; display: inline-block;"></span>
+      <h1>{{ constellation.name }}</h1>
+    </div>
+    <p class="subtitle" style="color: var(--text-muted); font-size: 0.85rem;">{{ worlds | length }} linked world{{ "s" if worlds | length != 1 }}</p>
+  </div>
+  <div class="header-actions" x-data="{ showSettings: false }">
+    <button class="btn btn-ghost" @click="showSettings = !showSettings">Settings</button>
+    <div class="settings-panel" x-show="showSettings" @click.outside="showSettings = false" @keydown.escape.window="showSettings = false" x-transition>
+      <form method="POST" action="/constellations/{{ constellation.id }}/settings">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="name" value="{{ constellation.name }}" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" rows="3" class="form-control">{{ constellation.description }}</textarea>
+        </div>
+        <div class="form-group">
+          <label>Color</label>
+          <input type="color" name="color" value="{{ constellation.color }}" style="width: 40px; height: 34px; border: 1px solid var(--border-color); border-radius: var(--radius); background: transparent; cursor: pointer;">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if constellation.description %}
+<div class="card mb-4">
+  <p>{{ constellation.description }}</p>
+</div>
+{% endif %}
+
+<h2 class="section-title">Linked Worlds</h2>
+
+{% if worlds.length == 0 %}
+<div class="empty-state" style="padding: 30px 20px;">
+  <p style="margin-bottom: 12px;">No worlds linked to this constellation yet.</p>
+  <p style="font-size: 0.8rem; color: var(--text-muted);">Add existing worlds below, or create a new one.</p>
+</div>
+{% else %}
+<div class="world-grid" style="margin-bottom: 24px;">
+  {% for w in worlds %}
+  <div class="world-card" style="border-left: 3px solid {{ constellation.color }};">
+    <a href="/worlds/{{ w.id }}" style="display: block; color: var(--text-primary);">
+      <h3>{{ w.name }}</h3>
+      {% if w.tagline %}<p class="world-tagline">{{ w.tagline }}</p>{% endif %}
+      {% if w.description %}<p class="world-desc">{{ w.description | truncate(100) }}</p>{% endif %}
+    </a>
+    <div class="world-meta" style="margin-top: 8px;">
+      <span class="badge {% if w.magic_enabled %}badge-magic{% else %}badge-mundane{% endif %}">
+        {{ "Magic" if w.magic_enabled else "No Magic" }}
+      </span>
+      <form method="POST" action="/constellations/{{ constellation.id }}/worlds/{{ w.id }}/remove" style="display: inline;">
+        <button type="submit" class="btn btn-ghost btn-sm" style="font-size: 0.7rem; padding: 2px 8px;">Unlink</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div style="display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 32px;">
+  {% if unlinkedWorlds.length > 0 %}
+  <div x-data="{ open: false }" style="position: relative;">
+    <button class="btn btn-ghost" @click="open = !open">+ Add Existing World</button>
+    <div x-show="open" @click.outside="open = false" x-transition
+      style="position: absolute; top: 100%; left: 0; margin-top: 4px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 8px; min-width: 280px; box-shadow: var(--shadow-lg); z-index: 50; max-height: 300px; overflow-y: auto;">
+      {% for w in unlinkedWorlds %}
+      <form method="POST" action="/constellations/{{ constellation.id }}/worlds" style="margin: 0;">
+        <input type="hidden" name="world_id" value="{{ w.id }}">
+        <button type="submit" class="search-option" style="display: block; width: 100%; text-align: left; background: none; border: none; color: var(--text-primary); font-size: 0.85rem; padding: 8px 10px; cursor: pointer; border-radius: var(--radius-sm);">
+          <strong>{{ w.name }}</strong>
+          {% if w.tagline %}<br><span style="color: var(--text-muted); font-size: 0.75rem;">{{ w.tagline }}</span>{% endif %}
+        </button>
+      </form>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <a href="/worlds/new?constellation={{ constellation.id }}" class="btn btn-primary">+ Create New World</a>
+</div>
+
+<div class="dashboard-footer">
+  <form method="POST" action="/constellations/{{ constellation.id }}/delete"
+    onsubmit="return confirm('Delete this constellation? The worlds within it will NOT be deleted, just unlinked.')">
+    <button type="submit" class="btn btn-danger btn-sm">Delete Constellation</button>
+  </form>
+</div>
+{% endblock %}

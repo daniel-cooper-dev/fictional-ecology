@@ -365,6 +365,21 @@ export const historyConfig: DomainConfig = {
         consequences: '["Universal magical ability across all sentient species", "Collapse of magical aristocracies and exclusivity", "Mass casualties from untrained magical accidents", "Complete restructuring of education, law, and economy", "Destabilization of ley lines and planar boundaries from massive mana draw", "Emergence of new social hierarchies based on magical talent rather than magical access"]',
       },
     },
+    {
+      id: 'founding_nation',
+      name: 'Founding of a Nation',
+      description: 'The birth of a new civilization through revolution, unification, or colonization.',
+      element_type: 'founding',
+      summary: 'The pivotal moment when a new nation was born',
+      detailed_notes: 'A founding event marks the moment scattered peoples, rebel factions, or colonial settlers coalesce into a recognized polity. The founding myth — whether revolution, divine mandate, or treaty — will be retold and embellished for millennia. The founder-figures become legends, their compromises forgotten and their flaws erased by grateful descendants.',
+      fields: {
+        event_type: 'founding',
+        duration: 'A single pivotal year or a decade of consolidation',
+        reliability: 'partially_documented',
+        geographic_scope: 'regional',
+        significance: 'major',
+      },
+    },
   ],
   defaultSortField: 'year_in_world',
 };

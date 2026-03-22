@@ -139,8 +139,13 @@ export class ExportService {
 
     if (data.relationships.length > 0) {
       md += `## Relationships\n\n`;
+      const nameMap = new Map(data.elements.map((el: any) => [el.id, el.name]));
       for (const rel of data.relationships) {
-        md += `- ${rel.source_id} → ${rel.target_id} (${rel.relationship_type})\n`;
+        const sourceName = nameMap.get(rel.source_id) || rel.source_id;
+        const targetName = nameMap.get(rel.target_id) || rel.target_id;
+        md += `- ${sourceName} → ${targetName} (${rel.relationship_type})`;
+        if (rel.description) md += ` — ${rel.description}`;
+        md += '\n';
       }
       md += '\n';
     }

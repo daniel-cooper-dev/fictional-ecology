@@ -1,5 +1,6 @@
-import { getWorldDb } from '../db/connection.js';
+import { getWorldDb, getMasterDb } from '../db/connection.js';
 import { ALL_DOMAINS } from '../domains/index.js';
+import { BlueprintService } from './BlueprintService.js';
 
 export interface ValidationIssue {
   severity: 'error' | 'warning' | 'info';
@@ -21,6 +22,7 @@ export class ValidationService {
     this.checkDanglingRelationships(db, worldId, issues);
     this.checkEcologicalConsistency(db, worldId, issues);
     this.checkMagicConsistency(db, worldId, issues);
+    this.checkBlueprintCompletion(db, worldId, issues);
 
     return issues;
   }
@@ -151,6 +153,38 @@ export class ValidationService {
         });
       }
     } catch { /* table may not exist */ }
+  }
+
+  private checkBlueprintCompletion(db: any, worldId: string, issues: ValidationIssue[]) {
+    try {
+      const masterDb = getMasterDb();
+      const world = masterDb.prepare('SELECT blueprint_id FROM worlds WHERE id = ?').get(worldId) as any;
+      if (!world?.blueprint_id) return;
+
+      const blueprintService = new BlueprintService();
+      const resolved = blueprintService.getResolved(world.blueprint_id);
+      if (!resolved) return;
+
+      const essentialSuggestions = resolved.resolvedSuggestions.filter(s => s.priority === 'essential');
+      const domainCounts = db.prepare(`
+        SELECT domain, COUNT(*) as count FROM world_elements WHERE world_id = ? GROUP BY domain
+      `).all(worldId) as { domain: string; count: number }[];
+
+      const domainCountMap = new Map(domainCounts.map(d => [d.domain, d.count]));
+
+      const missingEssential = essentialSuggestions.filter(s => !domainCountMap.has(s.domain) || domainCountMap.get(s.domain) === 0);
+
+      if (missingEssential.length > 0) {
+        for (const s of missingEssential) {
+          issues.push({
+            severity: 'info',
+            domain: s.domain,
+            message: `Blueprint "${resolved.name}" suggests creating a ${s.archetype?.name || s.archetypeId} (essential)`,
+            suggestion: `This is a core element for your ${resolved.name} blueprint`,
+          });
+        }
+      }
+    } catch { /* blueprint may not exist */ }
   }
 
   private checkMagicConsistency(db: any, worldId: string, issues: ValidationIssue[]) {

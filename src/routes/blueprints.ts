@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { BlueprintService } from '../services/BlueprintService.js';
+import { WorldService } from '../services/WorldService.js';
 
 const router = Router();
 const blueprintService = new BlueprintService();
+const worldService = new WorldService();
 
 // List all blueprints
 router.get('/', (req, res) => {
@@ -25,11 +27,14 @@ router.get('/:blueprintId', (req, res) => {
   const recommended = resolved.resolvedSuggestions.filter(s => s.priority === 'recommended');
   const optional = resolved.resolvedSuggestions.filter(s => s.priority === 'optional');
 
+  const worlds = worldService.list();
+
   res.render('pages/blueprint-detail.njk', {
     blueprint: resolved,
     essential,
     recommended,
     optional,
+    worlds,
   });
 });
 

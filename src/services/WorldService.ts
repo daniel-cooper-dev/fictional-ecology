@@ -16,15 +16,15 @@ export class WorldService {
     return db.prepare('SELECT * FROM worlds WHERE id = ?').get(id) as World | undefined;
   }
 
-  create(data: { name: string; tagline?: string; description?: string; magic_enabled?: boolean }): World {
+  create(data: { name: string; tagline?: string; description?: string; magic_enabled?: boolean; blueprint_id?: string }): World {
     const db = getMasterDb();
     const id = uuidv4();
     const now = new Date().toISOString();
 
     db.prepare(`
-      INSERT INTO worlds (id, name, tagline, description, magic_enabled, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(id, data.name, data.tagline || '', data.description || '', data.magic_enabled !== false ? 1 : 0, now, now);
+      INSERT INTO worlds (id, name, tagline, description, magic_enabled, blueprint_id, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(id, data.name, data.tagline || '', data.description || '', data.magic_enabled !== false ? 1 : 0, data.blueprint_id || null, now, now);
 
     // Initialize the world database (triggers migrations)
     getWorldDb(id);

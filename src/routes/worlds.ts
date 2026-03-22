@@ -15,10 +15,19 @@ router.get('/', (req, res) => {
   const constellations = constellationService.list();
   const unlinkedWorlds = constellationService.getUnlinkedWorlds();
 
-  // Build constellation groups with their worlds
+  // Build constellation groups — batch by grouping in-memory instead of N+1 queries
+  const worldsByConstellation = new Map<string, typeof worlds>();
+  for (const w of worlds) {
+    if (w.constellation_id) {
+      const existing = worldsByConstellation.get(w.constellation_id) || [];
+      existing.push(w);
+      worldsByConstellation.set(w.constellation_id, existing);
+    }
+  }
+
   const constellationGroups = constellations.map(c => ({
     ...c,
-    worlds: constellationService.getWorlds(c.id),
+    worlds: worldsByConstellation.get(c.id) || [],
   }));
 
   res.render('pages/home.njk', { worlds, constellations: constellationGroups, unlinkedWorlds });
@@ -57,16 +66,12 @@ router.post('/', (req, res) => {
     tagline: tagline || '',
     description: description || '',
     magic_enabled: magic_enabled === 'on' || magic_enabled === 'true',
+    blueprint_id: blueprint_id || undefined,
   });
 
   // Link to constellation if specified
   if (constellation_id) {
     constellationService.addWorld(constellation_id, world.id);
-  }
-
-  // Store blueprint if specified
-  if (blueprint_id) {
-    worldService.update(world.id, { settings: JSON.stringify({ blueprint_id }) });
   }
 
   const startDomain = req.body.start_domain;
@@ -87,16 +92,13 @@ router.get('/:worldId', (req, res) => {
   // Load blueprint if world has one
   let blueprint = null;
   let blueprintSuggestions: any[] = [];
-  try {
-    const settings = JSON.parse(world.settings || '{}');
-    if (settings.blueprint_id) {
-      const resolved = blueprintService.getResolved(settings.blueprint_id);
-      if (resolved) {
-        blueprint = resolved;
-        blueprintSuggestions = resolved.resolvedSuggestions;
-      }
+  if (world.blueprint_id) {
+    const resolved = blueprintService.getResolved(world.blueprint_id);
+    if (resolved) {
+      blueprint = resolved;
+      blueprintSuggestions = resolved.resolvedSuggestions;
     }
-  } catch {}
+  }
 
   res.render('pages/world-dashboard.njk', {
     world, stats, domains: ALL_DOMAINS,

@@ -51,6 +51,19 @@
   {% if s.note %}
   <p style="font-size: 0.7rem; color: var(--text-muted); font-style: italic; margin-top: 4px;">{{ s.note }}</p>
   {% endif %}
+  {% if s.archetype and worlds.length > 0 %}
+  <div style="margin-top: 8px;" x-data="{ open: false }">
+    <button class="btn btn-ghost btn-sm" style="width: 100%; font-size: 0.7rem;" @click="open = !open">Use in World</button>
+    <div x-show="open" @click.outside="open = false" x-transition
+      style="position: absolute; left: 12px; right: 12px; margin-top: 4px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px; box-shadow: var(--shadow-lg); z-index: 50; max-height: 200px; overflow-y: auto;">
+      {% for w in worlds %}
+      <a href="/worlds/{{ w.id }}/{{ s.domain }}/new?archetype={{ s.archetypeId }}" style="display: block; padding: 6px 8px; font-size: 0.8rem; color: var(--text-primary); text-decoration: none; border-radius: var(--radius-sm);" class="search-option">
+        {{ w.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endmacro %}
 

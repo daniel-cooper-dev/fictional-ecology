@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { ALL_DOMAINS } from '../domains/index.js';
+import { WorldService } from '../services/WorldService.js';
 
 const router = Router();
+const worldService = new WorldService();
 
 // Searchable list of ALL archetypes across all domains
 router.get('/', (req, res) => {
@@ -40,6 +42,7 @@ router.get('/', (req, res) => {
 
   const domains = ALL_DOMAINS.filter(d => d.archetypes && d.archetypes.length > 0);
   const categories = ['natural', 'sentient', 'magic', 'meta'];
+  const worlds = worldService.list();
 
   res.render('pages/archetype-search.njk', {
     archetypes: allArchetypes,
@@ -49,6 +52,7 @@ router.get('/', (req, res) => {
     categoryFilter,
     domains,
     categories,
+    worlds,
   });
 });
 

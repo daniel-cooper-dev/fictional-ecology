@@ -1234,3 +1234,58 @@ legend {
   50% { width: 70%; }
   100% { width: 95%; }
 }
+
+/* === Constellations === */
+.constellation-group { margin-bottom: 28px; }
+
+.constellation-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.constellation-header:hover { color: var(--text-primary); }
+
+.constellation-header h2 { font-size: 1.1rem; margin: 0; }
+
+/* === Section Title === */
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+}
+
+/* === Subtitle === */
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* === Margin Utilities === */
+.mb-4 { margin-bottom: 16px; }
+
+/* === Breadcrumbs === */
+.breadcrumbs {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.breadcrumbs a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover { color: var(--accent); }
+
+.breadcrumbs .sep {
+  margin: 0 6px;
+  color: var(--text-muted);
+}

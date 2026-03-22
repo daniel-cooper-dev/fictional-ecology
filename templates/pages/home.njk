@@ -41,9 +41,14 @@
           {% if w.tagline %}<p class="world-tagline">{{ w.tagline }}</p>{% endif %}
           {% if w.description %}<p class="world-desc">{{ w.description | truncate(120) }}</p>{% endif %}
           <div class="world-meta">
-            <span class="badge {% if w.magic_enabled %}badge-magic{% else %}badge-mundane{% endif %}">
-              {{ "Magic Enabled" if w.magic_enabled else "No Magic" }}
-            </span>
+            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+              <span class="badge {% if w.magic_enabled %}badge-magic{% else %}badge-mundane{% endif %}">
+                {{ "Magic" if w.magic_enabled else "No Magic" }}
+              </span>
+              {% if w.blueprint_id %}
+              <span class="badge" style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.6rem;">{{ w.blueprint_id | replace('_', ' ') }}</span>
+              {% endif %}
+            </div>
             <span class="text-muted">Updated {{ w.updated_at }}</span>
           </div>
         </a>

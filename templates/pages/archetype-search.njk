@@ -6,7 +6,7 @@
 <div class="page-header">
   <div>
     <h1>Browse All Templates</h1>
-    <p class="subtitle">{{ total }} templates across all domains. Search, filter, and create directly.</p>
+    <p class="subtitle">{{ total }} templates across all domains. Search, filter, and use in any world.</p>
   </div>
 </div>
 
@@ -47,7 +47,7 @@
 {% else %}
 <div class="element-grid">
   {% for arch in archetypes %}
-  <div class="element-card" style="--domain-color: {{ arch.domainColor }};">
+  <div class="element-card" style="--domain-color: {{ arch.domainColor }};" x-data="{ showWorlds: false }">
     <div class="element-card-header" style="display: flex; justify-content: space-between; align-items: center;">
       <a href="/archetypes?domain={{ arch.domainId }}{% if query %}&q={{ query }}{% endif %}" style="display: flex; align-items: center; gap: 4px; color: {{ arch.domainColor }}; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; text-decoration: none;">
         <i data-lucide="{{ arch.domainIcon }}" style="width: 14px; height: 14px;"></i>
@@ -57,9 +57,21 @@
     </div>
     <h3 style="margin-top: 6px;">{{ arch.name }}</h3>
     <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">{{ arch.description | truncate(120) }}</p>
-    <div style="font-size: 0.7rem; color: var(--text-muted); font-style: italic;">
-      Click "Use" to create an element from this template in any world.
+    {% if worlds.length > 0 %}
+    <div style="position: relative;">
+      <button class="btn btn-ghost btn-sm" style="width: 100%;" @click="showWorlds = !showWorlds">Use in World</button>
+      <div x-show="showWorlds" @click.outside="showWorlds = false" x-transition
+        style="position: absolute; bottom: 100%; left: 0; right: 0; margin-bottom: 4px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 4px; box-shadow: var(--shadow-lg); z-index: 50; max-height: 200px; overflow-y: auto;">
+        {% for w in worlds %}
+        <a href="/worlds/{{ w.id }}/{{ arch.domainId }}/new?archetype={{ arch.id }}" style="display: block; padding: 6px 8px; font-size: 0.8rem; color: var(--text-primary); text-decoration: none; border-radius: var(--radius-sm);" class="search-option">
+          {{ w.name }}
+        </a>
+        {% endfor %}
+      </div>
     </div>
+    {% else %}
+    <a href="/worlds/new" class="btn btn-ghost btn-sm" style="width: 100%;">Create a World First</a>
+    {% endif %}
   </div>
   {% endfor %}
 </div>

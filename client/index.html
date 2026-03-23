@@ -1439,7 +1439,7 @@
           this.load();
         },
         deleteElement() {
-          if (!confirm('Delete \"' + this.element.name + '\"?')) return;
+          if (!confirm('Delete ' + this.element.name + '?')) return;
           store.deleteElement(this.world.id, this.element.id);
           navigate('/worlds/' + this.world.id + '/' + this.domainConfig.id);
         },

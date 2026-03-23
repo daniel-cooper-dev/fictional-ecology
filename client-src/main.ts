@@ -127,8 +127,6 @@ document.addEventListener('alpine:init', () => {
     init() {
       window.addEventListener('hashchange', () => {
         this.route = parseRoute();
-        // Re-init Lucide icons after page change
-        setTimeout(() => (window as any).lucide?.createIcons(), 50);
       });
     },
 

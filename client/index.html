@@ -2128,18 +2128,23 @@
   <script src="js/lucide.min.js"></script>
   <script src="js/alpine.min.js" defer></script>
   <script>
-    // Initialize lucide icons once DOM is ready, and re-initialize on Alpine updates
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.lucide) lucide.createIcons();
-    });
-    document.addEventListener('alpine:initialized', () => {
-      if (window.lucide) lucide.createIcons();
-      // Also re-create icons after any Alpine morph/render
-      const observer = new MutationObserver(() => {
-        if (window.lucide) lucide.createIcons();
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-    });
+    // Initialize lucide icons — debounced to prevent infinite loop
+    // (createIcons replaces <i> with <svg>, which would re-trigger MutationObserver)
+    let _iconTimer = null;
+    function refreshIcons() {
+      clearTimeout(_iconTimer);
+      _iconTimer = setTimeout(() => {
+        if (window.lucide) {
+          document.querySelectorAll('i[data-lucide]').forEach(el => {
+            lucide.icons[el.getAttribute('data-lucide')]
+          });
+          lucide.createIcons();
+        }
+      }, 100);
+    }
+    document.addEventListener('DOMContentLoaded', refreshIcons);
+    document.addEventListener('alpine:initialized', refreshIcons);
+    window.addEventListener('hashchange', refreshIcons);
   </script>
 </body>
 </html>

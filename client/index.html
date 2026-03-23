@@ -115,7 +115,7 @@
       <!-- ============================================================ -->
       <!-- HOME PAGE -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'home'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'home'" x-data="{
         constellations: [],
         unlinked: [],
         refresh() {
@@ -219,7 +219,7 @@
       <!-- ============================================================ -->
       <!-- WORLD CREATE (Quick Create) -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'world-new'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'world-new'" x-data="{
         name: '',
         tagline: '',
         description: '',
@@ -296,7 +296,7 @@
       <!-- ============================================================ -->
       <!-- WORLD DASHBOARD -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'world-dashboard'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'world-dashboard'" x-data="{
         world: null,
         stats: {},
         showSettings: false,
@@ -478,7 +478,7 @@
       <!-- ============================================================ -->
       <!-- CONSTELLATION CREATE -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'constellation-new'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'constellation-new'" x-data="{
         name: '',
         description: '',
         color: '#6366f1',
@@ -527,7 +527,7 @@
       <!-- ============================================================ -->
       <!-- CONSTELLATION DETAIL -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'constellation-detail'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'constellation-detail'" x-data="{
         constellation: null,
         worlds: [],
         showSettings: false,
@@ -685,7 +685,7 @@
       <!-- ============================================================ -->
       <!-- BLUEPRINT LIST -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'blueprint-list'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'blueprint-list'" x-data="{
         tagFilter: '',
         get filtered() {
           if (!this.tagFilter) return ALL_BLUEPRINTS;
@@ -732,7 +732,7 @@
       <!-- ============================================================ -->
       <!-- BLUEPRINT DETAIL -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'blueprint-detail'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'blueprint-detail'" x-data="{
         bp: null,
         load() {
           this.bp = getBlueprint($store.app.params.blueprintId);
@@ -813,7 +813,7 @@
       <!-- ============================================================ -->
       <!-- ARCHETYPE SEARCH -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'archetype-search'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'archetype-search'" x-data="{
         searchQ: '',
         categoryFilter: '',
         get allArchetypes() {
@@ -896,7 +896,7 @@
       <!-- ============================================================ -->
       <!-- DOMAIN LIST (elements for a domain in a world) -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'domain-list'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'domain-list'" x-data="{
         world: null,
         domainConfig: null,
         elements: [],
@@ -1046,7 +1046,7 @@
       <!-- ============================================================ -->
       <!-- ELEMENT CREATE / EDIT -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'element-new' || $store.app.page === 'element-edit'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'element-new' || $store.app.page === 'element-edit'" x-data="{
         world: null,
         domainConfig: null,
         isEdit: false,
@@ -1370,7 +1370,7 @@
       <!-- ============================================================ -->
       <!-- ELEMENT DETAIL -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'element-detail'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'element-detail'" x-data="{
         world: null,
         domainConfig: null,
         element: null,
@@ -1683,7 +1683,7 @@
       <!-- ============================================================ -->
       <!-- ONBOARDING WIZARD -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'onboarding'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'onboarding'" x-data="{
         step: 1,
         totalSteps: 7,
         name: '',
@@ -1945,7 +1945,7 @@
       <!-- ============================================================ -->
       <!-- TIMELINE -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === 'timeline'" x-data="{
+      <div x-cloak x-show="$store.app.page === 'timeline'" x-data="{
         world: null,
         eras: [],
         showForm: false,
@@ -2110,7 +2110,7 @@
       <!-- ============================================================ -->
       <!-- 404 PAGE -->
       <!-- ============================================================ -->
-      <div x-show="$store.app.page === '404'">
+      <div x-cloak x-show="$store.app.page === '404'">
         <div class="empty-state">
           <div class="empty-icon"><i data-lucide="compass"></i></div>
           <h2>Page Not Found</h2>

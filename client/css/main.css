@@ -96,7 +96,7 @@ h3 { font-size: 1.1rem; }
 }
 
 .logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font-weight: 700;
@@ -110,7 +110,11 @@ h3 { font-size: 1.1rem; }
 .logo-icon {
   font-size: 1.3rem;
   color: var(--accent);
+  display: inline-flex;
+  align-items: center;
 }
+
+.logo-icon svg { width: 20px; height: 20px; }
 
 .search-container {
   flex: 1;
@@ -154,6 +158,9 @@ h3 { font-size: 1.1rem; }
 }
 
 .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
@@ -162,6 +169,8 @@ h3 { font-size: 1.1rem; }
 }
 
 .nav-link:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+.nav-link svg { width: 14px; height: 14px; flex-shrink: 0; }
 
 /* === Sidebar === */
 .sidebar {
@@ -260,12 +269,13 @@ h3 { font-size: 1.1rem; }
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 24px;
   gap: 16px;
 }
 
 .page-header h1 { margin: 0; }
+.page-header h1 svg { vertical-align: -3px; }
 
 .subtitle {
   color: var(--text-secondary);

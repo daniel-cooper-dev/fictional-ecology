@@ -1,3 +1,16 @@
+/* === Icon Alignment === */
+.domain-icon, .domain-card-header .domain-icon,
+.sidebar-icon, .logo-icon,
+.badge svg, .btn svg, .nav-link svg {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+h1 svg, h2 svg, h3 svg {
+  vertical-align: -2px;
+}
+
 /* === Cards === */
 .card {
   background: var(--bg-card);
